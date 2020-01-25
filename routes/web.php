@@ -16,3 +16,4 @@ Route::get('/', function () {
 });
 
 Route::get('/chars', 'CharacterController@index');
+Route::get('/character/{char}', 'CharacterController@show');

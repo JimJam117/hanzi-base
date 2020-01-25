@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC|Noto+Sans+SC|Open+Sans|ZCOOL+XiaoWei&display=swap"
         rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" media="all" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@2.2/dist/hanzi-writer.min.js"></script>
 
     <title>HanziBase</title>
     <link rel="icon" href="/icon.ico">
@@ -71,6 +72,31 @@
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque velit ea quo blanditiis tenetur, incidunt rem magni expedita laudantium, libero aliquid nemo aspernatur, deserunt quod laborum perspiciatis sapiente officia fugit recusandae eum porro ut illum. Veritatis doloremque vel reiciendis a enim itaque aut nisi aspernatur earum rerum. Neque exercitationem voluptates sed esse fuga modi cum non dicta assumenda saepe, delectus, praesentium, nemo expedita impedit obcaecati dignissimos reiciendis dolor eos iusto rerum soluta nihil sunt ex?</p>
         </div>
 
+        <h1>Test Animation</h1>
+        <div id="character-target-div"></div>
+        <button id="animate-button">Animate</button>
+        
+        @php
+         $faker = Faker\Factory::create('zh_CN');
+         $name = $faker->lastName;
+        echo ("<script> 
+            var writer = HanziWriter.create('character-target-div', '$name', {
+            width: 100,
+            height: 100,
+            padding: 5,
+            showOutline: true
+          });
+
+          document.getElementById('animate-button').addEventListener('click', function() {
+  writer.animateCharacter();
+});
+              
+            </script>");
+  
+        @endphp
+        
+        
+      
         <hr>
         <footer>
             <a href="https://jsparrow.uk">HanziBase by James Sparrow</a>

@@ -1,6 +1,10 @@
 @include('partials.topbar')
 
 <div class="main">
+    @php
+        
+        dd($ccdb);
+    @endphp
     <div class="characters_container">
         @foreach ($chars as $char)
         <a href="/character/{{$char->simp_char ? $char->simp_char : $char->trad_char}}" class="character_link">
@@ -40,9 +44,4 @@
         grid-template-columns: 25% 25% 25% 25%;
     }
 
-    
-
 </style>
-
-
-

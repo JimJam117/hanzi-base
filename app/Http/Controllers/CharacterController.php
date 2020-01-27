@@ -13,7 +13,7 @@ class CharacterController extends Controller
         $chars = \App\Character::all();
         $chars = DB::table('characters')->paginate(15);
 
-        $ccdb = $this->ccdb('們'); 
+        $ccdb = $this->grabCharacterData('的'); 
 
 
         return view('character.index', compact(['chars', 'ccdb']));
@@ -39,21 +39,29 @@ class CharacterController extends Controller
 
     }
 
-    public function ccdb($char) {
+    public function grabCharacterData($char) {
+        
+        // glosbe pinyin
+        $char_encoded = urlencode($char);
+        $glosbe = json_decode(file_get_contents("https://glosbe.com/transliteration/api?from=Han&dest=Latin&text=". "$char_encoded" ."&format=json"), true);
+        $pinyin = $glosbe['text'];
 
+        // grab the data from ccdb
         $ccdb = json_decode(file_get_contents("http://ccdb.hemiola.com/characters/string/" . $char . "?fields=kDefinition,kFrequency,kTotalStrokes,kSimplifiedVariant,kTraditionalVariant"), true);
         $ccdb = $ccdb[0];
         // add the orignal to the output
         $ccdb += ['original' => $char];
 
         // grab the trad and simp chars
-        $raw_trad = $this->grabUnicodeChar($ccdb['kTraditionalVariant']);
-        $raw_simp = $this->grabUnicodeChar($ccdb['kSimplifiedVariant']);
+        $raw_trad = $this->grabUnicodeChar($ccdb['kTraditionalVariant']) ?? $char;
+        $raw_simp = $this->grabUnicodeChar($ccdb['kSimplifiedVariant']) ?? $char;
         
         // add the trad and simp chars
         $ccdb += ['traditional_actual' => $raw_trad];
         $ccdb += ['simplified_actual' => $raw_simp];
 
+        // add glosbe pinyin
+        $ccdb += ['pinyin' => $pinyin];
         return $ccdb;
     }
 

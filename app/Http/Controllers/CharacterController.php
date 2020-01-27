@@ -24,14 +24,27 @@ class CharacterController extends Controller
     }
 
     public function show($char) {
-       
+        $newCharAdded = false;
+
         // find the character
         $charObj = null;
-        $charObj = \App\Character::where('char', $char)->orWhere('id', $char)->firstOrFail();
+        $charObj = \App\Character::where('char', $char)->orWhere('id', $char)->first();
         
+    
+        //dd($this->grabCharacterData($char));
         if($charObj == null) {
-            echo "not found";
-            return null;
+
+            $charData = $this->grabCharacterData($char);
+            if($charData != null) {
+                $this->addToDatabase($charData);
+                $charObj = \App\Character::where('char', $char)->orWhere('id', $char)->first();
+                $newCharAdded = true;
+            }
+            else{
+                return view('character.notfound', compact('char'));
+            }
+
+            
         }
         /*
         // if could not find the simplified char
@@ -77,12 +90,14 @@ class CharacterController extends Controller
 
         $char = $charObj;
 
-        return view('character.show', compact('char'));
+        return view('character.show', compact(['char','newCharAdded']));
 
     }
 
     public function grabCharacterData($char) {
-        
+        // make sure only one character is used
+        $char = mb_substr($char, 0, 1);
+
         // grab the data from ccdb
         $ccdb = json_decode(file_get_contents("http://ccdb.hemiola.com/characters/string/" . $char . "?fields=kDefinition,kFrequency,kTotalStrokes,kSimplifiedVariant,kTraditionalVariant"), true);
         if (empty($ccdb)) {
@@ -134,5 +149,19 @@ class CharacterController extends Controller
         $trimmed = trim($string, "U+");
         $unicodeChar = "\u$trimmed";
         return json_decode('"'.$unicodeChar.'"');
+    }
+
+    function addToDatabase($data) {
+
+        //dd($data);
+        \App\Character::create([
+        'char'             => $data['original'],
+        'simp_char'        => $data['simplified_actual'],
+        'trad_char'        => $data['traditional_actual'],
+        'freq'             => $data['kFrequency'],
+        'pinyin'           => $data['pinyin'],
+        'translations'     => $data['kDefinition'],
+        ]);
+
     }
 }

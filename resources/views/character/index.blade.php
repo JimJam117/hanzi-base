@@ -9,8 +9,7 @@
         @foreach ($chars as $char)
         <a href="/character/{{$char->char}}" class="character_link">
             <h1 class="character">{{$char->char}}</h1>
-            <h2 class="translations">{{$char->translations}}</h2>
-            <p class="pinyin">{{$char->pinyin}}</p>
+            <h2 class="pinyin">{{$char->pinyin}}</h2>
         </a>
         @endforeach
     </div>
@@ -42,6 +41,10 @@
     .characters_container {
         display: grid;
         grid-template-columns: 25% 25% 25% 25%;
+    }
+
+    .pinyin{
+        padding: 0.25em 1em 1em;
     }
 
 </style>

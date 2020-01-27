@@ -18,11 +18,11 @@ class CreateCharactersTable extends Migration
             $table->string('char')->unique();
             $table->string('simp_char')->nullable();
             $table->string('trad_char')->nullable();
-            $table->integer('freq');
-            $table->string('heisig_keyword');
-            $table->integer('heisig_number');
-            $table->string('pinyin');
-            $table->string('translations');
+            $table->integer('freq')->nullable();
+            $table->string('heisig_keyword')->nullable();
+            $table->integer('heisig_number')->nullable();
+            $table->string('pinyin')->nullable();
+            $table->string('translations')->nullable();
             $table->timestamps();
         });
     }

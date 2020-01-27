@@ -13,7 +13,7 @@ class CharacterController extends Controller
         $chars = \App\Character::all();
         $chars = DB::table('characters')->paginate(15);
 
-        $ccdb = $this->grabCharacterData('我'); 
+        $ccdb = $this->grabCharacterData('台'); 
 
 
         return view('character.index', compact(['chars', 'ccdb']));
@@ -23,16 +23,26 @@ class CharacterController extends Controller
        
         // find the character
         $charObj = null;
-        $charObj = \App\Character::where('simp_char', $char)
-        ->orWhere('trad_char', $char)
-        ->orWhere('id', $char)
-        ->orWhere('freq', $char) 
-        ->orWhere('keyword', $char)->firstOrFail();
+        $charObj = \App\Character::where('char', $char)->orWhere('id', $char)->firstOrFail();
         
         if($charObj == null) {
             echo "not found";
+            return null;
+        }
+        /*
+        // if could not find the simplified char
+        if($charObj == null) {
+        $charObj = \App\Character::where('trad_char', 'LIKE', "%{$char}%")->firstOrFail();
+
+        //
+        //->orWhere('freq', $char) 
+        //->orWhere('keyword', $char)->firstOrFail();
+
             
         } 
+        */
+        
+        
         
         
         switch ($charObj->freq) {
@@ -79,7 +89,26 @@ class CharacterController extends Controller
         $ccdb += ['original' => $char];
 
         // grab the trad and simp chars
-        $raw_trad = $this->grabUnicodeChar($ccdb['kTraditionalVariant']) ?? $char;
+        $raw_trads = explode ( " " , $ccdb['kTraditionalVariant']);
+        $raw_trad = "";
+        $i = 0;
+        if (!empty($raw_trads)){
+            foreach ($raw_trads as $trad) {
+                if($i != 0) {
+                    $raw_trad = $raw_trad . ",";
+                }
+                else{
+                    $i = 1;
+                }
+                $raw_trad = $raw_trad . $this->grabUnicodeChar($trad);
+            }
+        }
+        
+        if(empty($raw_trad)) {
+            $raw_trad = $char;
+        }
+        
+
         $raw_simp = $this->grabUnicodeChar($ccdb['kSimplifiedVariant']) ?? $char;
         
         // add the trad and simp chars

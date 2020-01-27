@@ -20,6 +20,7 @@ $factory->define(Character::class, function (Faker $faker) {
             $table->timestamps();
         */
 
+        'char' => $faker->unique()->lastName,
         'simp_char' => $faker->lastName,
         'trad_char' => $faker->lastName,
         'freq' => $faker->numberBetween($min = 1, $max = 5),

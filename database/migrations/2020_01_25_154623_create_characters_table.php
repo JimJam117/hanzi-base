@@ -15,8 +15,9 @@ class CreateCharactersTable extends Migration
     {
         Schema::create('characters', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('simp_char');
-            $table->string('trad_char');
+            $table->string('char')->unique();
+            $table->string('simp_char')->nullable();
+            $table->string('trad_char')->nullable();
             $table->integer('freq');
             $table->string('heisig_keyword');
             $table->integer('heisig_number');

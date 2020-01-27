@@ -15,5 +15,5 @@ Route::get('/', function () {
     return view('base');
 });
 
-Route::get('/chars', 'CharacterController@index');
+Route::get('/all', 'CharacterController@index');
 Route::get('/character/{char}', 'CharacterController@show');

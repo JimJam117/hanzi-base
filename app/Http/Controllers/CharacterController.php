@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CharacterController extends Controller
 {
     public function index()
     {
         $chars = \App\Character::all();
+        $chars = DB::table('characters')->paginate(15);
 
         return view('character.index', compact('chars'));
     }

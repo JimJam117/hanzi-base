@@ -1,0 +1,79 @@
+ /*font-family: 'Open Sans', sans-serif;
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-family: 'Noto Sans TC', sans-serif;*/
+
+ * {
+     margin: 0;
+     padding: 0;
+ }
+
+ body {
+     font-family: Calibri, 'Trebuchet MS', sans-serif;
+     margin: 0;
+ }
+
+ /* Main Section */
+
+ .main {
+     padding: 3em 10em;
+     background-image: -webkit-linear-gradient(60deg, #f8f8f8 50%, #f3f3f3 50%);
+     min-height: 500px;
+ }
+
+ .main hr {
+     border: 0;
+     border-top: 1px solid #bebebe;
+     margin: 4em;
+ }
+
+ .main-section {
+     padding: 2em;
+ }
+
+ /*character stuff*/
+
+ .character {
+    font-size: 4em;
+    font-weight: 100;
+    font-family: Noto Sans SC;
+}
+
+
+.translations {}
+
+.pinyin {}
+
+/*Pagination*/
+
+.pagination {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+}
+
+.pagination a,
+.pagination span {
+    color: #222222;
+    padding: 1em 0.5em;
+    font-size: 1.25em;
+    text-decoration: none;
+}
+
+.pagination span {
+
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+/* Footer */
+
+footer{
+    display: flex;
+    justify-content: space-between;
+}
+
+footer a, footer a:visited{
+    color: #20897f;
+    text-decoration: none;
+}

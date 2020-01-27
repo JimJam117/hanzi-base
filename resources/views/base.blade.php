@@ -1,38 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC|Noto+Sans+SC|Open+Sans|ZCOOL+XiaoWei&display=swap"
-        rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" media="all" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@2.2/dist/hanzi-writer.min.js"></script>
-
-    <title>HanziBase</title>
-    <link rel="icon" href="/icon.ico">
-</head>
-
-<!--Body-->
-
-<body>
-    <div class="topbar">
-        <div class="logo-search-container">
-            <img src="/logo.png" alt="hanzibase">
-
-            <div class="search-container search-container-top">
-                <form action="/action_page.php">
-                    <input type="text" placeholder="Search.." name="search">
-                    <button type="submit"><i class="fa fa-search"></i></button>
-                </form>
-            </div>
-        </div>
-
-        <div class="lang">
-            <a href="#" style="font-family: Noto Sans SC;">中文</a>
-        </div>
-    </div>
+@include('partials.topbar')
 
     <div class="landing-area">
         <div class="landing-area-text">
@@ -97,69 +63,13 @@
         
         
       
-        <hr>
-        <footer>
-            <a href="https://jsparrow.uk">HanziBase by James Sparrow</a>
-            <a href=""></a>
-            <a href="#">Back to top</a>
-        </footer>
+        @include('partials.footer')
 
     </div>
 </body>
 
 <!--Style-->
 <style>
-    /*font-family: 'Open Sans', sans-serif;
-    font-family: 'ZCOOL XiaoWei', serif;
-    font-family: 'Noto Sans TC', sans-serif;*/
-
-    * {
-        margin: 0;
-        padding: 0;
-    }
-
-    body {
-        font-family: Calibri, 'Trebuchet MS', sans-serif;
-        margin: 0;
-    }
-
-    .topbar {
-        width: 100%;
-        background: linear-gradient(#E82048, #952828);
-        color: white;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 2px solid #2e131394;
-        position: fixed;
-    }
-
-    .topbar img {
-        padding: 1em;
-        height: 4em;
-    }
-
-    .logo-search-container{
-        display: flex;
-    }
-
-    .lang {
-        padding: 1em;
-        float: right;
-    }
-
-    .lang a {
-        color: white;
-        height: auto;
-        font-size: 1.5em;
-        padding: 0 2em;
-
-        text-decoration: none;
-    }
-
-    .lang a:hover {
-        color: black;
-    }
 
     /*landing*/
     .landing-area {
@@ -205,14 +115,7 @@
 
     }
 
-    .search-container-top {
-        width: 100%;
-    margin: auto 1em auto 2em;
-    }
-
-    .search-container-top button {
-        background-color: #ffffff00;
-    }
+   
 
     .landing-area-text {
         margin: 3em;
@@ -231,20 +134,7 @@
         font-family: 'Noto Sans SC';
     }
 
-    /* Main Section */
-    .main{
-        padding: 3em 10em;
-        background-image: -webkit-linear-gradient(60deg, #f8f8f8 50%, #ffffff 50%);
-        min-height: 500px;
-    }
-    .main hr{
-        border: 0;
-        border-top: 1px solid #bebebe;
-        margin: 4em;
-    }
-    .main-section{
-        padding: 2em;
-    }
+    
 
     /* Sub-feature */
     .sub-features{
@@ -262,17 +152,7 @@
         font-size: 2em;
     }
 
-    /* Footer */
-
-    footer{
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .main a, .main a:visited{
-        color: #20897f;
-        text-decoration: none;
-    }
+    
 
 </style>
 

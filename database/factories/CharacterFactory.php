@@ -22,8 +22,9 @@ $factory->define(Character::class, function (Faker $faker) {
 
         'simp_char' => $faker->lastName,
         'trad_char' => $faker->lastName,
-        'freq' => $faker->randomDigit,
+        'freq' => $faker->numberBetween($min = 1, $max = 5),
         'heisig_keyword' => $faker->word,
+        'heisig_number' => $faker->unique()->numberBetween($min = 1, $max = 5000),
         'pinyin' => $faker->word,
         'translations' => $faker->word,
 

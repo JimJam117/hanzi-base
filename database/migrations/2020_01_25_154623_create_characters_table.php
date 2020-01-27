@@ -19,6 +19,7 @@ class CreateCharactersTable extends Migration
             $table->string('trad_char');
             $table->integer('freq');
             $table->string('heisig_keyword');
+            $table->integer('heisig_number');
             $table->string('pinyin');
             $table->string('translations');
             $table->timestamps();

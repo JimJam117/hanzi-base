@@ -13,7 +13,7 @@ class CharacterController extends Controller
         $chars = \App\Character::all();
         $chars = DB::table('characters')->paginate(15);
 
-        $ccdb = $this->grabCharacterData('的'); 
+        $ccdb = $this->grabCharacterData('我'); 
 
 
         return view('character.index', compact(['chars', 'ccdb']));
@@ -29,25 +29,51 @@ class CharacterController extends Controller
         ->orWhere('freq', $char) 
         ->orWhere('keyword', $char)->firstOrFail();
         
-        if($charObj != null) {
-            $char = $charObj;
-            return view('character.show', compact('char'));
-        } 
-        else {
+        if($charObj == null) {
             echo "not found";
+            
+        } 
+        
+        
+        switch ($charObj->freq) {
+            case 1:
+                $charObj->frequencyTitle = "Very Common";
+                break;
+
+            case 2:
+                $charObj->frequencyTitle = "Common";
+                break;
+
+            case 3:
+                $charObj->frequencyTitle = "Frequent";
+                break;
+
+            case 4:
+                $charObj->frequencyTitle = "Infrequent";
+                break;
+
+            case 5:
+                $charObj->frequencyTitle = "Very Infrequent";
+                 break;
+            
+            default:
+                $charObj->frequencyTitle = "Default";
+                break;
         }
+
+        $char = $charObj;
+
+        return view('character.show', compact('char'));
 
     }
 
     public function grabCharacterData($char) {
         
-        // glosbe pinyin
-        $char_encoded = urlencode($char);
-        $glosbe = json_decode(file_get_contents("https://glosbe.com/transliteration/api?from=Han&dest=Latin&text=". "$char_encoded" ."&format=json"), true);
-        $pinyin = $glosbe['text'];
-
         // grab the data from ccdb
         $ccdb = json_decode(file_get_contents("http://ccdb.hemiola.com/characters/string/" . $char . "?fields=kDefinition,kFrequency,kTotalStrokes,kSimplifiedVariant,kTraditionalVariant"), true);
+        if (empty($ccdb)) {
+            return null;
+        }
         $ccdb = $ccdb[0];
         // add the orignal to the output
         $ccdb += ['original' => $char];
@@ -59,6 +85,11 @@ class CharacterController extends Controller
         // add the trad and simp chars
         $ccdb += ['traditional_actual' => $raw_trad];
         $ccdb += ['simplified_actual' => $raw_simp];
+
+        // glosbe pinyin
+        $char_encoded = urlencode($char);
+        $glosbe = json_decode(file_get_contents("https://glosbe.com/transliteration/api?from=Han&dest=Latin&text=". "$char_encoded" ."&format=json"), true);
+        $pinyin = $glosbe['text'];
 
         // add glosbe pinyin
         $ccdb += ['pinyin' => $pinyin];

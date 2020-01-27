@@ -7,16 +7,20 @@ use Illuminate\Support\Facades\DB;
 
 class CharacterController extends Controller
 {
+    public function notfound() {
+        return view('character.notfound');
+    }
+
     public function index()
     {
+        
         // DEBUGGING
         $chars = \App\Character::all();
         $chars = DB::table('characters')->paginate(15);
 
-        $ccdb = $this->grabCharacterData('台'); 
+        //$ccdb = $this->grabCharacterData('台'); 
 
-
-        return view('character.index', compact(['chars', 'ccdb']));
+        return view('character.index', compact(['chars']));
     }
 
     public function show($char) {

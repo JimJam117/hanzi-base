@@ -3,12 +3,12 @@
 <div class="main">
     @php
         
-        dd($ccdb);
+        //dd($ccdb);
     @endphp
     <div class="characters_container">
         @foreach ($chars as $char)
-        <a href="/character/{{$char->simp_char ? $char->simp_char : $char->trad_char}}" class="character_link">
-            <h1 class="character">{{$char->simp_char ? $char->simp_char : $char->trad_char}}</h1>
+        <a href="/character/{{$char->char}}" class="character_link">
+            <h1 class="character">{{$char->char}}</h1>
             <h2 class="translations">{{$char->translations}}</h2>
             <p class="pinyin">{{$char->pinyin}}</p>
         </a>

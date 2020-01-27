@@ -17,3 +17,5 @@ Route::get('/', function () {
 
 Route::get('/all', 'CharacterController@index');
 Route::get('/character/{char}', 'CharacterController@show');
+
+Route::get('/notfound', 'CharacterController@notfound');

@@ -61,7 +61,7 @@ class CharacterController extends Controller
         
         
         
-        
+        // used to determine which frequency string should be used
         switch ($charObj->freq) {
             case 1:
                 $charObj->frequencyTitle = "Very Common";
@@ -84,7 +84,7 @@ class CharacterController extends Controller
                  break;
             
             default:
-                $charObj->frequencyTitle = "Default";
+                $charObj->frequencyTitle = "Unknown";
                 break;
         }
 
@@ -92,6 +92,10 @@ class CharacterController extends Controller
 
         return view('character.show', compact(['char','newCharAdded']));
 
+    }
+
+    public function debug($char) {
+        dd($this->grabCharacterData($char));
     }
 
     public function grabCharacterData($char) {

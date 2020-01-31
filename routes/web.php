@@ -11,11 +11,11 @@
 |
 */
 
-Route::get('/', function () {
-    return view('base');
-});
+Route::get('/', 'HomeController@index');
 
 Route::get('/all', 'CharacterController@index');
 Route::get('/character/{char}', 'CharacterController@show');
 
 Route::get('/notfound', 'CharacterController@notfound');
+
+Route::get('/debug/{char}', 'CharacterController@debug');

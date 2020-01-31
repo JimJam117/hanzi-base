@@ -15,6 +15,19 @@
     </div>
 
     <div class="main">
+        <div class="main-section stat-section">
+            <div class="nihao">
+                <div id="writer"></div>
+            </div>
+            <div class="stat-title-section">
+                <h2 class="stat-title"><span class='red'>{{$charCount}}</span> Characters on HanziBase</h2>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis esse temporibus voluptates est debitis accusantium ea veniam! Est, consequuntur debitis.</p>
+            </div>
+
+
+        </div>
+        <hr>
+
         <div class="sub-features">
             <div class="feature">
                 <h2>Translations</h2>
@@ -38,28 +51,11 @@
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque velit ea quo blanditiis tenetur, incidunt rem magni expedita laudantium, libero aliquid nemo aspernatur, deserunt quod laborum perspiciatis sapiente officia fugit recusandae eum porro ut illum. Veritatis doloremque vel reiciendis a enim itaque aut nisi aspernatur earum rerum. Neque exercitationem voluptates sed esse fuga modi cum non dicta assumenda saepe, delectus, praesentium, nemo expedita impedit obcaecati dignissimos reiciendis dolor eos iusto rerum soluta nihil sunt ex?</p>
         </div>
 
-        <h1>Test Animation</h1>
-        <div id="character-target-div"></div>
-        <button id="animate-button">Animate</button>
-        
-        @php
-         $faker = Faker\Factory::create('zh_CN');
-         $name = $faker->lastName;
-        echo ("<script> 
-            var writer = HanziWriter.create('character-target-div', '$name', {
-            width: 100,
-            height: 100,
-            padding: 5,
-            showOutline: true
-          });
 
-          document.getElementById('animate-button').addEventListener('click', function() {
-  writer.animateCharacter();
-});
-              
-            </script>");
-  
-        @endphp
+        
+
+        
+        
         
         
       
@@ -134,7 +130,30 @@
         font-family: 'Noto Sans SC';
     }
 
-    
+    /*Character Stat Section*/
+    .stat-section{
+        display: flex;
+        
+    }
+    .stat-title{
+        font-weight: 100;
+        font-size: 2em;
+    }
+    .red{
+        color: #b5183a;
+        font-size: 3em;
+    }
+    .nihao{
+        display: flex;
+        width: 50%;
+        margin: auto;
+    }
+    .nihao div{  
+        height: 300px;
+        width: 300px;
+        padding: 5px;  
+    }
+
 
     /* Sub-feature */
     .sub-features{
@@ -157,7 +176,116 @@
 </style>
 
 <!--Script-->
+
+@php
+    echo("<script>
+        var chars = $chars;
+        </script>");
+    
+@endphp
+
 <script>
+    var CurrentChar = "\u6211";
+
+    var chars = [
+        '的', // 1
+        '一', // 2
+        '是', // 3
+        '不', // 4
+        '了', // 5
+        '人', // 6
+        '我', // 7
+        '在', // 8
+        '有', // 9
+        '他', // 10
+
+        '这', // 11
+        '为', // 12
+        '之', // 13
+        '大', // 14
+        '来', // 15
+        '以', // 16
+        '个', // 17
+        '中', // 18
+        '上', // 19
+        '们', // 20
+
+        '到', // 21
+        '说', // 22
+        '国', // 23
+        '和', // 24
+        '地', // 25
+        '也', // 26
+        '子', // 27
+        '时', // 28
+        '道', // 29
+        '出', // 30
+
+    ]
+    
+    Array.prototype.random = function () {
+        return this[Math.floor((Math.random()*this.length))];
+    }
+
+    window.onload = function() {
+        var size = $('#writer').width();
+
+        
+
+        var writer = HanziWriter.create('writer', '好', {
+            width: size,
+            height: size,
+            padding: 0,
+            showCharacter: false,
+            strokeAnimationSpeed: 1, // 5x normal speed
+            delayBetweenStrokes: 1000, // milliseconds
+            strokeColor: '#c82929', // red
+            delayBetweenLoops: 1000,
+            showOutline: false
+        });
+
+        function getNewChar() {
+            // search the chars obj for current char
+            var currentCharInCharsObj = chars.find(x => x.char === CurrentChar);
+            var newChar;
+
+            while(true) {
+                newChar = chars.random();
+                console.log(newChar);
+
+                if(newChar != currentCharInCharsObj){
+                    break;
+                }
+            }
+            
+            
+            SetChar(newChar);
+
+        }
+        getNewChar();
+
+
+        function charLoop() {
+            writer.animateCharacter({ onComplete: function() { 
+                setTimeout(function() {
+                    getNewChar();
+                }, 5000);
+         }});
+        }
+
+        function SetChar(char) {
+            CurrentChar = char;
+            writer.setCharacter(char);
+            charLoop();
+        }
+        
+        
+    };
+
+    
+
+
+              
 
 
 </script>

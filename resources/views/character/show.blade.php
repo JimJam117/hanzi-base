@@ -106,7 +106,7 @@ if($char->char == $char->simp_char) {
             padding: 15,
             strokeAnimationSpeed: 1, // 5x normal speed
             delayBetweenStrokes: 50, // milliseconds
-            strokeColor: '#c82929', // blue
+            strokeColor: '#c82929', // red
             delayBetweenLoops: 3000,
             showOutline: true
         });

@@ -12,8 +12,8 @@
 */
 
 // Search
-Route::post('/search', 'SearchController@fetch');
-Route::get('/search/{search}', 'SearchController@show')->name('search');
+Route::post('/search', 'CharacterController@fetchSearch');
+Route::get('/search/{search}', 'CharacterController@showSearch')->name('search');
 
 Route::get('/', 'HomeController@index');
 

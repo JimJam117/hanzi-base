@@ -6,8 +6,9 @@
             <p><span style="font-family: Open Sans;">HanziBase</span> 是免费网站。这网站用于学习汉字。使用搜索框查找字符下面</p>
         </div>
         <div class="search-container">
-            <form action="/action_page.php">
-                <input type="text" placeholder="Search.." name="search">
+            <form action="/search" method="POST">
+                @csrf
+                <input type="text" placeholder="Search.." name="query">
                 <button type="submit"><i class="fa fa-search"></i></button>
             </form>
         </div>

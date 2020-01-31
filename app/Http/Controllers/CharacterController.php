@@ -174,4 +174,60 @@ class CharacterController extends Controller
         ]);
 
     }
+
+    /**
+     * Search Stuff
+     * 
+     */
+
+    public function fetchSearch() {
+        $query = request()->input('query');
+
+        return redirect("/search/" . $query);
+    }
+
+    /**
+     * 
+     * 
+     */
+    public function showSearch($search = null) {
+        // if the search is null, go home
+        if ($search == null) {
+            return redirect('/');
+        }
+
+        // if the search is a character that is in db, go to that characters page
+        $charSearch = \App\Character::where('char', 'LIKE', "%{$search}%")->get(); 
+        if ($charSearch->first())
+        {
+            $charObj = \App\Character::where('char', $search)->first();
+            return redirect('/character/' . $charObj->char);
+        }
+
+        // search the database everywhere else to see if a result could be found
+        $results = \App\Character::where('char', 'LIKE', "%{$search}%")
+                                    ->orWhere('pinyin', 'LIKE', "%{$search}%")
+                                    ->orWhere('pinyin_normalised', 'LIKE', "%{$search}%")
+                                    ->orWhere('heisig_keyword', 'LIKE', "%{$search}%")
+                                    ->orWhere('translations', 'LIKE', "%{$search}%")
+                                    ->orWhere('heisig_number', 'LIKE', "%{$search}%")
+                                    ->orWhere('id', 'LIKE', "%{$search}%")
+                                    ->paginate(15);
+        
+        // if there were no results, do a check to see if it is a valid character
+        // if it is, then send to character page (where a new character will be generated)
+        if($results->total() < 1) {
+            
+            $charData = $this->grabCharacterData($search);
+            if($charData != null) {
+                
+                return redirect('/character/' . $search);
+            }
+            
+            
+        }
+       
+        // return the main results
+        return view('character.search', compact('search', 'results'));
+    }
 }

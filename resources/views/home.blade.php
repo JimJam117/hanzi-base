@@ -40,8 +40,8 @@
                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde nisi ad deserunt quibusdam ipsum ducimus blanditiis ab, illo rem repellat?</p>
             </div>
             <div class="feature">
-                <h2>Lessons</h2>
-                <i class="fas fa-graduation-cap"></i>
+                <h2>API Generated Content</h2>
+                <i class="fas fa-cloud"></i>
                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde nisi ad deserunt quibusdam ipsum ducimus blanditiis ab, illo rem repellat?</p>
             </div>
         </div>

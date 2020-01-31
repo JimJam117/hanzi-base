@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Transliterator;
 
 class CharacterController extends Controller
 {
@@ -143,8 +144,12 @@ class CharacterController extends Controller
         $glosbe = json_decode(file_get_contents("https://glosbe.com/transliteration/api?from=Han&dest=Latin&text=". "$char_encoded" ."&format=json"), true);
         $pinyin = $glosbe['text'];
 
+        $transliterator = Transliterator::createFromRules(':: Any-Latin; :: Latin-ASCII; :: NFD; :: [:Nonspacing Mark:] Remove; :: Lower(); :: NFC;', Transliterator::FORWARD);
+        $pinyin_normalised = $transliterator->transliterate($pinyin);
+
         // add glosbe pinyin
         $ccdb += ['pinyin' => $pinyin];
+        $ccdb += ['pinyin_normalised' => $pinyin_normalised];
         return $ccdb;
     }
 
@@ -159,12 +164,13 @@ class CharacterController extends Controller
 
         //dd($data);
         \App\Character::create([
-        'char'             => $data['original'],
-        'simp_char'        => $data['simplified_actual'],
-        'trad_char'        => $data['traditional_actual'],
-        'freq'             => $data['kFrequency'],
-        'pinyin'           => $data['pinyin'],
-        'translations'     => $data['kDefinition'],
+        'char'                      => $data['original'],
+        'simp_char'                 => $data['simplified_actual'],
+        'trad_char'                 => $data['traditional_actual'],
+        'freq'                      => $data['kFrequency'],
+        'pinyin'                    => $data['pinyin'],
+        'pinyin_normalised'   => $data['pinyin_normalised'],
+        'translations'              => $data['kDefinition'],
         ]);
 
     }

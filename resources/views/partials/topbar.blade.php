@@ -102,8 +102,9 @@
             <a href="/"><img src="/logo.png" alt="hanzibase"></a>
 
             <div class="search-container-top">
-                <form action="/action_page.php">
-                    <input type="text" placeholder="Search.." name="search">
+                <form action="/search" method="POST">
+                    @csrf
+                    <input type="text" placeholder="Search.." name="query">
                     <button type="submit"><i class="fa fa-search"></i></button>
                 </form>
             </div>

@@ -22,6 +22,7 @@ class CreateCharactersTable extends Migration
             $table->string('heisig_keyword')->nullable();
             $table->integer('heisig_number')->nullable();
             $table->string('pinyin')->nullable();
+            $table->string('pinyin_normalised')->nullable();
             $table->string('translations')->nullable();
             $table->timestamps();
         });

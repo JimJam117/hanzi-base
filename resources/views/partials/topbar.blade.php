@@ -153,7 +153,6 @@
         </div>
 
         <div class="lang">
-            <a href="#" style="font-family: Noto Sans SC;">中文</a>
             <a href="/all">All</a>
             <a href="/">Home</a>
         </div>

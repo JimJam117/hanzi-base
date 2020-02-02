@@ -1,17 +1,20 @@
 @include('partials.topbar')
 
     <div class="landing-area">
-        <div class="landing-area-text">
+        <div class="landing-area-content">
             <h1>HanziBase</h1>
             <p><span style="font-family: Open Sans;">HanziBase</span> 是免费网站。这网站用于学习汉字。使用搜索框查找字符下面</p>
+
+            <div class="search-container">
+                <form action="/search" method="POST">
+                    @csrf
+                    <input type="text" placeholder="Search.." name="query" autocomplete="off">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                </form>
+            </div>
+            
         </div>
-        <div class="search-container">
-            <form action="/search" method="POST">
-                @csrf
-                <input type="text" placeholder="Search.." name="query">
-                <button type="submit"><i class="fa fa-search"></i></button>
-            </form>
-        </div>
+        
 
     </div>
 
@@ -57,7 +60,7 @@
 
         
         
-        
+        <div id="top-of-site-pixel-anchor"></div>
         
       
         @include('partials.footer')
@@ -67,16 +70,29 @@
 
 <!--Style-->
 <style>
+    /**/
+    #top-of-site-pixel-anchor {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        top: 500px;
+        left: 0;
+    }
 
-    /*landing*/
-    .landing-area {
+    body{
         background-image: linear-gradient(rgba(0, 0, 0, 0.35), rgba(12, 12, 12, 0.73)), url(bk.jpg);
-        min-height: 100vh;
-        text-align: center;
-        color: white;
         background-attachment: fixed;
         background-size: cover;
         background-position: center;
+    }
+
+    /*landing*/
+    .landing-area {
+        
+        min-height: 70vh;
+        padding-bottom: 10vh;
+        text-align: center;
+        color: white;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -84,7 +100,7 @@
     }
 
     .search-container {
-        width: 50%;
+        width: 100%;
     }
 
     .search-container form {
@@ -98,6 +114,13 @@
         border-radius: 1em 0 0 1em;
         font-size: 1.25em;
         width: 100%;
+        outline: none;
+        opacity: 0.9;
+    }
+
+    .search-container input:focus{
+        background-color: #fff;
+        opacity: 1;
     }
 
     .search-container button {
@@ -118,17 +141,17 @@
         margin: 3em;
     }
 
-    .landing-area-text h1 {
+    .landing-area-content h1 {
         margin-bottom: 1rem;
         font-size: 7em;
         font-weight: 100;
         font-family: 'Open Sans';
     }
 
-    .landing-area-text p {
-        margin: 0;
+    .landing-area-content p {
+        margin-bottom: 1em;
         font-size: 1.5em;
-        font-family: 'Noto Sans SC';
+        font-family: 'Noto Sans SC', 'Noto Sans TC';
     }
 
     /*Character Stat Section*/
@@ -178,12 +201,7 @@
 
 <!--Script-->
 
-@php
-    echo("<script>
-        var chars = $chars;
-        </script>");
-    
-@endphp
+
 
 <script>
     var CurrentChar = "\u6211";
@@ -283,12 +301,24 @@
         
     };
 
-    
+</script>
 
-
-              
-
-
+<script>
+    if (
+        "IntersectionObserver" in window &&
+        "IntersectionObserverEntry" in window &&
+        "intersectionRatio" in window.IntersectionObserverEntry.prototype
+    ) 
+    {
+        let observer = new IntersectionObserver(entries => {
+          if (entries[0].boundingClientRect.y < 0) {
+            document.body.classList.add("topbar-not-at-top");
+          } else {
+            document.body.classList.remove("topbar-not-at-top");
+          }
+    });
+        observer.observe(document.querySelector("#top-of-site-pixel-anchor"));
+    }
 </script>
 
 </html>

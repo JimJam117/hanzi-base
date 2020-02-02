@@ -18,14 +18,16 @@
     <style>
     .topbar {
         width: 100%;
-        background: linear-gradient(#E82048, #952828);
+        background: none;
         color: white;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border-bottom: 2px solid #2e131394;
+        border: none;
         position: fixed;
+        z-index: 5;
     }
+    
 
     .topbar img {
         padding: 1em;
@@ -34,12 +36,25 @@
 
     .topbar-clear{
         height: 100px;
-        background-color: blue;
     }
 
     .logo-search-container{
         display: flex;
     }
+    .logo-search-container a{
+        display: flex;
+        color: white;
+        align-items: center;
+        text-decoration: none;
+        font-family: inherit;
+        font-weight: 700;
+    }
+    .logo-search-container a span{
+        font-size: 1.75em;
+        font-weight: 500;
+        font-family: 'open sans';
+    }
+    
 
     .lang {
         padding: 1em;
@@ -62,7 +77,9 @@
     .search-container-top {
         width: 100%;
         margin: auto 1em auto 2em;
+        display: none;
     }
+    
 
     .search-container-top form {
         display: flex;
@@ -75,6 +92,7 @@
         border-radius: 1em 0 0 1em;
         font-size: 1.25em;
         width: 100%;
+        outline: none;
     }
 
 
@@ -92,6 +110,30 @@
 
     </style>
 
+    @isset ($charCount)
+        <style>
+        .topbar-not-at-top .search-container-top{
+            display: initial;
+        }
+        .topbar-not-at-top .topbar {
+            background: #3f3f3f;
+            border-bottom: 2px solid #2e131394;
+        }
+        </style>
+
+    @else
+        <style>
+        .search-container-top{
+            display: initial;
+        }
+        .topbar {
+            background: #3f3f3f;
+            border-bottom: 2px solid #2e131394;
+        }
+        </style>
+
+    @endisset
+
 </head>
 
 <!--Body-->
@@ -99,12 +141,12 @@
 <body>
     <div class="topbar">
         <div class="logo-search-container">
-            <a href="/"><img src="/logo.png" alt="hanzibase"></a>
+            <a href="/"><img src="/icon.png" alt="hanzibase"> <span>HanziBase</span></a>
 
             <div class="search-container-top">
                 <form action="/search" method="POST">
                     @csrf
-                    <input type="text" placeholder="Search.." name="query">
+                    <input type="text" placeholder="Search.." name="query" autocomplete="off">
                     <button type="submit"><i class="fa fa-search"></i></button>
                 </form>
             </div>

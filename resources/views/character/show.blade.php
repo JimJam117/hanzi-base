@@ -1,6 +1,7 @@
 @include('partials.topbar')
 
 @php
+
 $hasSimplified = $char->simp_char ? true : false;
 $hasTraditional = $char->trad_char ? true : false;
 

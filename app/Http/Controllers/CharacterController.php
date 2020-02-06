@@ -24,9 +24,32 @@ class CharacterController extends Controller
         return view('character.index', compact(['chars']));
     }
 
-    public function show($char) {
-        $newCharAdded = false;
 
+    public function showHandler($char) {
+         // check if there are multiple characters
+         $moreThanOneChar = false;
+         mb_strlen($char) > 1 ? $moreThanOneChar = true : $moreThanOneChar = false;
+
+         
+         if ($moreThanOneChar) {
+            dd("boi2");
+            return view('character.show', compact('char'));
+         }
+         else {
+            
+            $showSingleData = $this->showSingle($char);
+            
+            $char = $showSingleData["char"];
+            $newCharAdded = $showSingleData["newCharAdded"];
+            return view('character.show', compact('char', 'newCharAdded'));
+         }
+
+    }
+
+    function showSingle($char) {
+        $newCharAdded = false;
+  
+        
         // find the character
         $charObj = null;
         $charObj = \App\Character::where('char', $char)->orWhere('id', $char)->first();
@@ -36,6 +59,7 @@ class CharacterController extends Controller
         if($charObj == null) {
 
             $charData = $this->grabCharacterData($char);
+            
             if($charData != null) {
                 $this->addToDatabase($charData);
                 $charObj = \App\Character::where('char', $char)->orWhere('id', $char)->first();
@@ -47,20 +71,7 @@ class CharacterController extends Controller
 
             
         }
-        /*
-        // if could not find the simplified char
-        if($charObj == null) {
-        $charObj = \App\Character::where('trad_char', 'LIKE', "%{$char}%")->firstOrFail();
-
-        //
-        //->orWhere('freq', $char) 
-        //->orWhere('keyword', $char)->firstOrFail();
-
-            
-        } 
-        */
-        
-        
+          
         
         // used to determine which frequency string should be used
         switch ($charObj->freq) {
@@ -90,8 +101,9 @@ class CharacterController extends Controller
         }
 
         $char = $charObj;
-
-        return view('character.show', compact(['char','newCharAdded']));
+        
+        //return dd($char);
+        return array('char' => $char, 'newCharAdded' => $newCharAdded);
 
     }
 
@@ -162,7 +174,6 @@ class CharacterController extends Controller
 
     function addToDatabase($data) {
 
-        //dd($data);
         \App\Character::create([
         'char'                      => $data['original'],
         'simp_char'                 => $data['simplified_actual'],
@@ -191,43 +202,181 @@ class CharacterController extends Controller
      * 
      */
     public function showSearch($search = null) {
-        // if the search is null, go home
-        if ($search == null) {
-            return redirect('/');
-        }
 
-        // if the search is a character that is in db, go to that characters page
-        $charSearch = \App\Character::where('char', 'LIKE', "%{$search}%")->get(); 
-        if ($charSearch->first())
-        {
-            $charObj = \App\Character::where('char', $search)->first();
-            return redirect('/character/' . $charObj->char);
-        }
+        $resultArray = [];
 
-        // search the database everywhere else to see if a result could be found
-        $results = \App\Character::where('char', 'LIKE', "%{$search}%")
-                                    ->orWhere('pinyin', 'LIKE', "%{$search}%")
-                                    ->orWhere('pinyin_normalised', 'LIKE', "%{$search}%")
-                                    ->orWhere('heisig_keyword', 'LIKE', "%{$search}%")
-                                    ->orWhere('translations', 'LIKE', "%{$search}%")
-                                    ->orWhere('heisig_number', 'LIKE', "%{$search}%")
-                                    ->orWhere('id', 'LIKE', "%{$search}%")
+        // if the string is longer than 1 character
+        if (mb_strlen($search) > 1) {
+            // check if there are any characters in the search string that match characters in the database
+            $searchExploded = mb_str_split($search);
+
+            $input_characters_are_within_db = false;
+            $input_characters_are_hanzi = false;
+
+            foreach ($searchExploded as $value) {
+                if (\App\Character::where('char', "$value")->first()) {
+                    $input_characters_are_within_db = true;
+                    break;
+                    
+                }
+            }
+
+            // if there are characters within the string that match hanzi in the database
+            if ($input_characters_are_within_db) {
+                //dd("multiple-chars-explosion-function; chars are in db");
+                $resultArray = $this->explodedSearchDatabaseAddHandler($searchExploded);
+                
+            }
+
+            // if not, check if they are hanzi using the ccdb
+            else {
+                foreach ($searchExploded as $value) {
+                    $charData = $this->grabCharacterData($value);
+                    if ($charData != null) { 
+                        $input_characters_are_hanzi = true; 
+                        break; 
+                    }
+                }
+
+                // if true then a hanzi is within the search string, so the multiple-chars function will be run
+                if ($input_characters_are_hanzi) {
+                    //dd("multiple-chars-explosion-function; as there are chars that are hanzi (not in db)");
+                    $resultArray = $this->explodedSearchDatabaseAddHandler($searchExploded);
+                }
+
+                // input niether within db or chinese char, run normal results without explsion or arrays, just as a string
+                else {
+                    //dd("single-string-function; no chinese char, run as normal string");
+                    $resultArray = $search;
+                }
+            }
+
+        }
+        // if the string is only one character long
+        else {
+            //dd("only 1 char in string");
+            $resultArray = $search;
+        }
+        
+
+        
+        if(is_string($resultArray)) {
+            $results = \App\Character::where('char', 'like', '%' . $resultArray .'%')
+                                    ->orWhere('pinyin', 'like', '%' . $resultArray .'%')
+                                    ->orWhere('pinyin_normalised', 'like', '%' . $resultArray .'%')
+                                    ->orWhere('heisig_keyword', 'like', '%' . $resultArray .'%')
+                                    ->orWhere('translations', 'like', '%' . $resultArray .'%')
+                                    ->orWhere('heisig_number', 'like', '%' . $resultArray .'%')
+                                    ->orWhere('id', 'like', '%' . $resultArray .'%')
                                     ->paginate(15);
+        }
+        else{
+            $results = \App\Character::where(function ($query) use($resultArray) {
+                foreach ($resultArray as $letter) {
+                    $query->orwhere('char', 'like',  '%' . $letter .'%');
+                    $query->orwhere('pinyin', 'like',  '%' . $letter .'%');
+                    $query->orwhere('pinyin_normalised', 'like',  '%' . $letter .'%');
+                    $query->orwhere('heisig_keyword', 'like',  '%' . $letter .'%');
+                    $query->orwhere('translations', 'like',  '%' . $letter .'%');
+                    $query->orwhere('heisig_number', 'like',  '%' . $letter .'%');
+                    $query->orwhere('id', 'like',  '%' . $letter .'%');
+                }      
+            })->paginate(15);
+        }
+        
+        
+        
         
         // if there were no results, do a check to see if it is a valid character
-        // if it is, then send to character page (where a new character will be generated)
+        
         if($results->total() < 1) {
             
+            // if it is, then send to character page (where a new character will be generated)
             $charData = $this->grabCharacterData($search);
             if($charData != null) {
                 
                 return redirect('/character/' . $search);
             }
             
-            
+           
         }
        
         // return the main results
         return view('character.search', compact('search', 'results'));
+    }
+
+    /**
+     * This function is used to generate result arrays from strings containing multiple characters
+     * 
+     */
+    function explodedSearchDatabaseAddHandler($searchExploded) {
+
+        // foreach item in that array
+        foreach ($searchExploded as $item) {
+
+            // if its not already in the database
+            if (! \App\Character::where('char', $item)->first()) {
+                $charData = $this->grabCharacterData($item);
+                
+                if($charData != null) { $this->addToDatabase($charData); }
+            }
+            
+        }
+        return $searchExploded;
+    }
+
+
+    /**
+     * Using the generateResultsArray function, generates all the needed arrays for a full search
+     * 
+     */
+    function generateAllResultsArrays($inputArray = []) {
+        //dd($inputArray);
+
+        $char_Array = [];
+        $pinyin_Array = [];
+        $pinyin_normalised_Array = [];
+        $heisig_keyword_Array = [];
+        $translations_Array = [];
+        $heisig_number_Array = [];
+        $id_Array = [];
+
+        foreach ($inputArray as $value) {
+            array_push($char_Array, $this->generateResultsArray('char', $value));
+            array_push($pinyin_Array, $this->generateResultsArray('pinyin', $value));
+            array_push($pinyin_normalised_Array, $this->generateResultsArray('pinyin_normalised', $value));
+            array_push($heisig_keyword_Array, $this->generateResultsArray('heisig_keyword', $value));
+            array_push($translations_Array, $this->generateResultsArray('translations', $value));
+            array_push($heisig_number_Array, $this->generateResultsArray('heisig_number', $value));
+            array_push($id_Array, $this->generateResultsArray('id', $value));
+        }
+        
+
+        return([
+            'char_Array' => $char_Array, 
+            'pinyin_Array' => $pinyin_Array,
+            'pinyin_normalised_Array' => $pinyin_normalised_Array,
+            'heisig_keyword_Array' => $heisig_keyword_Array,
+            'translations_Array' => $translations_Array,
+            'heisig_number_Array' => $heisig_number_Array,
+            'id_Array' => $id_Array,
+        ]);
+        
+    }
+
+    /**
+     * Generates a single output array for a given type
+     * 
+     */
+    function generateResultsArray($type, $value) {
+        
+        $outputArray = [];
+
+        
+            $outputArray += ["$type", 'LIKE', "%{$value}%"];
+            
+        
+
+        return $outputArray;
     }
 }

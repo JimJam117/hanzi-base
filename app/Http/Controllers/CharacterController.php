@@ -32,8 +32,7 @@ class CharacterController extends Controller
 
          
          if ($moreThanOneChar) {
-            dd("boi2");
-            return view('character.show', compact('char'));
+            return view('character.notfound', compact('char'));
          }
          else {
             
@@ -259,7 +258,7 @@ class CharacterController extends Controller
         }
         
 
-        
+
         if(is_string($resultArray)) {
             $results = \App\Character::where('char', 'like', '%' . $resultArray .'%')
                                     ->orWhere('pinyin', 'like', '%' . $resultArray .'%')
@@ -323,60 +322,5 @@ class CharacterController extends Controller
             
         }
         return $searchExploded;
-    }
-
-
-    /**
-     * Using the generateResultsArray function, generates all the needed arrays for a full search
-     * 
-     */
-    function generateAllResultsArrays($inputArray = []) {
-        //dd($inputArray);
-
-        $char_Array = [];
-        $pinyin_Array = [];
-        $pinyin_normalised_Array = [];
-        $heisig_keyword_Array = [];
-        $translations_Array = [];
-        $heisig_number_Array = [];
-        $id_Array = [];
-
-        foreach ($inputArray as $value) {
-            array_push($char_Array, $this->generateResultsArray('char', $value));
-            array_push($pinyin_Array, $this->generateResultsArray('pinyin', $value));
-            array_push($pinyin_normalised_Array, $this->generateResultsArray('pinyin_normalised', $value));
-            array_push($heisig_keyword_Array, $this->generateResultsArray('heisig_keyword', $value));
-            array_push($translations_Array, $this->generateResultsArray('translations', $value));
-            array_push($heisig_number_Array, $this->generateResultsArray('heisig_number', $value));
-            array_push($id_Array, $this->generateResultsArray('id', $value));
-        }
-        
-
-        return([
-            'char_Array' => $char_Array, 
-            'pinyin_Array' => $pinyin_Array,
-            'pinyin_normalised_Array' => $pinyin_normalised_Array,
-            'heisig_keyword_Array' => $heisig_keyword_Array,
-            'translations_Array' => $translations_Array,
-            'heisig_number_Array' => $heisig_number_Array,
-            'id_Array' => $id_Array,
-        ]);
-        
-    }
-
-    /**
-     * Generates a single output array for a given type
-     * 
-     */
-    function generateResultsArray($type, $value) {
-        
-        $outputArray = [];
-
-        
-            $outputArray += ["$type", 'LIKE', "%{$value}%"];
-            
-        
-
-        return $outputArray;
     }
 }

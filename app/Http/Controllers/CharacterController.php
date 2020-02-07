@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Transliterator;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class CharacterController extends Controller
 {
@@ -114,6 +115,7 @@ class CharacterController extends Controller
         // make sure only one character is used
         $char = mb_substr($char, 0, 1);
 
+        
         // grab the data from ccdb
         $ccdb = json_decode(file_get_contents("http://ccdb.hemiola.com/characters/string/" . $char . "?fields=kDefinition,kFrequency,kTotalStrokes,kSimplifiedVariant,kTraditionalVariant"), true);
         if (empty($ccdb)) {
@@ -206,9 +208,20 @@ class CharacterController extends Controller
 
         // if the string is longer than 1 character
         if (mb_strlen($search) > 1) {
+            $search = (urldecode($search));
             // check if there are any characters in the search string that match characters in the database
             $searchExploded = mb_str_split($search);
 
+            // remove any spaces from the searchExploded Array
+            $temp = [];
+            foreach ($searchExploded as $searchCharacter){
+                if ($searchCharacter != " " && $searchCharacter != "%20"){
+                    array_push($temp, $searchCharacter);
+                }
+            }
+            $searchExploded = $temp;
+            
+            // input check bools
             $input_characters_are_within_db = false;
             $input_characters_are_hanzi = false;
 
@@ -230,11 +243,19 @@ class CharacterController extends Controller
             // if not, check if they are hanzi using the ccdb
             else {
                 foreach ($searchExploded as $value) {
-                    $charData = $this->grabCharacterData($value);
-                    if ($charData != null) { 
-                        $input_characters_are_hanzi = true; 
-                        break; 
+                    if($value != "%20" && $value != " " && $value != "?") {
+                        $charData = $this->grabCharacterData($value);
+                        if ($charData != null) { 
+                            $input_characters_are_hanzi = true; 
+                            break; 
+                        }
                     }
+                    else{
+                        if($value != " ") {
+                        dd("Weird error: $value");
+                        }
+                    }
+                    
                 }
 
                 // if true then a hanzi is within the search string, so the multiple-chars function will be run
@@ -258,17 +279,41 @@ class CharacterController extends Controller
         }
         
 
-
+        
+        // if the resultArray is a string
         if(is_string($resultArray)) {
-            $results = \App\Character::where('char', 'like', '%' . $resultArray .'%')
+            // these settings are for the custom LengthAwarePaginator
+            $currentPage = LengthAwarePaginator::resolveCurrentPage();
+            $perPage = 15;
+
+
+            // pinyin and char results
+            $pinyinResults = \App\Character::where('char', 'like', '%' . $resultArray .'%')
                                     ->orWhere('pinyin', 'like', '%' . $resultArray .'%')
-                                    ->orWhere('pinyin_normalised', 'like', '%' . $resultArray .'%')
-                                    ->orWhere('heisig_keyword', 'like', '%' . $resultArray .'%')
+                                    ->orWhere('pinyin_normalised', 'like', '%' . $resultArray .'%')->orderBy('freq', 'asc')->get();
+            
+
+            // translation and heisig results
+            $translationResults = \App\Character::where('heisig_keyword', 'like', '%' . $resultArray .'%')
                                     ->orWhere('translations', 'like', '%' . $resultArray .'%')
-                                    ->orWhere('heisig_number', 'like', '%' . $resultArray .'%')
-                                    ->orWhere('id', 'like', '%' . $resultArray .'%')
-                                    ->paginate(15);
+                                    ->orWhere('heisig_number', 'like', '%' . $resultArray .'%')->get();
+
+            // for each result in the above collections, add to results array
+            $results = [];
+            foreach($pinyinResults as $result) {
+                array_push($results, $result);
+            }
+            foreach($translationResults as $result) {
+                array_push($results, $result);
+            }
+
+            // return the results array as a paginatior
+            $results = new LengthAwarePaginator($results, count($results), $perPage, $currentPage);
+
+            
         }
+
+        // if instead the resultArray is an array
         else{
             $results = \App\Character::where(function ($query) use($resultArray) {
                 foreach ($resultArray as $letter) {
@@ -282,13 +327,15 @@ class CharacterController extends Controller
                 }      
             })->paginate(15);
         }
+
+
         
         
         
         
         // if there were no results, do a check to see if it is a valid character
         
-        if($results->total() < 1) {
+        if($results->total() <= 1) {
             
             // if it is, then send to character page (where a new character will be generated)
             $charData = $this->grabCharacterData($search);
@@ -312,7 +359,7 @@ class CharacterController extends Controller
 
         // foreach item in that array
         foreach ($searchExploded as $item) {
-
+            
             // if its not already in the database
             if (! \App\Character::where('char', $item)->first()) {
                 $charData = $this->grabCharacterData($item);

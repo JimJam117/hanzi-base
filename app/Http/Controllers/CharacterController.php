@@ -316,14 +316,11 @@ class CharacterController extends Controller
         // if instead the resultArray is an array
         else{
             $results = \App\Character::where(function ($query) use($resultArray) {
+
+                // find the chars
+
                 foreach ($resultArray as $letter) {
                     $query->orwhere('char', 'like',  '%' . $letter .'%');
-                    $query->orwhere('pinyin', 'like',  '%' . $letter .'%');
-                    $query->orwhere('pinyin_normalised', 'like',  '%' . $letter .'%');
-                    $query->orwhere('heisig_keyword', 'like',  '%' . $letter .'%');
-                    $query->orwhere('translations', 'like',  '%' . $letter .'%');
-                    $query->orwhere('heisig_number', 'like',  '%' . $letter .'%');
-                    $query->orwhere('id', 'like',  '%' . $letter .'%');
                 }      
             })->paginate(15);
         }

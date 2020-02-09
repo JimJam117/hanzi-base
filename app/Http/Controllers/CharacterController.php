@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Transliterator;
 use Illuminate\Pagination\LengthAwarePaginator;
+use App\Libraries\Radicals;
 
 class CharacterController extends Controller
 {
@@ -21,6 +22,9 @@ class CharacterController extends Controller
         $chars = DB::table('characters')->paginate(15);
 
         //$ccdb = $this->grabCharacterData('台'); 
+
+        
+        dd(Radicals::returnArray());
 
         return view('character.index', compact(['chars']));
     }

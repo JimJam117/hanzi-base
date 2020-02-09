@@ -19,6 +19,8 @@ class CreateCharactersTable extends Migration
             $table->string('simp_char')->nullable();
             $table->string('trad_char')->nullable();
             $table->integer('freq')->nullable();
+            $table->integer('stroke_count')->nullable();
+            $table->string('radical')->nullable();
             $table->string('heisig_keyword')->nullable();
             $table->integer('heisig_number')->nullable();
             $table->string('pinyin')->nullable();

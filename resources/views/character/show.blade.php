@@ -64,9 +64,7 @@ if($char->char == $char->simp_char) {
                 </div>
 
 
-
-
-            </div>
+            
             
             <div class="translations">
             <h3 class="translation_title">TRANSLATION</h3>
@@ -79,6 +77,8 @@ if($char->char == $char->simp_char) {
                 @endforeach
             </ul>
            
+    
+
         </div>
             <br>
             @if (!empty($char->heisig_keyword) && !empty($char->heisig_number))
@@ -89,6 +89,15 @@ if($char->char == $char->simp_char) {
 
 
         </div>
+
+        <div>
+            <h3>RADICAL</h3>
+            <p>{{$char->radical}}</p>
+            </div>
+
+            </div>
+
+        
 
 
 

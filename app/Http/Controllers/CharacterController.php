@@ -23,8 +23,6 @@ class CharacterController extends Controller
 
         //$ccdb = $this->grabCharacterData('台'); 
 
-        
-        dd(Radicals::returnArray());
 
         return view('character.index', compact(['chars']));
     }
@@ -121,7 +119,7 @@ class CharacterController extends Controller
 
         
         // grab the data from ccdb
-        $ccdb = json_decode(file_get_contents("http://ccdb.hemiola.com/characters/string/" . $char . "?fields=kDefinition,kFrequency,kTotalStrokes,kSimplifiedVariant,kTraditionalVariant"), true);
+        $ccdb = json_decode(file_get_contents("http://ccdb.hemiola.com/characters/string/" . $char . "?fields=kDefinition,kFrequency,kTotalStrokes,kSimplifiedVariant,kTraditionalVariant,kRSUnicode"), true);
         if (empty($ccdb)) {
             return null;
         }
@@ -148,13 +146,33 @@ class CharacterController extends Controller
         if(empty($raw_trad)) {
             $raw_trad = $char;
         }
-        
 
         $raw_simp = $this->grabUnicodeChar($ccdb['kSimplifiedVariant']) ?? $char;
         
         // add the trad and simp chars
         $ccdb += ['traditional_actual' => $raw_trad];
         $ccdb += ['simplified_actual' => $raw_simp];
+
+        // radicals
+
+        // grab the radical number from the kRSUnicode, which is in the format 'radical-number','extra-strokes'
+        // only the radical number is needed, so explode then grab first element
+        $radicalNumber = explode(".", $ccdb['kRSUnicode']);
+
+        // also remove any "'" that's in the first array item
+        $radicalNumber = explode("'", $radicalNumber[0]);
+        $radicalNumber = $radicalNumber[0];
+
+
+
+        //radical fetch from Radicals class
+        $radical = Radicals::returnRadical($radicalNumber);
+        $simp_radical = Radicals::returnSimplifedRadical($radicalNumber) ?? $radical;
+        
+
+        // add the radicals
+        $ccdb += ['radical' => $radical];
+        $ccdb += ['simplified_radical' => $simp_radical];
 
         // glosbe pinyin
         $char_encoded = urlencode($char);
@@ -184,8 +202,11 @@ class CharacterController extends Controller
         'simp_char'                 => $data['simplified_actual'],
         'trad_char'                 => $data['traditional_actual'],
         'freq'                      => $data['kFrequency'],
+        'stroke_count'              => $data['kTotalStrokes'],
+        'radical'                   => $data['radical'],
+        'simp_radical'              => $data['simplified_radical'],
         'pinyin'                    => $data['pinyin'],
-        'pinyin_normalised'   => $data['pinyin_normalised'],
+        'pinyin_normalised'         => $data['pinyin_normalised'],
         'translations'              => $data['kDefinition'],
         ]);
 

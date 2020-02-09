@@ -93,6 +93,9 @@ if($char->char == $char->simp_char) {
         <div>
             <h3>RADICAL</h3>
             <p>{{$char->radical}}</p>
+            <hr>
+            <h3>STROKE COUNT</h3>
+            <p>{{$char->stroke_count}}</p>
             </div>
 
             </div>

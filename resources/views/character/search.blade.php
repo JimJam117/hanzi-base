@@ -1,10 +1,9 @@
 @include('partials.topbar')
 
 <div class="main">
-    @php
-        
-        //dd($ccdb);
-    @endphp
+   @if ($input_characters_are_hanzi)
+        <div class="newCharAdded">New characters have now been added to hanzibase!</div>
+   @endif
 
     <h1>Results for "{{$search}}"</h1>
     <div class="characters_container">

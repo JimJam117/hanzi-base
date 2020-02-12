@@ -370,7 +370,7 @@ class CharacterController extends Controller
         }
        
         // return the main results
-        return view('character.search', compact('search', 'results'));
+        return view('character.search', compact('search', 'results', 'input_characters_are_hanzi'));
     }
 
     /**

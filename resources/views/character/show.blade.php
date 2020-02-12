@@ -133,17 +133,6 @@ if($char->char == $char->simp_char) {
 
 
 <style>
-    .newCharAdded {
-        padding: 1em;
-        background-color: #b8f28b;
-        color: #468400;
-        border: 1px solid #dfdfdf;
-        margin: 0em 5em 1em;
-        text-align: center;
-        font-weight: 700;
-        font-size: 1.25em;
-        border-radius: 10px;
-    }
     .character_section {
         background-color: #ffffff;
         min-height: 70vh;

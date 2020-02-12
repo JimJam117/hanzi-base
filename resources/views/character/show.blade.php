@@ -52,10 +52,39 @@ if($char->char == $char->simp_char) {
 
                         {{-- If the char is simplified and has a simplified radical --}}
                         @if ($hasSimplifiedRadical)
-                            <h2>Simplifed Radical {{$char->simp_radical}}</h2>
-                            <h2>Radical {{$char->radical}}</h2>
+
+                        <form method="post" action="/search">
+                            @csrf
+                            <input type="hidden" name="search" value="{{$char->radical}}">
+                            <input type="hidden" name="radical" value="{{true}}">
+                            
+                            <button type="submit" class="radical-link">
+                                Simplifed Radical {{$char->simp_radical}}
+                            </button>
+                        </form>
+
+                        <form method="post" action="/search">
+                            @csrf
+                            <input type="hidden" name="search" value="{{$char->simp_radical}}">
+                            <input type="hidden" name="radical" value="{{true}}">
+
+                            <button type="submit" class="radical-link">
+                                Radical {{$char->radical}}
+                            </button>
+                        </form>
+
+
                         @else
-                            <h2>Radical {{$char->radical}}</h2>
+                        <form method="post" action="/search">
+                            @csrf
+                            <input type="hidden" name="search" value="{{$char->radical}}">
+                            <input type="hidden" name="radical" value="{{true}}">
+
+                            <button type="submit" class="radical-link">
+                                Radical {{$char->radical}}
+                            </button>
+                        </form>
+
                         @endif
 
                     @endif

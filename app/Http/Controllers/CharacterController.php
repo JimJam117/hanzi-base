@@ -219,6 +219,21 @@ class CharacterController extends Controller
 
     public function fetchSearch() {
         $query = request()->input('query');
+        
+        // if the search query is a radical search, add the radical to the search
+        if (request()->input('radical')) {
+            $radical = request()->input('radical');
+
+            $search = request()->input('search');
+
+            // get results for radical here after fish'n'chips
+            $results = \App\Character::where('radical', 'like', '%' . $search .'%')
+                                ->orWhere('simp_radical', 'like', '%' . $search .'%')->paginate(15);
+
+            $isRadicalSearch = true;
+            
+            return view('character.search', compact('results', 'search', 'isRadicalSearch'));
+        }
 
         return redirect("/search/" . $query);
     }
@@ -231,6 +246,7 @@ class CharacterController extends Controller
 
         $resultArray = [];
         $newCharArray = [];
+
 
         // if the string is longer than 1 character
         if (mb_strlen($search) > 1) {
@@ -322,6 +338,7 @@ class CharacterController extends Controller
             // pinyin and char results
             $pinyinResults = \App\Character::where('char', 'like', '%' . $resultArray .'%')
                                     ->orWhere('pinyin', 'like', '%' . $resultArray .'%')
+                                    ->orWhere('radical', 'like', '%' . $resultArray .'%')
                                     ->orWhere('pinyin_normalised', 'like', '%' . $resultArray .'%')->orderBy('freq', 'asc')->get();
             
 

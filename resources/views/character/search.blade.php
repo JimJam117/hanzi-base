@@ -12,7 +12,12 @@
        
    @endif
 
+   @if (isset($isRadicalSearch))
+    <h1>Results for Radical: {{$search}}</h1>
+   @else
     <h1>Results for "{{$search}}"</h1>
+   @endif
+    
     <div class="characters_container">
         @foreach ($results as $char)
         <a href="/character/{{$char->char}}" class="character_link">

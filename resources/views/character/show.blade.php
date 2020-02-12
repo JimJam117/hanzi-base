@@ -1,29 +1,25 @@
 @include('partials.topbar')
 
 @php
-
 $hasSimplified = $char->simp_char ? true : false;
 $hasTraditional = $char->trad_char ? true : false;
-
-
+$hasRadical = $char->radical ? true : false;
+$hasSimplifiedRadical = ($char->simp_radical != $char->radical) ? true : false;
 
 if ($hasTraditional) {
 $trads = $char->trad_char;
 $trads = explode(",", $trads);
 }
-
 // if has same trad as char, then does not have a traditional version
 foreach ($trads as $trad) {
     if ($trad == $char->char){
         $hasTraditional = false;
     }
 }
-
 // if the char is the same as the simp_char, then does not have simplified version
 if($char->char == $char->simp_char) {
     $hasSimplified = false;
 }
-
 @endphp
 
 <div class="main">
@@ -34,6 +30,7 @@ if($char->char == $char->simp_char) {
     <div class="character_section">
         <div class="left_section">
             <div id="character-target-div"></div>
+            <h3>{{$char->stroke_count}} Strokes</h3>
             <div class="freq freq-{{$char->freq}}">{{$char->frequencyTitle}}</div>
         </div>
         <div class="details_section">
@@ -50,6 +47,19 @@ if($char->char == $char->simp_char) {
                 </div>
                 
                 <div class="similar_characters">
+                    {{-- If the char has a radical --}}
+                    @if($hasRadical)
+
+                        {{-- If the char is simplified and has a simplified radical --}}
+                        @if ($hasSimplifiedRadical)
+                            <h2>Simplifed Radical {{$char->simp_radical}}</h2>
+                            <h2>Radical {{$char->radical}}</h2>
+                        @else
+                            <h2>Radical {{$char->radical}}</h2>
+                        @endif
+
+                    @endif
+
                     @if ($hasSimplified)
                     <a href="/character/{{$char->simp_char}}">
                         <h2>Simplifed {{$char->simp_char}}</h2>
@@ -64,7 +74,9 @@ if($char->char == $char->simp_char) {
                 </div>
 
 
-            
+
+
+            </div>
             
             <div class="translations">
             <h3 class="translation_title">TRANSLATION</h3>
@@ -77,8 +89,6 @@ if($char->char == $char->simp_char) {
                 @endforeach
             </ul>
            
-    
-
         </div>
             <br>
             @if (!empty($char->heisig_keyword) && !empty($char->heisig_number))
@@ -89,18 +99,6 @@ if($char->char == $char->simp_char) {
 
 
         </div>
-
-        <div>
-            <h3>RADICAL</h3>
-            <p>{{$char->radical}}</p>
-            <hr>
-            <h3>STROKE COUNT</h3>
-            <p>{{$char->stroke_count}}</p>
-            </div>
-
-            </div>
-
-        
 
 
 
@@ -123,10 +121,7 @@ if($char->char == $char->simp_char) {
             delayBetweenLoops: 3000,
             showOutline: true
         });
-
-
         writer.loopCharacterAnimation();
-
     </script>
 
 
@@ -149,7 +144,6 @@ if($char->char == $char->simp_char) {
         font-size: 1.25em;
         border-radius: 10px;
     }
-
     .character_section {
         background-color: #ffffff;
         min-height: 70vh;
@@ -158,38 +152,30 @@ if($char->char == $char->simp_char) {
         border-right: 1px solid #80808047;
         border-radius: 10px;
         display: flex;
-
     }
-
     .character_type{
         margin: 1em;
     }
-
     .details_section {
         width: 100%;
     }
-
     .details_top {
         display: flex;
         justify-content: space-between;
         
     }
-
     .details_title{
         display: inline-flex;
     align-items: baseline;
     }
-
     .details_top a {
         color: #227a7a;
         text-decoration: none;
     }
-
     .left_section {
         width: 27%;
         text-align: center;
     }
-
     .freq {
         margin: 1em;
         color: white;
@@ -197,35 +183,27 @@ if($char->char == $char->simp_char) {
         font-family: Open Sans;
         display: inline-block;
         padding: 7px 8px;
-
         background: linear-gradient(#d5d5d5, #898989);
         /*border: 2px solid #cecece6b;*/
     }
-
     .freq-1 {
         background: linear-gradient(#84d968, #28953a);
     }
-
     .freq-2 {
         background: linear-gradient(#68cfd9, #289595);
     }
-
     .freq-3 {
         background: linear-gradient(#8689f8, #2328c0);
     }
-
     .freq-4 {
         background: linear-gradient(#fab98c, #ca7538);
     }
-
     .freq-5 {
         background: linear-gradient(#fa8c8c, #ca3838);
     }
-
     .translations{
         margin: 1em;
     }
-
     .translation_title{
         font-size: 2em;
         
@@ -236,7 +214,6 @@ if($char->char == $char->simp_char) {
         list-style: lower-roman;
         list-style-position: inside;
     }
-
     .translation_text li{
         margin-top: 1em;
     }

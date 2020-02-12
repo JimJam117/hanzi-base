@@ -3,8 +3,7 @@
     <div class="landing-area">
         <div class="landing-area-content">
             <h1>HanziBase</h1>
-            <p><span style="font-family: Open Sans;">HanziBase</span> 是免费网站。这网站用于学习汉字。使用搜索框查找字符下面</p>
-
+            <p>Free resource for learning Chinese characters</p>
             <div class="search-container">
                 <form action="/search" method="POST">
                     @csrf
@@ -25,6 +24,8 @@
             </div>
             <div class="stat-title-section">
                 <h2 class="stat-title"><span class='red'>{{$charCount}}</span> Characters on HanziBase</h2>
+                <p>HanziBase is a free resource for learning Chinese characters, both simplifed and traditional. You can search by character, pinyin, translation or Heisig keyword (if you are using <em>Remembering the Hanzi</em>) to find a character's details.</p>
+                <br>
                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis esse temporibus voluptates est debitis accusantium ea veniam! Est, consequuntur debitis.</p>
             </div>
 
@@ -137,8 +138,10 @@
 
    
 
-    .landing-area-text {
-        margin: 3em;
+    .landing-area-content {
+        max-width: 650px;
+        width: 100%;
+        margin-bottom: 4em;
     }
 
     .landing-area-content h1 {
@@ -151,7 +154,7 @@
     .landing-area-content p {
         margin-bottom: 1em;
         font-size: 1.5em;
-        font-family: 'Noto Sans SC', 'Noto Sans TC';
+        font-weight: 300;
     }
 
     /*Character Stat Section*/

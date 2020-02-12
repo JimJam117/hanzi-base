@@ -230,6 +230,7 @@ class CharacterController extends Controller
     public function showSearch($search = null) {
 
         $resultArray = [];
+        $newCharArray = [];
 
         // if the string is longer than 1 character
         if (mb_strlen($search) > 1) {
@@ -261,7 +262,10 @@ class CharacterController extends Controller
             // if there are characters within the string that match hanzi in the database
             if ($input_characters_are_within_db) {
                 //dd("multiple-chars-explosion-function; chars are in db");
-                $resultArray = $this->explodedSearchDatabaseAddHandler($searchExploded);
+                $explodedSearchFuncResult = $this->explodedSearchDatabaseAddHandler($searchExploded);
+
+                $resultArray = $explodedSearchFuncResult[0];
+                $newCharArray = $explodedSearchFuncResult[1];
                 
             }
 
@@ -286,7 +290,10 @@ class CharacterController extends Controller
                 // if true then a hanzi is within the search string, so the multiple-chars function will be run
                 if ($input_characters_are_hanzi) {
                     //dd("multiple-chars-explosion-function; as there are chars that are hanzi (not in db)");
-                    $resultArray = $this->explodedSearchDatabaseAddHandler($searchExploded);
+                    $explodedSearchFuncResult = $this->explodedSearchDatabaseAddHandler($searchExploded);
+
+                    $resultArray = $explodedSearchFuncResult[0];
+                    $newCharArray = $explodedSearchFuncResult[1];
                 }
 
                 // input niether within db or chinese char, run normal results without explsion or arrays, just as a string
@@ -370,7 +377,12 @@ class CharacterController extends Controller
         }
        
         // return the main results
-        return view('character.search', compact('search', 'results', 'input_characters_are_hanzi'));
+        if($newCharArray) {
+            return view('character.search', compact('search', 'results', 'newCharArray'));
+        }
+        else {
+            return view('character.search', compact('search', 'results'));
+        }
     }
 
     /**
@@ -378,6 +390,8 @@ class CharacterController extends Controller
      * 
      */
     function explodedSearchDatabaseAddHandler($searchExploded) {
+        // new array for chars that are new 
+        $newArray = [];
 
         // foreach item in that array
         foreach ($searchExploded as $item) {
@@ -386,10 +400,16 @@ class CharacterController extends Controller
             if (! \App\Character::where('char', $item)->first()) {
                 $charData = $this->grabCharacterData($item);
                 
-                if($charData != null) { $this->addToDatabase($charData); }
+                if($charData != null) { 
+                    
+                    $this->addToDatabase($charData); 
+                   
+                    array_push($newArray, $charData);
+                }
             }
             
         }
-        return $searchExploded;
+        return array($searchExploded, $newArray);
     }
+
 }

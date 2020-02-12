@@ -1,8 +1,15 @@
 @include('partials.topbar')
 
 <div class="main">
-   @if ($input_characters_are_hanzi)
-        <div class="newCharAdded">New characters have now been added to hanzibase!</div>
+   @if (isset($newCharArray))
+
+        <div class="newCharAdded">New characters "
+            @foreach ($newCharArray as $item)
+                {{ $item['original'] }}
+            @endforeach
+            " have now been added to hanzibase!</div>   
+   {{-- @elseif() --}}
+       
    @endif
 
     <h1>Results for "{{$search}}"</h1>

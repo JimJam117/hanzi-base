@@ -194,6 +194,48 @@ class CharacterController extends Controller
     }
 
     /**
+     * Used for fetch results from an array of strings
+     * 
+     */
+    public function fetchArraySearchResults($inputArray) {
+
+        // incase $inputArray is a string, convert it to an array
+        if (is_string($inputArray)) { $inputArray = array($inputArray); }
+
+        // these settings are for the custom LengthAwarePaginator
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $perPage = 15;
+
+        $results = [];
+
+        foreach ($inputArray as $inputItem) {
+            // pinyin and char results
+            $pinyinResults = \App\Character::where('char', 'like', '%' . $inputItem .'%')
+            ->orWhere('pinyin', 'like', '%' . $inputItem .'%')
+            ->orWhere('radical', 'like', '%' . $inputItem .'%')
+            ->orWhere('pinyin_normalised', 'like', '%' . $inputItem .'%')->orderBy('freq', 'asc')->get();
+
+            // translation and heisig results
+            $translationResults = \App\Character::where('heisig_keyword', 'like', '%' . $inputItem .'%')
+                    ->orWhere('translations', 'like', '%' . $inputItem .'%')
+                    ->orWhere('heisig_number', 'like', '%' . $inputItem .'%')->get();
+
+            // for each result in the above collections, add to results array
+
+            foreach($pinyinResults as $result) {
+            array_push($results, $result);
+            }
+            foreach($translationResults as $result) {
+            array_push($results, $result);
+            }
+        }
+        
+        // return the results array as a paginatior
+        $results = new LengthAwarePaginator($results, count($results), $perPage, $currentPage);
+        return $results;
+    }
+
+    /**
      * 
      * 
      */
@@ -204,41 +246,12 @@ class CharacterController extends Controller
 
         $search = (urldecode($search));
 
-        // if the search is only 1 character long or there are no chine charcters in it
-        if (mb_strlen($search) == 1 || (! preg_match("/\p{Han}+/u", $search))) {
+        // if the search is only 1 character long
+        if (mb_strlen($search) == 1) {
+            $results = $this->fetchArraySearchResults($search);
 
-            // these settings are for the custom LengthAwarePaginator
-            $currentPage = LengthAwarePaginator::resolveCurrentPage();
-            $perPage = 15;
-
-
-            // pinyin and char results
-            $pinyinResults = \App\Character::where('char', 'like', '%' . $search .'%')
-                                    ->orWhere('pinyin', 'like', '%' . $search .'%')
-                                    ->orWhere('radical', 'like', '%' . $search .'%')
-                                    ->orWhere('pinyin_normalised', 'like', '%' . $search .'%')->orderBy('freq', 'asc')->get();
-
-
-            // translation and heisig results
-            $translationResults = \App\Character::where('heisig_keyword', 'like', '%' . $search .'%')
-                                    ->orWhere('translations', 'like', '%' . $search .'%')
-                                    ->orWhere('heisig_number', 'like', '%' . $search .'%')->get();
-
-            // for each result in the above collections, add to results array
-            $results = [];
-            foreach($pinyinResults as $result) {
-                array_push($results, $result);
-            }
-            foreach($translationResults as $result) {
-                array_push($results, $result);
-            }
-
-            // return the results array as a paginatior
-            $results = new LengthAwarePaginator($results, count($results), $perPage, $currentPage);
-
-
-             // if there were no results, do a check to see if it is a valid single character
-            if($results->total() <= 1 && mb_strlen($search) == 1) {
+            // if there were no results, do a check to see if it is a valid single character
+            if($results->total() <= 1) {
                 
                 // if it is, then send to character page (where a new character will be generated)
                 $charData = $this->grabCharacterData($search);
@@ -249,9 +262,15 @@ class CharacterController extends Controller
             return view('character.search', compact('search', 'results'));
         }
 
-        // if there is more than on character in the search string
-        
-        
+        // there are no chinese charcters in it
+        if (! preg_match("/\p{Han}+/u", $search)) {
+            $searchExploded = explode(" ", $search);
+            $results = $this->fetchArraySearchResults($searchExploded);
+            
+            // return the results
+            return view('character.search', compact('search', 'results'));  
+        }
+
         // if the search contains chinese characters
         if(preg_match("/\p{Han}+/u", $search) ) {
             $searchExploded = mb_str_split($search);

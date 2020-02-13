@@ -18,7 +18,7 @@ Route::get('/search/{search}', 'CharacterController@showSearch')->name('search')
 Route::get('/', 'HomeController@index');
 
 Route::get('/all', 'CharacterController@index');
-Route::get('/character/{char}', 'CharacterController@showHandler');
+Route::get('/character/{char}', 'CharacterController@showSingle');
 
 Route::get('/notfound', 'CharacterController@notfound');
 

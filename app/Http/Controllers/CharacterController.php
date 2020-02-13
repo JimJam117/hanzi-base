@@ -16,98 +16,60 @@ class CharacterController extends Controller
 
     public function index()
     {
-        
-        // DEBUGGING
-        $chars = \App\Character::all();
         $chars = DB::table('characters')->paginate(15);
-
-        //$ccdb = $this->grabCharacterData('台'); 
-
-
         return view('character.index', compact(['chars']));
     }
 
 
-    public function showHandler($char) {
-         // check if there are multiple characters
-         $moreThanOneChar = false;
-         mb_strlen($char) > 1 ? $moreThanOneChar = true : $moreThanOneChar = false;
-
-         
-         if ($moreThanOneChar) {
-            return view('character.notfound', compact('char'));
-         }
-         else {
-            
-            $showSingleData = $this->showSingle($char);
-            
-            $char = $showSingleData["char"];
-            $newCharAdded = $showSingleData["newCharAdded"];
-            return view('character.show', compact('char', 'newCharAdded'));
-         }
-
-    }
-
-    function showSingle($char) {
+    /**
+     * Return the correct page for the single character given.
+     * 
+     * @param string $char The character to show
+     * @return view
+     */
+    public function showSingle($char) {
+        // used if the character added is new
         $newCharAdded = false;
+
+        // check if there are multiple characters
+        if ( mb_strlen($char) > 1 ) { return view('character.notfound', compact('char')); }
+         
+        // 
+        //$singleData = $this->single($char);
+        // ________________________________________________
+
+
   
-        
         // find the character
-        $charObj = null;
-        $charObj = \App\Character::where('char', $char)->orWhere('id', $char)->first();
-        
-    
-        //dd($this->grabCharacterData($char));
-        if($charObj == null) {
+        $characterObj = \App\Character::where('char', $char)->orWhere('id', $char)->first();
+             
+        // if the character could not be found
+        if(! isset($characterObj->id)) {
 
-            $charData = $this->grabCharacterData($char);
+            // check if the character is within the database
+            $data = $this->grabCharacterData($char);
+            if ($data == null) { return view('character.notfound', compact('char')); }
             
-            if($charData != null) {
-                $this->addToDatabase($charData);
-                $charObj = \App\Character::where('char', $char)->orWhere('id', $char)->first();
-                $newCharAdded = true;
-            }
-            else{
-                return view('character.notfound', compact('char'));
-            }
-
-            
-        }
-          
-        
-        // used to determine which frequency string should be used
-        switch ($charObj->freq) {
-            case 1:
-                $charObj->frequencyTitle = "Very Common";
-                break;
-
-            case 2:
-                $charObj->frequencyTitle = "Common";
-                break;
-
-            case 3:
-                $charObj->frequencyTitle = "Frequent";
-                break;
-
-            case 4:
-                $charObj->frequencyTitle = "Infrequent";
-                break;
-
-            case 5:
-                $charObj->frequencyTitle = "Very Infrequent";
-                 break;
-            
-            default:
-                $charObj->frequencyTitle = "Unknown";
-                break;
+            // if the character exists, add it to the database
+            $this->addToDatabase($data);
+            $characterObj = \App\Character::where('char', $char)->orWhere('id', $char)->first();
+            $newCharAdded = true;  
         }
 
-        $char = $charObj;
-        
-        //return dd($char);
-        return array('char' => $char, 'newCharAdded' => $newCharAdded);
+        // set the frequency title
+        switch ($characterObj->freq) {
+            case 1: $characterObj->frequencyTitle =  "Very Common";
+            case 2: $characterObj->frequencyTitle =  "Common";
+            case 3: $characterObj->frequencyTitle =  "Frequent";
+            case 4: $characterObj->frequencyTitle =  "Infrequent";
+            case 5: $characterObj->frequencyTitle =  "Very Infrequent";
+            default: $characterObj->frequencyTitle =  "Unknown";
+        }
 
+        $char = $characterObj;
+        return view('character.show', compact('char', 'newCharAdded'));
     }
+
 
     public function debug($char) {
         dd($this->grabCharacterData($char));

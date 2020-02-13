@@ -20,7 +20,6 @@ class CharacterController extends Controller
         return view('character.index', compact(['chars']));
     }
 
-
     /**
      * Return the correct page for the single character given.
      * 
@@ -33,12 +32,6 @@ class CharacterController extends Controller
 
         // check if there are multiple characters
         if ( mb_strlen($char) > 1 ) { return view('character.notfound', compact('char')); }
-         
-        // 
-        //$singleData = $this->single($char);
-        // ________________________________________________
-
-
   
         // find the character
         $characterObj = \App\Character::where('char', $char)->orWhere('id', $char)->first();
@@ -209,105 +202,27 @@ class CharacterController extends Controller
         $resultArray = [];
         $newCharArray = [];
 
+        $search = (urldecode($search));
 
-        // if the string is longer than 1 character
-        if (mb_strlen($search) > 1) {
-            $search = (urldecode($search));
-            // check if there are any characters in the search string that match characters in the database
-            $searchExploded = mb_str_split($search);
+        // if the search is only 1 character long or there are no chine charcters in it
+        if (mb_strlen($search) == 1 || (! preg_match("/\p{Han}+/u", $search))) {
 
-            // remove any spaces from the searchExploded Array
-            $temp = [];
-            foreach ($searchExploded as $searchCharacter){
-                if ($searchCharacter != " " && $searchCharacter != "%20"){
-                    array_push($temp, $searchCharacter);
-                }
-            }
-            $searchExploded = $temp;
-            
-            // input check bools
-            $input_characters_are_within_db = false;
-            $input_characters_are_hanzi = false;
-
-            foreach ($searchExploded as $value) {
-                if (\App\Character::where('char', "$value")->first()) {
-                    $input_characters_are_within_db = true;
-                    break;
-                    
-                }
-            }
-
-            // if there are characters within the string that match hanzi in the database
-            if ($input_characters_are_within_db) {
-                //dd("multiple-chars-explosion-function; chars are in db");
-                $explodedSearchFuncResult = $this->explodedSearchDatabaseAddHandler($searchExploded);
-
-                $resultArray = $explodedSearchFuncResult[0];
-                $newCharArray = $explodedSearchFuncResult[1];
-                
-            }
-
-            // if not, check if they are hanzi using the ccdb
-            else {
-                foreach ($searchExploded as $value) {
-                    if($value != "%20" && $value != " " && $value != "?") {
-                        $charData = $this->grabCharacterData($value);
-                        if ($charData != null) { 
-                            $input_characters_are_hanzi = true; 
-                            break; 
-                        }
-                    }
-                    else{
-                        if($value != " ") {
-                        dd("Weird error: $value");
-                        }
-                    }
-                    
-                }
-
-                // if true then a hanzi is within the search string, so the multiple-chars function will be run
-                if ($input_characters_are_hanzi) {
-                    //dd("multiple-chars-explosion-function; as there are chars that are hanzi (not in db)");
-                    $explodedSearchFuncResult = $this->explodedSearchDatabaseAddHandler($searchExploded);
-
-                    $resultArray = $explodedSearchFuncResult[0];
-                    $newCharArray = $explodedSearchFuncResult[1];
-                }
-
-                // input niether within db or chinese char, run normal results without explsion or arrays, just as a string
-                else {
-                    //dd("single-string-function; no chinese char, run as normal string");
-                    $resultArray = $search;
-                }
-            }
-
-        }
-        // if the string is only one character long
-        else {
-            //dd("only 1 char in string");
-            $resultArray = $search;
-        }
-        
-
-        
-        // if the resultArray is a string
-        if(is_string($resultArray)) {
             // these settings are for the custom LengthAwarePaginator
             $currentPage = LengthAwarePaginator::resolveCurrentPage();
             $perPage = 15;
 
 
             // pinyin and char results
-            $pinyinResults = \App\Character::where('char', 'like', '%' . $resultArray .'%')
-                                    ->orWhere('pinyin', 'like', '%' . $resultArray .'%')
-                                    ->orWhere('radical', 'like', '%' . $resultArray .'%')
-                                    ->orWhere('pinyin_normalised', 'like', '%' . $resultArray .'%')->orderBy('freq', 'asc')->get();
-            
+            $pinyinResults = \App\Character::where('char', 'like', '%' . $search .'%')
+                                    ->orWhere('pinyin', 'like', '%' . $search .'%')
+                                    ->orWhere('radical', 'like', '%' . $search .'%')
+                                    ->orWhere('pinyin_normalised', 'like', '%' . $search .'%')->orderBy('freq', 'asc')->get();
+
 
             // translation and heisig results
-            $translationResults = \App\Character::where('heisig_keyword', 'like', '%' . $resultArray .'%')
-                                    ->orWhere('translations', 'like', '%' . $resultArray .'%')
-                                    ->orWhere('heisig_number', 'like', '%' . $resultArray .'%')->get();
+            $translationResults = \App\Character::where('heisig_keyword', 'like', '%' . $search .'%')
+                                    ->orWhere('translations', 'like', '%' . $search .'%')
+                                    ->orWhere('heisig_number', 'like', '%' . $search .'%')->get();
 
             // for each result in the above collections, add to results array
             $results = [];
@@ -321,59 +236,142 @@ class CharacterController extends Controller
             // return the results array as a paginatior
             $results = new LengthAwarePaginator($results, count($results), $perPage, $currentPage);
 
-            
+
+             // if there were no results, do a check to see if it is a valid single character
+            if($results->total() <= 1 && mb_strlen($search) == 1) {
+                
+                // if it is, then send to character page (where a new character will be generated)
+                $charData = $this->grabCharacterData($search);
+                if($charData != null) { return redirect('/character/' . $search); }  
+            }
+
+            // return the results
+            return view('character.search', compact('search', 'results'));
         }
 
-        // if instead the resultArray is an array
-        else{
+        // if there is more than on character in the search string
+        
+        
+        // if the search contains chinese characters
+        if(preg_match("/\p{Han}+/u", $search) ) {
+            $searchExploded = mb_str_split($search);
+
+            $charsArray = [];
+
+            // foreach character in search exploded where the character is a hanzi, add to the charsArray
+            foreach ($searchExploded as $searchCharacter) {
+                preg_match("/\p{Han}+/u", $searchCharacter) ? array_push($charsArray, $searchCharacter) : null ;
+            }
+            
+            $explodedSearchFuncResult = $this->explodedSearchDatabaseAddHandler($charsArray);
+
+            $resultArray = $explodedSearchFuncResult[0];
+            $newCharArray = $explodedSearchFuncResult[1];
+
+            
             $results = \App\Character::where(function ($query) use($resultArray) {
 
                 // find the chars
-
-                foreach ($resultArray as $letter) {
-                    $query->orwhere('char', 'like',  '%' . $letter .'%');
+                foreach ($resultArray as $resultItem) {
+                    $query->orwhere('char', 'like',  '%' . $resultItem .'%');
                 }      
             })->paginate(15);
         }
-
-
         
-        
-        
-        
-        // if there were no results, do a check to see if it is a valid character
-        
-        if($results->total() <= 1) {
-            
-            // if it is, then send to character page (where a new character will be generated)
-            $charData = $this->grabCharacterData($search);
-            if($charData != null) {
-                
-                return redirect('/character/' . $search);
-            }
-            
-           
-        }
-       
-        // return the main results
         if($newCharArray) {
             return view('character.search', compact('search', 'results', 'newCharArray'));
         }
         else {
             return view('character.search', compact('search', 'results'));
         }
+
+
+    
+
+        
+        
+        
+        
+        
+
+
+        
+
+
+        
+            
+
+           
+
+            // if not, check if they are hanzi using the ccdb
+            // if (! $inputWithinDatabaseChars) {
+                
+            
+            //     foreach ($searchExploded as $value) {
+            //         if($value != "%20" && $value != " " && $value != "?") {
+            //             $charData = $this->grabCharacterData($value);
+            //             if ($charData != null) { 
+            //                 $input_characters_are_hanzi = true; 
+            //                 break; 
+            //             }
+            //         }
+            //         else{
+            //             if($value != " ") {
+            //             dd("Weird error: $value");
+            //             }
+            //         }
+                    
+            //     }
+
+            //     // if true then a hanzi is within the search string, so the multiple-chars function will be run
+            //     if ($input_characters_are_hanzi) {
+            //         //dd("multiple-chars-explosion-function; as there are chars that are hanzi (not in db)");
+            //         $explodedSearchFuncResult = $this->explodedSearchDatabaseAddHandler($searchExploded);
+
+            //         $resultArray = $explodedSearchFuncResult[0];
+            //         $newCharArray = $explodedSearchFuncResult[1];
+            //     }
+
+            //     // input niether within db or chinese char, run normal results without explsion or arrays, just as a string
+            //     else {
+            //         //dd("single-string-function; no chinese char, run as normal string");
+            //         $resultArray = $search;
+            //     }
+            // }
+
+        
+
+        
+        
+
+        
+        
+
+        // if instead the resultArray is an array
+        
+        
+
+
+        
+        
+        
+        
+
+       
+        // return the main results
+        
     }
 
     /**
-     * This function is used to generate result arrays from strings containing multiple characters
+     * This function is used to add new characters to the database
      * 
      */
-    function explodedSearchDatabaseAddHandler($searchExploded) {
+    function explodedSearchDatabaseAddHandler($inputArray) {
         // new array for chars that are new 
         $newArray = [];
 
         // foreach item in that array
-        foreach ($searchExploded as $item) {
+        foreach ($inputArray as $item) {
             
             // if its not already in the database
             if (! \App\Character::where('char', $item)->first()) {
@@ -388,7 +386,7 @@ class CharacterController extends Controller
             }
             
         }
-        return array($searchExploded, $newArray);
+        return array($inputArray, $newArray);
     }
 
 }

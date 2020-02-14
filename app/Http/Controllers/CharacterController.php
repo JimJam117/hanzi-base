@@ -207,6 +207,8 @@ class CharacterController extends Controller
         $perPage = 15;
 
         $results = [];
+        $pinyinResults = [];
+        $translationResults = [];
 
         foreach ($inputArray as $inputItem) {
             // pinyin and char results
@@ -215,18 +217,27 @@ class CharacterController extends Controller
             ->orWhere('radical', 'like', '%' . $inputItem .'%')
             ->orWhere('pinyin_normalised', 'like', '%' . $inputItem .'%')->orderBy('freq', 'asc')->get();
 
+            // for each result in the above collections, add to results array
+
+            foreach($pinyinResults as $result) {
+                if (! in_array($result, $results)) {
+                    array_push($results, $result);
+                }
+            }
+        }
+
+        foreach ($inputArray as $inputItem) {
+
             // translation and heisig results
             $translationResults = \App\Character::where('heisig_keyword', 'like', '%' . $inputItem .'%')
                     ->orWhere('translations', 'like', '%' . $inputItem .'%')
                     ->orWhere('heisig_number', 'like', '%' . $inputItem .'%')->get();
 
             // for each result in the above collections, add to results array
-
-            foreach($pinyinResults as $result) {
-            array_push($results, $result);
-            }
             foreach($translationResults as $result) {
-            array_push($results, $result);
+                if (! in_array($result, $results)) {
+                    array_push($results, $result);
+                }
             }
         }
         

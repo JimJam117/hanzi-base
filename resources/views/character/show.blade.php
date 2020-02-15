@@ -138,6 +138,8 @@ if($char->char == $char->simp_char) {
 
 
     <script>
+        
+        
         var writer = HanziWriter.create('character-target-div',
             {!!"'" . $char->char . "'"!!}, 
             {
@@ -148,7 +150,15 @@ if($char->char == $char->simp_char) {
             delayBetweenStrokes: 50, // milliseconds
             strokeColor: '#c82929', // red
             delayBetweenLoops: 3000,
-            showOutline: true
+            showOutline: true,
+
+            // if loading the character with hanziWriter fails, just load the character as a string
+            onLoadCharDataError: function(reason) {
+                $( document ).ready(function() {
+                    document.getElementById("character-target-div").innerHTML = "{{$char->char}}"; 
+                });
+            }
+
         });
         writer.loopCharacterAnimation();
     </script>
@@ -234,5 +244,12 @@ if($char->char == $char->simp_char) {
     }
     .translation_text li{
         margin-top: 1em;
+    }
+
+    #character-target-div{
+        font-family: "ZCOOL XiaoWei", "Noto Serif SC", "Noto Serif TC";
+        font-size: 15vw;
+        font-weight: lighter;
+        color: #c82929;
     }
 </style>

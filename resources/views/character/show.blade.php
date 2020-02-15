@@ -55,7 +55,7 @@ if($char->char == $char->simp_char) {
 
                         <form method="post" action="/search">
                             @csrf
-                            <input type="hidden" name="search" value="{{$char->radical}}">
+                            <input type="hidden" name="search" value="{{$char->simp_radical}}">
                             <input type="hidden" name="radical" value="{{true}}">
                             
                             <button type="submit" class="radical-link">
@@ -65,7 +65,7 @@ if($char->char == $char->simp_char) {
 
                         <form method="post" action="/search">
                             @csrf
-                            <input type="hidden" name="search" value="{{$char->simp_radical}}">
+                            <input type="hidden" name="search" value="{{$char->radical}}">
                             <input type="hidden" name="radical" value="{{true}}">
 
                             <button type="submit" class="radical-link">

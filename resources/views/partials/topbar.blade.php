@@ -68,192 +68,12 @@
     <link rel="stylesheet" href="/css/styles.css">
 
     <style>
-    .topbar {
-        width: 100%;
-        background: none;
-        color: white;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border: none;
-        position: fixed;
-        z-index: 5;
-    }
     
-
-    .topbar img {
-        padding: 1em;
-        height: 4em;
-    }
-
-    .topbar-clear{
-        height: 100px;
-    }
-
-    .logo-search-container{
-        display: flex;
-    }
-    .logo-search-container a{
-        display: flex;
-        color: white;
-        align-items: center;
-        text-decoration: none;
-        font-family: inherit;
-        font-weight: 700;
-        padding-right: 1em;
-    }
-    .logo-search-container a span{
-        font-size: 1.75em;
-        font-weight: 500;
-        font-family: 'open sans';
-    }
     
-
-    .lang {
-        padding: 1em;
-        float: right;
-    }
-
-    .lang a {
-        color: white;
-        height: auto;
-        font-size: 1.5em;
-        padding: 0 1em;
-
-        text-decoration: none;
-    }
-
-    .lang a:hover {
-        color: black;
-    }
-
-    .hamburger-button{
-        display: none;
-        color: white;
-        background: none;
-        border: none;
-        padding: 1em;
-        font-size: 2rem;
-        
-    }
-
-    @media screen and (max-width: 925px) {
-        .lang {
-            display : none;
-        }
-        .logo-search-container{
-            width: 100%;
-        }
-        .logo-search-container a span {
-            display: none;
-        }
-        .hamburger-button{
-            display: inherit;
-        }
-    }
-
-
-    .bMenu{
-        position: fixed;
-        height: 100%;
-        background-color:#555555e6;
-        top: 0;
-        width: 100vw;
-        display: flex;
-        align-items: center;
-        justify-content: space-evenly;
-        padding-top: 2em;
-    }
-
-    .bMenu-container{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .bMenu a{
-        color: white;
-        text-decoration: none;
-         padding: 0.75em; 
-        font-size: 1.5rem;
-    }
-    .bMenu-bottom-link a{
-        color: cyan;
-        font-size: 1rem;
-        position: absolute;
-        transform: translateX(-50%);
-        bottom: 2em;
-    }
-
-    .bMenuClosed{
-        display: none;
-    }
-
-    @media screen and (min-width: 925px) {
-        .bMenu{
-            display: none;
-        }
-    }
-
-    .search-container-top {
-        width: 100%;
-        margin: auto 1em;
-        display: none;
-    }
-    
-
-    .search-container-top form {
-        display: flex;
-        justify-content: center;
-    }
-
-    .search-container-top input {
-        padding: 0.5em 1em;
-        margin: 0;
-        border: 0;
-        border-radius: 1em 0 0 1em;
-        font-size: 1.25em;
-        width: 100%;
-        outline: none;
-    }
-
-
-    .search-container-top button {
-        padding: 0.5em 1em;
-        margin: 0;
-        border: 0;
-        float: right;
-        border-radius: 0 1em 1em 0;
-        color: #fff;
-        font-size: 1.25em;
-        background-color: #ffffff29;
-    }
-
-
-    @media screen and (max-width: 625px) {
-        .search-container-top {
-            margin: auto;
-        }
-        .logo-search-container a{
-            padding-right: none;
-        }
-        .search-container-top input{
-            width: 100px;
-        }
-        .topbar img {
-            padding: 1em 0 1em 1em;
-        }
-        .search-container-top button{
-            display: none;
-        }
-        .search-container-top input{
-            border-radius: 1em;
-            width: 50%;
-        }
-    }
-
     </style>
 
+
+    {{-- Used to determine if the topbar should be transparent or not --}}
     @isset ($charCount)
         <style>
         .topbar-not-at-top .search-container-top{
@@ -284,23 +104,24 @@
 
 <body>
     <div class="topbar">
-        <div class="logo-search-container">
-            <a href="/"><img src="/icon.png" alt="hanzibase"> <span>HanziBase</span></a>
+        
+        <a class="logo-container-top" href="/"><img src="/icon.png" alt="hanzibase"> <span>HanziBase</span></a>
 
-            <div class="search-container-top">
-                <form action="/search" method="POST">
-                    @csrf
-                    <input type="text" placeholder="Search.." name="query" autocomplete="off">
-                    <button type="submit"><i class="fa fa-search"></i></button>
-                </form>
-            </div>
+        <div class="search-container-top">
+            <form action="/search" method="POST">
+                @csrf
+                <input type="text" placeholder="Search.." name="query" autocomplete="off">
+                <button type="submit"><i class="fa fa-search"></i></button>
+            </form>
         </div>
+    
 
 
 
-        <div class="lang">
-            <a href="/all">All</a>
+        <div class="links-container-top">
             <a href="/">Home</a>
+            <a href="/browse">Browse</a>
+            <a href="/about">About</a>
         </div>
         <button onclick="burgerMenuShowHide()" id="bMenuButton" class="hamburger-button">
             <i class="fas fa-bars"></i>

@@ -11,6 +11,58 @@
     <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@2.2/dist/hanzi-writer.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
+    <script type="text/javascript">
+        function burgerMenuShowHide() {
+            // show/hide menu
+            // var ico = document.getElementById("bMenuButton");
+            // var text = document.getElementById("bMenuText");
+
+            // var Main = document.getElementById("mainContent");
+            // var Smenu = document.getElementById("sMenu");
+            // var SmenuClear = document.getElementById("sMenuClear");
+
+            // if (ico.className === "fas fa-angle-left") {
+            // ico.className = "fas fa-angle-right";
+            // text.className = "bMenuTextShowMessage";
+
+            // Main.className += " main_content_full";
+
+
+            // sMenu.className += " top_band_closed";
+            // sMenuClear.className += " top_band_fix_closed";
+            // }
+            // // open
+            // else {
+            // ico.className = "fas fa-angle-left";
+            // text.className = "bMenuTextHideMessage";
+
+            // Main.className = "main_content";
+            // sMenu.className = "top_band";
+            // sMenuClear.className = "top_band_fix";
+
+            var button = document.getElementById("bMenuButton");
+            var bMenu = document.getElementById("bMenu");
+
+            // open
+            if(bMenu.className === "bMenu bMenuClosed") {
+                bMenu.className = "bMenu";
+                
+                button.innerHTML = '<i class="fas fa-times"></i>';
+                console.log("open");
+            }
+
+            // close
+            else {
+                bMenu.className = "bMenu bMenuClosed";
+
+                button.innerHTML = '<i class="fas fa-bars"></i>';
+                console.log("close");
+            }
+
+            }
+        
+  </script>
+
     <title>HanziBase</title>
     <link rel="icon" href="/icon.ico">
     <link rel="stylesheet" href="/css/styles.css">
@@ -48,6 +100,7 @@
         text-decoration: none;
         font-family: inherit;
         font-weight: 700;
+        padding-right: 1em;
     }
     .logo-search-container a span{
         font-size: 1.75em;
@@ -65,7 +118,7 @@
         color: white;
         height: auto;
         font-size: 1.5em;
-        padding: 0 2em;
+        padding: 0 1em;
 
         text-decoration: none;
     }
@@ -74,15 +127,84 @@
         color: black;
     }
 
+    .hamburger-button{
+        display: none;
+        color: white;
+        background: none;
+        border: none;
+        padding: 1em;
+        font-size: 2rem;
+        
+    }
+
+    @media screen and (max-width: 925px) {
+        .lang {
+            display : none;
+        }
+        .logo-search-container{
+            width: 100%;
+        }
+        .logo-search-container a span {
+            display: none;
+        }
+        .hamburger-button{
+            display: inherit;
+        }
+    }
+
+
+    .bMenu{
+        position: fixed;
+        height: 100%;
+        background-color:#555555e6;
+        top: 0;
+        width: 100vw;
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        padding-top: 2em;
+    }
+
+    .bMenu-container{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .bMenu a{
+        color: white;
+        text-decoration: none;
+         padding: 0.75em; 
+        font-size: 1.5rem;
+    }
+    .bMenu-bottom-link a{
+        color: cyan;
+        font-size: 1rem;
+        position: absolute;
+        transform: translateX(-50%);
+        bottom: 2em;
+    }
+
+    .bMenuClosed{
+        display: none;
+    }
+
+    @media screen and (min-width: 925px) {
+        .bMenu{
+            display: none;
+        }
+    }
+
     .search-container-top {
         width: 100%;
-        margin: auto 1em auto 2em;
+        margin: auto 1em;
         display: none;
     }
     
 
     .search-container-top form {
         display: flex;
+        justify-content: center;
     }
 
     .search-container-top input {
@@ -103,9 +225,31 @@
         float: right;
         border-radius: 0 1em 1em 0;
         color: #fff;
-        background-color: #B5183A;
         font-size: 1.25em;
-        background-color: #ffffff00;
+        background-color: #ffffff29;
+    }
+
+
+    @media screen and (max-width: 625px) {
+        .search-container-top {
+            margin: auto;
+        }
+        .logo-search-container a{
+            padding-right: none;
+        }
+        .search-container-top input{
+            width: 100px;
+        }
+        .topbar img {
+            padding: 1em 0 1em 1em;
+        }
+        .search-container-top button{
+            display: none;
+        }
+        .search-container-top input{
+            border-radius: 1em;
+            width: 50%;
+        }
     }
 
     </style>
@@ -152,11 +296,32 @@
             </div>
         </div>
 
+
+
         <div class="lang">
             <a href="/all">All</a>
             <a href="/">Home</a>
         </div>
+        <button onclick="burgerMenuShowHide()" id="bMenuButton" class="hamburger-button">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        
     </div>
     <div class="topbar-clear"></div>
+
+    {{-- The burger menu for mobile --}}
+    <div id="bMenu" class="bMenu bMenuClosed">
+        <div class="bMenu-container">
+        <a href="/">Home</a>
+        <a href="/browse">Browse</a>
+        <a href="/about">About</a>
+
+        <div class="bMenu-bottom-link">
+            <a href="https://jsparrow.uk">HanziBase by James Sparrow</a>
+        </div>
+    
+    </div>
+    </div>
 
 

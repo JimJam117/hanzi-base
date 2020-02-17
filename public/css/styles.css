@@ -21,7 +21,7 @@
  .main {
      padding: 3em 10em;
      background-image: -webkit-linear-gradient(60deg, #f8f8f8 50%, #f3f3f3 50%);
-     min-height: 500px;
+     min-height: 100vh;
  }
 
  .main hr {

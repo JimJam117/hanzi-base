@@ -51,12 +51,12 @@ class CharacterController extends Controller
 
         // set the frequency title
         switch ($characterObj->freq) {
-            case 1: $characterObj->frequencyTitle =  "Very Common";
-            case 2: $characterObj->frequencyTitle =  "Common";
-            case 3: $characterObj->frequencyTitle =  "Frequent";
-            case 4: $characterObj->frequencyTitle =  "Infrequent";
-            case 5: $characterObj->frequencyTitle =  "Very Infrequent";
-            default: $characterObj->frequencyTitle =  "Unknown";
+            case 1: $characterObj->frequencyTitle =  "Very Common"; break;
+            case 2: $characterObj->frequencyTitle =  "Common"; break;
+            case 3: $characterObj->frequencyTitle =  "Frequent"; break;
+            case 4: $characterObj->frequencyTitle =  "Infrequent"; break;
+            case 5: $characterObj->frequencyTitle =  "Very Infrequent"; break;
+            default: $characterObj->frequencyTitle =  "Unknown"; break;
         }
 
         $char = $characterObj;

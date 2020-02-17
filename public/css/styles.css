@@ -50,8 +50,9 @@
 
 
 
-
- /*character stuff*/
+/* ==============================
+     Character 
+    ==============================*/
 
  .character {
     font-size: 4em;
@@ -64,11 +65,12 @@
     background-color: #b8f28b;
     color: #468400;
     border: 1px solid #dfdfdf;
-    margin: 0em 5em 1em;
+    margin: 0em auto 1em;
     text-align: center;
     font-weight: 700;
     font-size: 1.25em;
     border-radius: 10px;
+    max-width: 700px;
 }
 
 .translations {}
@@ -133,7 +135,6 @@ footer a, footer a:visited{
     }
 
 }
-
 
 
 
@@ -332,6 +333,8 @@ footer a, footer a:visited{
      Small screens
     ==============================*/
     @media screen and (max-width: 625px) {
+
+        /* Topbar */
         .search-container-top {
             margin: auto;
         }
@@ -353,5 +356,12 @@ footer a, footer a:visited{
         }
         .search-container-top form{
             justify-content: center;
+        }
+
+        /* newCharAdded */
+
+        .newCharAdded{
+            margin: 0em 0em 1em;
+            font-size: 1rem;
         }
     }

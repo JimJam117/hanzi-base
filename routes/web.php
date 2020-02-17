@@ -25,3 +25,7 @@ Route::get('/character/{char}', 'CharacterController@showSingle');
 Route::get('/notfound', 'CharacterController@notfound');
 
 Route::get('/debug/{char}', 'CharacterController@debug');
+
+Route::get('/about', function() {
+    return view('about');
+});

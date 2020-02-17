@@ -13,7 +13,10 @@
      margin: 0;
  }
 
- /* Main Section */
+
+/* ==============================
+     Main Section
+    ==============================*/
 
  .main {
      padding: 3em 10em;
@@ -30,6 +33,23 @@
  .main-section {
      padding: 2em;
  }
+
+ @media screen and (max-width: 1075px) {
+    .main {
+        padding: 2em;
+    }
+ }
+
+
+
+
+
+
+
+
+
+
+
 
  /*character stuff*/
 
@@ -58,24 +78,28 @@
 /*Pagination*/
 
 .pagination {
+    padding-top: 2em;
     list-style: none;
     display: flex;
     justify-content: center;
     align-items: baseline;
+    font-size: 1.25rem;
 }
 
 .pagination a,
 .pagination span {
     color: #222222;
     padding: 1em 0.5em;
-    font-size: 1.25em;
+    font-size: 1.5em;
     text-decoration: none;
 }
 
-.pagination span {
+.pagination .active {
+    text-decoration: underline;
+}
 
-    font-weight: bold;
-    font-size: 1.5em;
+.page-item.disabled{
+    display: none;
 }
 
 /* Footer */

@@ -24,13 +24,15 @@
     .character_link:visited {
         background-color: white;
         text-align: center;
-        padding: 1em;
         border: 2px #0000004d solid;
-        margin: 2em;
         border-radius: 10px;
         transition: 0.2s;
         color: #222222;
         text-decoration: none;
+        width: 100%;
+        max-width: 200px;
+        margin: 1rem auto;
+
     }
 
     .character_link:hover {
@@ -40,7 +42,8 @@
 
     .characters_container {
         display: grid;
-        grid-template-columns: 25% 25% 25% 25%;
+        grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+        grid-gap: 1rem;
     }
 
     .pinyin{

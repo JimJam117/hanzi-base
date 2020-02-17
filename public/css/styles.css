@@ -75,7 +75,9 @@
 
 .pinyin {}
 
-/*Pagination*/
+/* ==============================
+     Pagination
+    ==============================*/
 
 .pagination {
     padding-top: 2em;
@@ -83,26 +85,35 @@
     display: flex;
     justify-content: center;
     align-items: baseline;
-    font-size: 1.25rem;
+    flex-wrap: wrap;
 }
 
 .pagination a,
 .pagination span {
     color: #222222;
     padding: 1em 0.5em;
-    font-size: 1.5em;
+    font-size: 2rem;
     text-decoration: none;
 }
 
+/* The active page */
 .pagination .active {
     text-decoration: underline;
+    font-weight: bold;
 }
 
 .page-item.disabled{
     display: none;
 }
 
-/* Footer */
+.page-item {
+    margin-bottom: 1em;
+}
+
+
+/* ==============================
+     Footer
+    ==============================*/
 
 footer{
     display: flex;

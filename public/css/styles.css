@@ -64,6 +64,11 @@
     color: white;
 }
 
+/* for the radicals and trad/simp indicator */
+.character_link:hover .top-details{
+    color: white;
+}
+
 .characters_container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px,1fr));

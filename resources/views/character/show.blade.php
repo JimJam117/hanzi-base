@@ -38,17 +38,30 @@ if($char->char == $char->simp_char) {
             <div class="details_top">
                 <div class="details_title">
                     <h1 class="character">{{$char->char}} {{$char->pinyin}}</h1>
+                    <h1 class="character_small">{{$char->char}}</h1>
+                    <h1 class="pinyin_small">{{$char->pinyin}}</h1>
                     @if ($hasSimplified)
-            <span class="character_type"> (Traditional)</span>
-            
-            @elseif ($hasTraditional)
-                <span class="character_type"> (Simplified)</span>
-            @endif
+                    <span class="character_type"> (Traditional)</span>
+                    <span class="character_type_small"> (Traditional)</span>
+                    @elseif ($hasTraditional)
+                        <span class="character_type_small"> (Simplified)</span>
+                    @endif
                 </div>
                 
                 <div class="similar_characters">
+                    <h2>Links:</h2>
                     {{-- If the char has a radical --}}
                     @if($hasRadical)
+
+                        <form method="post" action="/search">
+                            @csrf
+                            <input type="hidden" name="search" value="{{$char->radical}}">
+                            <input type="hidden" name="radical" value="{{true}}">
+
+                            <button type="submit" class="radical-link">
+                                <h3>Radical {{$char->radical}}</h3>
+                            </button>
+                        </form>
 
                         {{-- If the char is simplified and has a simplified radical --}}
                         @if ($hasSimplifiedRadical)
@@ -59,44 +72,21 @@ if($char->char == $char->simp_char) {
                             <input type="hidden" name="radical" value="{{true}}">
                             
                             <button type="submit" class="radical-link">
-                                Simplifed Radical {{$char->simp_radical}}
+                                <h3>Simplifed Radical {{$char->simp_radical}}</h3>
                             </button>
                         </form>
-
-                        <form method="post" action="/search">
-                            @csrf
-                            <input type="hidden" name="search" value="{{$char->radical}}">
-                            <input type="hidden" name="radical" value="{{true}}">
-
-                            <button type="submit" class="radical-link">
-                                Radical {{$char->radical}}
-                            </button>
-                        </form>
-
-
-                        @else
-                        <form method="post" action="/search">
-                            @csrf
-                            <input type="hidden" name="search" value="{{$char->radical}}">
-                            <input type="hidden" name="radical" value="{{true}}">
-
-                            <button type="submit" class="radical-link">
-                                Radical {{$char->radical}}
-                            </button>
-                        </form>
-
                         @endif
 
                     @endif
 
                     @if ($hasSimplified)
                     <a href="/character/{{$char->simp_char}}">
-                        <h2>Simplifed {{$char->simp_char}}</h2>
+                        <h3>Simplifed {{$char->simp_char}}</h3>
                     </a>
                     @elseif ($hasTraditional)
                     @foreach ($trads as $trad)
                     <a href="/character/{{$trad}}">
-                        <h2>Traditional {{$trad}}</h2>
+                        <h3>Traditional {{$trad}}</h3>
                     </a>
                     @endforeach
                     @endif
@@ -184,6 +174,11 @@ if($char->char == $char->simp_char) {
     .character_type{
         margin: 1em;
     }
+
+    .character_small, .character_type_small, .pinyin_small{
+        display: none;
+    }
+
     .details_section {
         width: 100%;
     }
@@ -201,7 +196,7 @@ if($char->char == $char->simp_char) {
         text-decoration: none;
     }
     .left_section {
-        width: 27%;
+
         text-align: center;
     }
     .freq {
@@ -252,4 +247,77 @@ if($char->char == $char->simp_char) {
         font-weight: lighter;
         color: #c82929;
     }
+
+    .radical-link {
+        color: #c82929;
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    @media screen and (max-width: 1350px) {
+        /* Do not display the large character stuff */
+       .character, .character_type {
+           display: none;
+       }
+
+
+       .character_small, .character_type_small, .pinyin_small{
+           display: initial;
+       }
+
+       .character_small{
+           font-size: 6rem;
+       }
+
+       
+       .translation_title{
+           font-size: 1.25rem;
+       }
+       .translation_text{
+           font-size: 1rem;
+       }
+
+       /* Used to align the top details to the right and in column formation, instead of row */
+       .details_top, .details_title{
+        display: flex;
+        flex-direction: column;
+        text-align: right;
+        align-items: end;
+       }
+
+       /* Pushes the character and pinyin to the left a little to be aligned with the links */
+       .details_title{
+        padding: 0 1em;
+       }
+
+       /* the links section styles */
+       .similar_characters{
+           margin: 1.5em;
+       }
+       .similar_characters form, .similar_characters a h3{
+           margin-top: 1em; 
+       }
+    }
+
+    @media screen and (max-width: 675px) {
+        .character_section{
+            flex-direction: column-reverse;
+        }
+        .details_top, .details_title{
+            text-align: center;
+            align-items: center;
+        }
+    }
+
+</style>
+
+{{-- Spesific styles for this page --}}
+<style>
+    @media screen and (max-width: 675px) {
+        .main{
+            padding: 1em 0;
+        }
+    }
+
 </style>

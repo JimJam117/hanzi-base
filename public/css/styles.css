@@ -24,6 +24,12 @@
      min-height: 100vh;
  }
 
+ @media screen and (max-width: 975px) {
+    /* .sub-features{
+        flex-direction: column;
+    } */
+ }
+
  .main hr {
      border: 0;
      border-top: 1px solid #bebebe;
@@ -31,7 +37,12 @@
  }
 
  .main-section {
-     padding: 2em;
+    padding: 2em;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    align-items: center;    
  }
 
  .character_link, .character_link:visited {
@@ -55,7 +66,7 @@
 
 .characters_container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+    grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
     grid-gap: 1rem;
 }
 
@@ -279,6 +290,7 @@ footer a, footer a:visited{
         align-items: center;
         justify-content: space-evenly;
         padding-top: 2em;
+        z-index: 3;
     }
 
     /* Container for the links within bMenu (provides padding) */

@@ -35,6 +35,30 @@
         <hr>
 
         <div class="sub-features">
+            
+                <h2 class="feature-title">Translations</h2>
+                <h2 class="feature-title">Stroke Order</h2>
+                <h2 class="feature-title">API Generated Content</h2>
+
+                <i class="fas fa-language feature-icon"></i>
+            <i class="fas fa-pen-fancy feature-icon"></i>
+            <i class="fas fa-cloud feature-icon"></i>
+
+                <p class="feature-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde nisi ad deserunt quibusdam ipsum ducimus blanditiis ab, illo rem repellat?</p>
+            
+            
+                
+                
+                <p class="feature-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde nisi ad deserunt quibusdam ipsum ducimus blanditiis ab, illo rem repellat?</p>
+            
+           
+                
+                
+                <p class="feature-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde nisi ad deserunt quibusdam ipsum ducimus blanditiis ab, illo rem repellat?</p>
+
+        </div>
+
+        <div class="sub-features-small">
             <div class="feature">
                 <h2>Translations</h2>
                 <i class="fas fa-language"></i>
@@ -51,6 +75,7 @@
                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde nisi ad deserunt quibusdam ipsum ducimus blanditiis ab, illo rem repellat?</p>
             </div>
         </div>
+
         <hr>
         <div class="main-section">
             <h1>Title</h1>
@@ -107,6 +132,7 @@
 
     .search-container form {
         display: flex;
+        justify-content: center;
     }
 
     .search-container input {
@@ -115,7 +141,7 @@
         border: 0;
         border-radius: 1em 0 0 1em;
         font-size: 1.25em;
-        width: 100%;
+        width: 80%;
         outline: none;
         opacity: 0.9;
     }
@@ -161,7 +187,8 @@
     /*Character Stat Section*/
     .stat-section{
         display: flex;
-        
+        flex-direction: row;
+        max-width: 1200px;
     }
     .stat-title{
         font-weight: 100;
@@ -175,8 +202,8 @@
     .nihao{
         display: flex;
         flex-direction: column;
+        align-items: center;
         
-        margin: auto;
     }
     .nihao h2{
         display: none;
@@ -188,30 +215,28 @@
     }
 
     .stat-title-section {
-        padding-left: 1em;
+        padding-left: 75px;
     }
-
-    @media screen and (max-width: 700px) {
-        .stat-section{
-            flex-direction: column;
-        }
-        .nihao .stat-title{
-            display: initial;
-            font-size: 2rem;
-        }
-        .red{
-            font-size: 2rem;
-        }
-        .stat-title-section .stat-title{
-            display: none;
-        }
-    }
-
 
     /* Sub-feature */
-    .sub-features{
-        display: flex;
+    .sub-features-small {
+        display: none;
     }
+
+    .sub-features{
+        display: grid;
+        grid-template-columns: 33% 33% 33%;
+        width: 100%;
+        text-align: center;
+    }
+    .feature-icon{
+        padding: 0.5em 0;
+        font-size: 5em;
+    }
+    .feature-title, .feature-text{
+        padding: 0 0.25em;
+    }
+
     .feature{
         padding: 2em;
         text-align: center
@@ -224,7 +249,39 @@
         font-size: 2em;
     }
 
-    
+    @media screen and (max-width: 700px) {
+        .landing-area-content h1 {
+            font-size: 20vw;
+        }
+
+        .main-section{
+            flex-direction: column;
+            text-align: center;
+        }
+        .nihao .stat-title{
+            display: initial;
+            font-size: 2rem;
+        }
+        .red{
+            font-size: 2rem;
+        }
+
+        .stat-title-section {
+            padding-left: 0px;
+        }
+        
+        .stat-title{
+            display: none;
+        }
+
+        .sub-features{
+            display: none;
+        }
+        .sub-features-small{
+            display: flex;
+            flex-direction: column;
+        }
+    }
 
 </style>
 

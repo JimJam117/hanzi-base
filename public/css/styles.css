@@ -75,6 +75,15 @@
 
 .translations {}
 
+.top-details {
+    color: #B5183A;
+    padding: 1em 1em 0 1em;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
 .pinyin {}
 
 /* ==============================

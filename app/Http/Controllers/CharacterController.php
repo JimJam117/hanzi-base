@@ -16,7 +16,7 @@ class CharacterController extends Controller
 
     public function index()
     {
-        $chars = DB::table('characters')->paginate(15);
+        $chars = DB::table('characters')->paginate(30);
         return view('character.index', compact(['chars']));
     }
 
@@ -183,7 +183,7 @@ class CharacterController extends Controller
 
             // get results for radical here after fish'n'chips
             $results = \App\Character::where('radical', 'like', '%' . $search .'%')
-                                ->orWhere('simp_radical', 'like', '%' . $search .'%')->paginate(15);
+                                ->orWhere('simp_radical', 'like', '%' . $search .'%')->paginate(30);
 
             $isRadicalSearch = true;
             
@@ -204,7 +204,7 @@ class CharacterController extends Controller
 
         // these settings are for the custom LengthAwarePaginator
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
-        $perPage = 15;
+        $perPage = 30;
 
         $results = [];
         $pinyinResults = [];
@@ -305,7 +305,7 @@ class CharacterController extends Controller
                 foreach ($resultArray as $resultItem) {
                     $query->orwhere('char', 'like',  '%' . $resultItem .'%');
                 }      
-            })->paginate(15);
+            })->paginate(30);
         }
         
         if($newCharArray) {

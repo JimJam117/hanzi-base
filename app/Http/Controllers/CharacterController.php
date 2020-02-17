@@ -211,6 +211,22 @@ class CharacterController extends Controller
         $translationResults = [];
 
         foreach ($inputArray as $inputItem) {
+            // actual results
+            $pinyinResults = \App\Character::where('char', $inputItem)
+            ->orWhere('pinyin', $inputItem)
+            ->orWhere('radical', $inputItem)
+            ->orWhere('pinyin_normalised', $inputItem)->orderBy('freq', 'asc')->get();
+
+            // for each result in the above collections, add to results array
+
+            foreach($pinyinResults as $result) {
+                if (! in_array($result, $results)) {
+                    array_push($results, $result);
+                }
+            }
+        }
+
+        foreach ($inputArray as $inputItem) {
             // pinyin and char results
             $pinyinResults = \App\Character::where('char', 'like', '%' . $inputItem .'%')
             ->orWhere('pinyin', 'like', '%' . $inputItem .'%')

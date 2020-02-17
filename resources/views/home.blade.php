@@ -20,6 +20,7 @@
     <div class="main">
         <div class="main-section stat-section">
             <div class="nihao">
+                <h2 class="stat-title"><span class='red'>{{$charCount}}</span> Characters on HanziBase</h2>
                 <div id="writer"></div>
             </div>
             <div class="stat-title-section">
@@ -170,15 +171,40 @@
         color: #b5183a;
         font-size: 3em;
     }
+
     .nihao{
         display: flex;
-        width: 50%;
+        flex-direction: column;
+        
         margin: auto;
+    }
+    .nihao h2{
+        display: none;
     }
     .nihao div{  
         height: 300px;
         width: 300px;
         padding: 5px;  
+    }
+
+    .stat-title-section {
+        padding-left: 1em;
+    }
+
+    @media screen and (max-width: 700px) {
+        .stat-section{
+            flex-direction: column;
+        }
+        .nihao .stat-title{
+            display: initial;
+            font-size: 2rem;
+        }
+        .red{
+            font-size: 2rem;
+        }
+        .stat-title-section .stat-title{
+            display: none;
+        }
     }
 
 

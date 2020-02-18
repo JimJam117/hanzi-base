@@ -10,6 +10,58 @@ use App\Libraries\Radicals;
 
 class CharacterController extends Controller
 {
+
+    /**
+     * Takes a string of JSON data and converts it into characters, then adds those characters to db
+     * 
+     * The JSON should be formatted as follows:
+     * [
+     *  {
+     *      "Character":"一",
+     *      "Number":"1",
+     *      "Keyword":"One"
+     *  },
+     *  {
+     *      "Character":"二",
+     *      "Number":"2",
+     *      "Keyword":"Two"
+     *  },
+     *  etc...
+     * ]
+     * 
+     * @param string $heisigCharsJson The JSON string
+     * @return void
+     */
+    public function addHeisigCharacters($heisigCharsJson = null) {
+
+        // used to manually set the string
+        // $heisigCharsJson = '';
+
+        //decode the characters into an array
+        $heisigChars = json_decode($heisigCharsJson, TRUE);
+ 
+
+        foreach ($heisigChars as $data) {
+
+            // get the character data passing in the heisig properties
+            $charData = $this->grabCharacterData(
+                $data['Character'], // Character
+                $data['Number'], // Heisig Number 
+                $data['Keyword'] // Heisig Keyword
+            );
+            
+            // add to db 
+            $this->addToDatabase($charData);
+        }
+    }
+
+
+
+
+
+
+
+
     public function notfound() {
         return view('character.notfound');
     }
@@ -19,6 +71,11 @@ class CharacterController extends Controller
         $chars = DB::table('characters')->paginate(30);
         return view('character.index', compact(['chars']));
     }
+
+    public function addTheHeisig() {
+
+    }
+
 
     /**
      * Return the correct page for the single character given.
@@ -68,10 +125,9 @@ class CharacterController extends Controller
         dd($this->grabCharacterData($char));
     }
 
-    public function grabCharacterData($char) {
+    public function grabCharacterData($char, $heisig_number = null, $heisig_keyword = null) {
         // make sure only one character is used
         $char = mb_substr($char, 0, 1);
-
         
         // grab the data from ccdb
         $ccdb = json_decode(file_get_contents("http://ccdb.hemiola.com/characters/string/" . $char . "?fields=kDefinition,kFrequency,kTotalStrokes,kSimplifiedVariant,kTraditionalVariant,kRSUnicode"), true);
@@ -140,6 +196,12 @@ class CharacterController extends Controller
         // add glosbe pinyin
         $ccdb += ['pinyin' => $pinyin];
         $ccdb += ['pinyin_normalised' => $pinyin_normalised];
+
+        // add the heisig data
+        $ccdb += ['heisig_number' => $heisig_number];
+        $ccdb += ['heisig_keyword' => $heisig_keyword];
+
+        // return the character obj
         return $ccdb;
     }
 
@@ -163,6 +225,8 @@ class CharacterController extends Controller
         'pinyin'                    => $data['pinyin'],
         'pinyin_normalised'         => $data['pinyin_normalised'],
         'translations'              => $data['kDefinition'],
+        'heisig_keyword'            => $data['heisig_keyword'],
+        'heisig_number'             => $data['heisig_number'],
         ]);
 
     }

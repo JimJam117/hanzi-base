@@ -63,7 +63,9 @@
         
   </script>
 
-    <title>HanziBase</title>
+    <title>
+        @yield('title')
+    </title>
     <link rel="icon" href="/icon.ico">
     <link rel="stylesheet" href="/css/styles.css">
 

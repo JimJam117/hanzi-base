@@ -1,17 +1,7 @@
-@include('partials.topbar')
+@extends('layouts.app')
 
-@php
-
-        
-
-     
-@endphp
-
-<div class="main">
-    @php
-        
-        //dd($ccdb);
-    @endphp
+@section('main')
+    
     <div class="characters_container">
         @foreach ($chars as $char)
 
@@ -85,6 +75,4 @@
     {{-- paginator links --}}
     {{ $chars->links() }}
 
-    @include('partials.footer')
-</div>
-
+    @endsection

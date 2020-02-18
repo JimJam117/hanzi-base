@@ -1,5 +1,7 @@
-@include('partials.topbar')
+@extends('layouts.app')
 
+@section('main')
+    
 @php
 $hasSimplified = $char->simp_char ? true : false;
 $hasTraditional = $char->trad_char ? true : false;
@@ -22,7 +24,7 @@ if($char->char == $char->simp_char) {
 }
 @endphp
 
-<div class="main">
+
     @if ($newCharAdded == true)
         <div class="newCharAdded">This character has now been added to hanzibase!</div>
     @endif
@@ -156,9 +158,11 @@ if($char->char == $char->simp_char) {
 
 
 
-    @include('partials.footer')
-</div>
+@endsection
 
+
+@section('extra-scripts')
+    
 
 
 <style>
@@ -321,3 +325,5 @@ if($char->char == $char->simp_char) {
     }
 
 </style>
+
+@endsection

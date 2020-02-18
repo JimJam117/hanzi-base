@@ -1,6 +1,7 @@
-@include('partials.topbar')
+@extends('layouts.app')
 
-<div class="main">
+@section('main')
+    
    @if (isset($newCharArray))
 
         <div class="newCharAdded">New characters "
@@ -96,7 +97,6 @@
 
     {{ $results->links() }}
 
-    @include('partials.footer')
-</div>
 
 
+@endsection

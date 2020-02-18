@@ -1,99 +1,100 @@
-@include('partials.topbar')
+@extends('layouts.app')
 
-    <div class="landing-area">
-        <div class="landing-area-content">
-            <h1>HanziBase</h1>
-            <p>Free resource for learning Chinese characters</p>
-            <div class="search-container">
-                <form action="/search" method="POST">
-                    @csrf
-                    <input type="text" placeholder="Search.." name="query" autocomplete="off">
-                    <button type="submit"><i class="fa fa-search"></i></button>
-                </form>
-            </div>
-            
-        </div>
-        
-
+@section('landing')
+<div class="landing-area">
+    <div class="landing-area-content">
+        <h1>HanziBase</h1>
+        <p>Free resource for learning Chinese characters</p>
+        <div class="search-container">
+            <form action="/search" method="POST">
+                @csrf
+                <input type="text" placeholder="Search.." name="query" autocomplete="off">
+                <button type="submit"><i class="fa fa-search"></i></button>
+            </form>
+        </div>       
+    </div>
+</div>
+@endsection
+    
+@section('main')
+<div class="main-section stat-section">
+    <div class="nihao">
+        <h2 class="stat-title"><span class='red'>{{$charCount}}</span> Characters on HanziBase</h2>
+        <div id="writer"></div>
+    </div>
+    <div class="stat-title-section">
+        <h2 class="stat-title"><span class='red'>{{$charCount}}</span> Characters on HanziBase</h2>
+        <p>HanziBase is a free resource for learning Chinese characters, both simplifed and traditional. You can search by character, pinyin, translation or Heisig keyword (if you are using <em>Remembering the Hanzi</em>) to find a character's details.</p>
+        <br>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis esse temporibus voluptates est debitis accusantium ea veniam! Est, consequuntur debitis.</p>
     </div>
 
-    <div class="main">
-        <div class="main-section stat-section">
-            <div class="nihao">
-                <h2 class="stat-title"><span class='red'>{{$charCount}}</span> Characters on HanziBase</h2>
-                <div id="writer"></div>
-            </div>
-            <div class="stat-title-section">
-                <h2 class="stat-title"><span class='red'>{{$charCount}}</span> Characters on HanziBase</h2>
-                <p>HanziBase is a free resource for learning Chinese characters, both simplifed and traditional. You can search by character, pinyin, translation or Heisig keyword (if you are using <em>Remembering the Hanzi</em>) to find a character's details.</p>
-                <br>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis esse temporibus voluptates est debitis accusantium ea veniam! Est, consequuntur debitis.</p>
-            </div>
 
+</div>
+<hr>
 
-        </div>
-        <hr>
+<div class="sub-features">
+    
+        <h2 class="feature-title">Translations</h2>
+        <h2 class="feature-title">Stroke Order</h2>
+        <h2 class="feature-title">API Generated Content</h2>
 
-        <div class="sub-features">
-            
-                <h2 class="feature-title">Translations</h2>
-                <h2 class="feature-title">Stroke Order</h2>
-                <h2 class="feature-title">API Generated Content</h2>
+        <i class="fas fa-language feature-icon"></i>
+    <i class="fas fa-pen-fancy feature-icon"></i>
+    <i class="fas fa-cloud feature-icon"></i>
 
-                <i class="fas fa-language feature-icon"></i>
-            <i class="fas fa-pen-fancy feature-icon"></i>
-            <i class="fas fa-cloud feature-icon"></i>
-
-                <p class="feature-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde nisi ad deserunt quibusdam ipsum ducimus blanditiis ab, illo rem repellat?</p>
-            
-            
-                
-                
-                <p class="feature-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde nisi ad deserunt quibusdam ipsum ducimus blanditiis ab, illo rem repellat?</p>
-            
-           
-                
-                
-                <p class="feature-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde nisi ad deserunt quibusdam ipsum ducimus blanditiis ab, illo rem repellat?</p>
-
-        </div>
-
-        <div class="sub-features-small">
-            <div class="feature">
-                <h2>Translations</h2>
-                <i class="fas fa-language"></i>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde nisi ad deserunt quibusdam ipsum ducimus blanditiis ab, illo rem repellat?</p>
-            </div>
-            <div class="feature">
-                <h2>Stroke Order</h2>
-                </i><i class="fas fa-pen-fancy"></i>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde nisi ad deserunt quibusdam ipsum ducimus blanditiis ab, illo rem repellat?</p>
-            </div>
-            <div class="feature">
-                <h2>API Generated Content</h2>
-                <i class="fas fa-cloud"></i>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde nisi ad deserunt quibusdam ipsum ducimus blanditiis ab, illo rem repellat?</p>
-            </div>
-        </div>
-
-        <hr>
-        <div class="main-section">
-            <h1>Title</h1>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque velit ea quo blanditiis tenetur, incidunt rem magni expedita laudantium, libero aliquid nemo aspernatur, deserunt quod laborum perspiciatis sapiente officia fugit recusandae eum porro ut illum. Veritatis doloremque vel reiciendis a enim itaque aut nisi aspernatur earum rerum. Neque exercitationem voluptates sed esse fuga modi cum non dicta assumenda saepe, delectus, praesentium, nemo expedita impedit obcaecati dignissimos reiciendis dolor eos iusto rerum soluta nihil sunt ex?</p>
-        </div>
-
-
-        
-
+        <p class="feature-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde nisi ad deserunt quibusdam ipsum ducimus blanditiis ab, illo rem repellat?</p>
+    
+    
         
         
-        <div id="top-of-site-pixel-anchor"></div>
+        <p class="feature-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde nisi ad deserunt quibusdam ipsum ducimus blanditiis ab, illo rem repellat?</p>
+    
+   
+        
+        
+        <p class="feature-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde nisi ad deserunt quibusdam ipsum ducimus blanditiis ab, illo rem repellat?</p>
+
+</div>
+
+<div class="sub-features-small">
+    <div class="feature">
+        <h2>Translations</h2>
+        <i class="fas fa-language"></i>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde nisi ad deserunt quibusdam ipsum ducimus blanditiis ab, illo rem repellat?</p>
+    </div>
+    <div class="feature">
+        <h2>Stroke Order</h2>
+        </i><i class="fas fa-pen-fancy"></i>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde nisi ad deserunt quibusdam ipsum ducimus blanditiis ab, illo rem repellat?</p>
+    </div>
+    <div class="feature">
+        <h2>API Generated Content</h2>
+        <i class="fas fa-cloud"></i>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde nisi ad deserunt quibusdam ipsum ducimus blanditiis ab, illo rem repellat?</p>
+    </div>
+</div>
+
+<hr>
+<div class="main-section">
+    <h1>Title</h1>
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque velit ea quo blanditiis tenetur, incidunt rem magni expedita laudantium, libero aliquid nemo aspernatur, deserunt quod laborum perspiciatis sapiente officia fugit recusandae eum porro ut illum. Veritatis doloremque vel reiciendis a enim itaque aut nisi aspernatur earum rerum. Neque exercitationem voluptates sed esse fuga modi cum non dicta assumenda saepe, delectus, praesentium, nemo expedita impedit obcaecati dignissimos reiciendis dolor eos iusto rerum soluta nihil sunt ex?</p>
+</div>
+
+
+
+
+
+
+<div id="top-of-site-pixel-anchor"></div>
+@endsection
+        
         
       
-        @include('partials.footer')
+     
 
-    </div>
-</body>
+@section('extra-scripts')
+    
 
 <!--Style-->
 <style>
@@ -407,4 +408,5 @@
     }
 </script>
 
-</html>
+@endsection
+

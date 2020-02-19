@@ -1,5 +1,11 @@
 @extends('layouts.app')
 
+{{-- Title --}}
+@section('title')
+HanziBase
+@endsection
+
+
 @section('landing')
 <div class="landing-area">
     <div class="landing-area-content">

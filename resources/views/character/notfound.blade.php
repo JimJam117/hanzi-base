@@ -1,4 +1,9 @@
-@extends('layouts.name')
+@extends('layouts.app')
+
+{{-- Title --}}
+@section('title')
+Character "{{$char}}" Not Found
+@endsection
 
 
 @section('main')

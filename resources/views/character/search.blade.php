@@ -1,5 +1,10 @@
 @extends('layouts.app')
 
+{{-- Title --}}
+@section('title')
+results for "{{$search}}"
+@endsection
+
 @section('main')
     
    @if (isset($newCharArray))

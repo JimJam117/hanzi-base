@@ -1,5 +1,12 @@
 @extends('layouts.app')
 
+
+{{-- Title --}}
+@section('title')
+Character "{{ $char->char }}"
+@endsection
+
+
 @section('main')
     
 @php

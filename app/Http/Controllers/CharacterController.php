@@ -12,6 +12,21 @@ class CharacterController extends Controller
 {
 
     /**
+     * Converts the input character into a readable unicode character
+     * 
+     * @param String $input The input string 
+     * @return String The character in the correct unicode format
+     */
+    function grabUnicodeChar($input) {
+        
+        $trimmed = trim($input, "U+");
+        $unicodeChar = "\u$trimmed";
+        return json_decode('"'.$unicodeChar.'"');
+    }
+
+
+
+    /**
      * Takes a string of JSON data and converts it into characters, then adds those characters to db
      * 
      * The JSON should be formatted as follows:
@@ -56,25 +71,152 @@ class CharacterController extends Controller
     }
 
 
-
-
-
-
-
-
+    /**
+     * Return a blank character notfound page
+     * 
+     * @return view Blank notfound page
+     */
     public function notfound() {
-        return view('character.notfound');
+        $char = null;
+        return view('character.notfound', compact('char'));
     }
 
+
+    /**
+     * Returns all of the characters, paginated
+     * 
+     * @return view All characters view
+     */
     public function index()
     {
         $chars = DB::table('characters')->paginate(30);
         return view('character.index', compact(['chars']));
     }
 
-    public function addTheHeisig() {
+
+
+    /**
+     * Grabs the infomation for a given character from the APIs
+     * 
+     * Uses the ccdb api, along with glosbe for pinyin and the radicals library for getting radicals to return a $character object ready to be added to the database
+     * 
+     * @param String $char The target character 
+     * @param String $heisig_number The heisig number to be provided if available, optional
+     * @param String $heisig_keyword The heisig keyword to be provided if available, optional
+     * 
+     */
+
+    public function grabCharacterData($char, $heisig_number = null, $heisig_keyword = null) {
+        // make sure only one character is used
+        $char = mb_substr($char, 0, 1);
+        
+        // grab the data from ccdb
+        $ccdb = json_decode(file_get_contents("http://ccdb.hemiola.com/characters/string/" . $char . "?fields=kDefinition,kFrequency,kTotalStrokes,kSimplifiedVariant,kTraditionalVariant,kRSUnicode"), true);
+        if (empty($ccdb)) {
+            return null;
+        }
+        $ccdb = $ccdb[0];
+
+        // add the orignal to the output
+        $ccdb += ['original' => $char];
+
+        // grab the trad and simp chars
+        $raw_trads = explode ( " " , $ccdb['kTraditionalVariant']);
+        $raw_trad = "";
+        $i = 0;
+        if (!empty($raw_trads)){
+            foreach ($raw_trads as $trad) {
+                if($i != 0) {
+                    $raw_trad = $raw_trad . ",";
+                }
+                else{
+                    $i = 1;
+                }
+                $raw_trad = $raw_trad . $this->grabUnicodeChar($trad);
+            }
+        }
+        
+        if(empty($raw_trad)) {
+            $raw_trad = $char;
+        }
+
+        $raw_simp = $this->grabUnicodeChar($ccdb['kSimplifiedVariant']) ?? $char;
+        
+        // add the trad and simp chars
+        $ccdb += ['traditional_actual' => $raw_trad];
+        $ccdb += ['simplified_actual' => $raw_simp];
+
+        
+        // ====== radicals ====== //
+
+        // grab the radical number from the kRSUnicode, which is in the format 'radical-number','extra-strokes'
+        // only the radical number is needed, so explode then grab first element
+        $radicalNumber = explode(".", $ccdb['kRSUnicode']);
+
+        // also remove any "'" that's in the first array item
+        $radicalNumber = explode("'", $radicalNumber[0]);
+        $radicalNumber = $radicalNumber[0];
+
+
+
+        //radical fetch from Radicals class
+        $radical = Radicals::returnRadical($radicalNumber);
+        $simp_radical = Radicals::returnSimplifedRadical($radicalNumber) ?? $radical;
+        
+
+        // add the radicals
+        $ccdb += ['radical' => $radical];
+        $ccdb += ['simplified_radical' => $simp_radical];
+
+        // glosbe pinyin
+        $char_encoded = urlencode($char);
+        $glosbe = json_decode(file_get_contents("https://glosbe.com/transliteration/api?from=Han&dest=Latin&text=". "$char_encoded" ."&format=json"), true);
+        $pinyin = $glosbe['text'];
+
+        $transliterator = Transliterator::createFromRules(':: Any-Latin; :: Latin-ASCII; :: NFD; :: [:Nonspacing Mark:] Remove; :: Lower(); :: NFC;', Transliterator::FORWARD);
+        $pinyin_normalised = $transliterator->transliterate($pinyin);
+
+        // add glosbe pinyin
+        $ccdb += ['pinyin' => $pinyin];
+        $ccdb += ['pinyin_normalised' => $pinyin_normalised];
+
+        // add the heisig data
+        $ccdb += ['heisig_number' => $heisig_number];
+        $ccdb += ['heisig_keyword' => $heisig_keyword];
+
+        // return the character obj
+        return $ccdb;
+    }
+
+
+    /**
+     * Takes the data and creates a character in the database
+     * 
+     * @param Array the data to create the char with
+     * @return Void
+     */
+    function addToDatabase($data) {
+
+        \App\Character::create([
+        'char'                      => $data['original'],
+        'simp_char'                 => $data['simplified_actual'],
+        'trad_char'                 => $data['traditional_actual'],
+        'freq'                      => $data['kFrequency'],
+        'stroke_count'              => $data['kTotalStrokes'],
+        'radical'                   => $data['radical'],
+        'simp_radical'              => $data['simplified_radical'],
+        'pinyin'                    => $data['pinyin'],
+        'pinyin_normalised'         => $data['pinyin_normalised'],
+        'translations'              => $data['kDefinition'],
+        'heisig_keyword'            => $data['heisig_keyword'],
+        'heisig_number'             => $data['heisig_number'],
+        ]);
 
     }
+
+
+
+
 
 
     /**
@@ -121,120 +263,45 @@ class CharacterController extends Controller
     }
 
 
-    public function debug($char) {
-        dd($this->grabCharacterData($char));
-    }
-
-    public function grabCharacterData($char, $heisig_number = null, $heisig_keyword = null) {
-        // make sure only one character is used
-        $char = mb_substr($char, 0, 1);
-        
-        // grab the data from ccdb
-        $ccdb = json_decode(file_get_contents("http://ccdb.hemiola.com/characters/string/" . $char . "?fields=kDefinition,kFrequency,kTotalStrokes,kSimplifiedVariant,kTraditionalVariant,kRSUnicode"), true);
-        if (empty($ccdb)) {
-            return null;
-        }
-        $ccdb = $ccdb[0];
-        // add the orignal to the output
-        $ccdb += ['original' => $char];
-
-        // grab the trad and simp chars
-        $raw_trads = explode ( " " , $ccdb['kTraditionalVariant']);
-        $raw_trad = "";
-        $i = 0;
-        if (!empty($raw_trads)){
-            foreach ($raw_trads as $trad) {
-                if($i != 0) {
-                    $raw_trad = $raw_trad . ",";
-                }
-                else{
-                    $i = 1;
-                }
-                $raw_trad = $raw_trad . $this->grabUnicodeChar($trad);
-            }
-        }
-        
-        if(empty($raw_trad)) {
-            $raw_trad = $char;
-        }
-
-        $raw_simp = $this->grabUnicodeChar($ccdb['kSimplifiedVariant']) ?? $char;
-        
-        // add the trad and simp chars
-        $ccdb += ['traditional_actual' => $raw_trad];
-        $ccdb += ['simplified_actual' => $raw_simp];
-
-        // radicals
-
-        // grab the radical number from the kRSUnicode, which is in the format 'radical-number','extra-strokes'
-        // only the radical number is needed, so explode then grab first element
-        $radicalNumber = explode(".", $ccdb['kRSUnicode']);
-
-        // also remove any "'" that's in the first array item
-        $radicalNumber = explode("'", $radicalNumber[0]);
-        $radicalNumber = $radicalNumber[0];
+    
 
 
 
-        //radical fetch from Radicals class
-        $radical = Radicals::returnRadical($radicalNumber);
-        $simp_radical = Radicals::returnSimplifedRadical($radicalNumber) ?? $radical;
-        
+    /*
+     *  ====================
+     *      SEARCH
+     *  ====================
+     */
 
-        // add the radicals
-        $ccdb += ['radical' => $radical];
-        $ccdb += ['simplified_radical' => $simp_radical];
-
-        // glosbe pinyin
-        $char_encoded = urlencode($char);
-        $glosbe = json_decode(file_get_contents("https://glosbe.com/transliteration/api?from=Han&dest=Latin&text=". "$char_encoded" ."&format=json"), true);
-        $pinyin = $glosbe['text'];
-
-        $transliterator = Transliterator::createFromRules(':: Any-Latin; :: Latin-ASCII; :: NFD; :: [:Nonspacing Mark:] Remove; :: Lower(); :: NFC;', Transliterator::FORWARD);
-        $pinyin_normalised = $transliterator->transliterate($pinyin);
-
-        // add glosbe pinyin
-        $ccdb += ['pinyin' => $pinyin];
-        $ccdb += ['pinyin_normalised' => $pinyin_normalised];
-
-        // add the heisig data
-        $ccdb += ['heisig_number' => $heisig_number];
-        $ccdb += ['heisig_keyword' => $heisig_keyword];
-
-        // return the character obj
-        return $ccdb;
-    }
-
-    function grabUnicodeChar($string) {
-        
-        $trimmed = trim($string, "U+");
-        $unicodeChar = "\u$trimmed";
-        return json_decode('"'.$unicodeChar.'"');
-    }
-
-    function addToDatabase($data) {
-
-        \App\Character::create([
-        'char'                      => $data['original'],
-        'simp_char'                 => $data['simplified_actual'],
-        'trad_char'                 => $data['traditional_actual'],
-        'freq'                      => $data['kFrequency'],
-        'stroke_count'              => $data['kTotalStrokes'],
-        'radical'                   => $data['radical'],
-        'simp_radical'              => $data['simplified_radical'],
-        'pinyin'                    => $data['pinyin'],
-        'pinyin_normalised'         => $data['pinyin_normalised'],
-        'translations'              => $data['kDefinition'],
-        'heisig_keyword'            => $data['heisig_keyword'],
-        'heisig_number'             => $data['heisig_number'],
-        ]);
-
-    }
 
     /**
-     * Search Stuff
+     * Checks if the chars in the input array are in the DB, adds them if not and returns list of added chars
      * 
+     * @param Array $inputArray Array of characters
+     * @return Array Returns an array consisting of the new Characters
      */
+    function addArrayToDatabase($inputArray) {
+        // for chars that are new to HanziBase
+        $newArray = [];
+
+        foreach ($inputArray as $item) {
+            
+            // if its not already in the database
+            if (! \App\Character::where('char', $item)->first()) {
+                $charData = $this->grabCharacterData($item);
+                
+                if($charData != null) { 
+                    
+                    $this->addToDatabase($charData); 
+                   
+                    array_push($newArray, $charData);
+                }
+            }
+            
+        }
+        return $newArray;
+    }
+
 
     public function fetchSearch() {
       
@@ -247,7 +314,10 @@ class CharacterController extends Controller
     }
 
     /**
-     * Used for fetch results from an array of strings
+     * Fetches search results from an array of strings
+     * 
+     * @param Array $inputArray An array consisting of the strings to be searched for
+     * @return LengthAwarePaginator $results The results for the array
      * 
      */
     public function fetchArraySearchResults($inputArray) {
@@ -262,25 +332,28 @@ class CharacterController extends Controller
         $results = [];
         $pinyinResults = [];
         $translationResults = [];
+        $actualResults = [];
 
+        // Actual results, items that match exactly
         foreach ($inputArray as $inputItem) {
-            // actual results
-            $pinyinResults = \App\Character::where('char', $inputItem)
+
+            $actualResults = \App\Character::where('char', $inputItem)
             ->orWhere('pinyin', $inputItem)
             ->orWhere('radical', $inputItem)
             ->orWhere('pinyin_normalised', $inputItem)->orderBy('freq', 'asc')->get();
 
             // for each result in the above collections, add to results array
 
-            foreach($pinyinResults as $result) {
+            foreach($actualResults as $result) {
                 if (! in_array($result, $results)) {
                     array_push($results, $result);
                 }
             }
         }
 
+        // pinyin and char results using "like" operator
         foreach ($inputArray as $inputItem) {
-            // pinyin and char results
+    
             $pinyinResults = \App\Character::where('char', 'like', '%' . $inputItem .'%')
             ->orWhere('pinyin', 'like', '%' . $inputItem .'%')
             ->orWhere('radical', 'like', '%' . $inputItem .'%')
@@ -295,9 +368,9 @@ class CharacterController extends Controller
             }
         }
 
+        // translation and heisig results using "like" operator
         foreach ($inputArray as $inputItem) {
 
-            // translation and heisig results
             $translationResults = \App\Character::where('heisig_keyword', 'like', '%' . $inputItem .'%')
                     ->orWhere('translations', 'like', '%' . $inputItem .'%')
                     ->orWhere('heisig_number', 'like', '%' . $inputItem .'%')->get();
@@ -315,40 +388,13 @@ class CharacterController extends Controller
         return $results;
     }
 
-    /**
-     * Show the radical search
-     * 
-     * @param $search The search input
-     * @return view Either the radical search view or a character not found view
-     */
-    public function showRadicalSearch ($search = null) {
- 
-            // check if the input is in either radical array
-            $isInArray = array_search($search, Radicals::returnArray());
-            $isInSimpArray = array_search($search, Radicals::returnSimplifedArray());
-
-            // if the search is not a radical
-            if(!$isInArray && !$isInSimpArray) {
-                $notRadical = true;
-                $char = $search;
-                return view('character.notfound', compact('char', 'notRadical'));
-            }
-
-            // if input is valid, return the view
-            else{
-                $results = \App\Character::where('radical', 'like', '%' . $search .'%')
-                            ->orWhere('simp_radical', 'like', '%' . $search .'%')->paginate(30);
-
-                return view('character.search', compact('search', 'results'));
-            }
-    }
 
 
     /**
-     * Show the radical search
+     * Show the search
      * 
      * @param $search The search input
-     * @return view Either the radical search view or a character not found view
+     * @return view The search view
      */
     public function showSearch($search = null) {
 
@@ -386,18 +432,15 @@ class CharacterController extends Controller
         if(preg_match("/\p{Han}+/u", $search) ) {
             $searchExploded = mb_str_split($search);
 
-            $charsArray = [];
+            $resultArray = [];
 
-            // foreach character in search exploded where the character is a hanzi, add to the charsArray
+            // foreach character in search exploded where the character is a hanzi, add to the resultArray
             foreach ($searchExploded as $searchCharacter) {
-                preg_match("/\p{Han}+/u", $searchCharacter) ? array_push($charsArray, $searchCharacter) : null ;
+                preg_match("/\p{Han}+/u", $searchCharacter) ? array_push($resultArray, $searchCharacter) : null ;
             }
             
-            $explodedSearchFuncResult = $this->explodedSearchDatabaseAddHandler($charsArray);
-
-            $resultArray = $explodedSearchFuncResult[0];
-            $newCharArray = $explodedSearchFuncResult[1];
-
+            // the list of new chars added to the db
+            $newCharArray = $this->addArrayToDatabase($resultArray);
             
             $results = \App\Character::where(function ($query) use($resultArray) {
 
@@ -416,31 +459,41 @@ class CharacterController extends Controller
         }        
     }
 
+
     /**
-     * This function is used to add new characters to the database
+     * Show the radical search
      * 
+     * @param $search The search input
+     * @return view Either the radical search view or a character not found view
      */
-    function explodedSearchDatabaseAddHandler($inputArray) {
-        // new array for chars that are new 
-        $newArray = [];
+    public function showRadicalSearch ($search = null) {
+ 
+        // check if the input is in either radical array
+        $isInArray = array_search($search, Radicals::returnArray());
+        $isInSimpArray = array_search($search, Radicals::returnSimplifedArray());
 
-        // foreach item in that array
-        foreach ($inputArray as $item) {
-            
-            // if its not already in the database
-            if (! \App\Character::where('char', $item)->first()) {
-                $charData = $this->grabCharacterData($item);
-                
-                if($charData != null) { 
-                    
-                    $this->addToDatabase($charData); 
-                   
-                    array_push($newArray, $charData);
-                }
-            }
-            
+        // if the search is not a radical
+        if(!$isInArray && !$isInSimpArray) {
+            $notRadical = true;
+            $char = $search;
+            return view('character.notfound', compact('char', 'notRadical'));
         }
-        return array($inputArray, $newArray);
-    }
 
+        // if input is valid, return the view
+        else{
+            $results = \App\Character::where('radical', 'like', '%' . $search .'%')
+                        ->orWhere('simp_radical', 'like', '%' . $search .'%')->paginate(30);
+
+            return view('character.search', compact('search', 'results'));
+        }
+}
+    
+
+    /*
+     * DEBUG
+     * Returns debug infomation about a character via die and dump
+     */
+    public function debug($char) {
+        dd($this->grabCharacterData($char));
+    }
 }

@@ -237,24 +237,13 @@ class CharacterController extends Controller
      */
 
     public function fetchSearch() {
-        $query = request()->input('query');
-        
+      
         // if the search query is a radical search, add the radical to the search
         if (request()->input('radical')) {
-            $radical = request()->input('radical');
-
-            $search = request()->input('search');
-
-            // get results for radical here after fish'n'chips
-            $results = \App\Character::where('radical', 'like', '%' . $search .'%')
-                                ->orWhere('simp_radical', 'like', '%' . $search .'%')->paginate(30);
-
-            $isRadicalSearch = true;
-            
-            return view('character.search', compact('results', 'search', 'isRadicalSearch'));
+            return redirect("/radical/search/" . request()->input('search'));
         }
 
-        return redirect("/search/" . $query);
+        return redirect("/search/" . request()->input('query'));
     }
 
     /**
@@ -327,8 +316,39 @@ class CharacterController extends Controller
     }
 
     /**
+     * Show the radical search
      * 
+     * @param $search The search input
+     * @return view Either the radical search view or a character not found view
+     */
+    public function showRadicalSearch ($search = null) {
+ 
+            // check if the input is in either radical array
+            $isInArray = array_search($search, Radicals::returnArray());
+            $isInSimpArray = array_search($search, Radicals::returnSimplifedArray());
+
+            // if the search is not a radical
+            if(!$isInArray && !$isInSimpArray) {
+                $notRadical = true;
+                $char = $search;
+                return view('character.notfound', compact('char', 'notRadical'));
+            }
+
+            // if input is valid, return the view
+            else{
+                $results = \App\Character::where('radical', 'like', '%' . $search .'%')
+                            ->orWhere('simp_radical', 'like', '%' . $search .'%')->paginate(30);
+
+                return view('character.search', compact('search', 'results'));
+            }
+    }
+
+
+    /**
+     * Show the radical search
      * 
+     * @param $search The search input
+     * @return view Either the radical search view or a character not found view
      */
     public function showSearch($search = null) {
 

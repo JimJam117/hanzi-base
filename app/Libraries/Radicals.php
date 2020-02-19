@@ -251,7 +251,7 @@ class Radicals
     }
 
     public static function returnSimplifedArray() {
-        return self::$radicalsArray;
+        return self::$radicalsSimplifedArray;
     }
 
     public static function returnRadical($i) {

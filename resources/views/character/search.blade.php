@@ -13,7 +13,7 @@ results for "{{$search}}"
             @foreach ($newCharArray as $item)
                 {{ $item['original'] }}
             @endforeach
-            " have now been added to hanzibase!</div>   
+            " have now been added to HanziBase!</div>   
    {{-- @elseif() --}}
        
    @endif
@@ -102,6 +102,14 @@ results for "{{$search}}"
 
     {{ $results->links() }}
 
+@endsection
 
-
+@section('extra-scripts')  
+<style>
+    .noResults{
+        text-align: center;
+        padding: 3em 1em;
+        font-size: 2rem;
+    }
+</style>
 @endsection

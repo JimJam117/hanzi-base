@@ -11,6 +11,11 @@ use App\Libraries\Radicals;
 class CharacterController extends Controller
 {
 
+    // Go home function
+    public function goHome() {
+        return redirect('/');
+    }
+
     /**
      * Converts the input character into a readable unicode character
      * 
@@ -76,7 +81,7 @@ class CharacterController extends Controller
      */
     public function notfound() {
         $char = null;
-        return view('character.notfound', compact('char'));
+        return view('errors.notfound', compact('char'));
     }
 
 
@@ -234,7 +239,7 @@ class CharacterController extends Controller
         $newCharAdded = false;
 
         // check if there are multiple characters
-        if ( mb_strlen($char) > 1 ) { return view('character.notfound', compact('char')); }
+        if ( mb_strlen($char) > 1 ) { return view('errors.notfound', compact('char')); }
   
         // find the character
         $characterObj = \App\Character::where('char', $char)->orWhere('id', $char)->first();
@@ -244,7 +249,7 @@ class CharacterController extends Controller
 
             // check if the character is within the database
             $data = $this->grabCharacterData($char);
-            if ($data == null) { return view('character.notfound', compact('char')); }
+            if ($data == null) { return view('errors.notfound', compact('char')); }
             
             // if the character exists, add it to the database
             $this->addToDatabase($data);
@@ -467,9 +472,8 @@ class CharacterController extends Controller
 
         // if the search is not a radical
         if(!$isInArray && !$isInSimpArray) {
-            $notRadical = true;
             $char = $search;
-            return view('character.notfound', compact('char', 'notRadical'));
+            return view('errors.radicalNotfound', compact('char'));
         }
 
         // if input is valid, return the view

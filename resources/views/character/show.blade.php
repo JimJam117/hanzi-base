@@ -33,7 +33,7 @@ if($char->char == $char->simp_char) {
 
 
     @if ($newCharAdded == true)
-        <div class="newCharAdded">This character has now been added to hanzibase!</div>
+        <div class="newCharAdded">This character has now been added to HanziBase!</div>
     @endif
    
     <div class="character_section">
@@ -150,9 +150,9 @@ if($char->char == $char->simp_char) {
             width: 300,
             height: 300,
             padding: 15,
-            strokeAnimationSpeed: 1, // 5x normal speed
-            delayBetweenStrokes: 50, // milliseconds
-            strokeColor: '#c82929', // red
+            strokeAnimationSpeed: 1,
+            delayBetweenStrokes: 50,
+            strokeColor: '#c82929',
             delayBetweenLoops: 3000,
             showOutline: true,
 

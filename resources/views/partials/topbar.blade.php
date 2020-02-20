@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="Free resource for learning Chinese characters">
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC|Noto+Sans+SC|Open+Sans|ZCOOL+XiaoWei|Noto+Serif+SC:200,400|Noto+Serif+TC:200,400&display=swap"
         rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" media="all" rel="stylesheet">
@@ -13,52 +14,24 @@
 
     <script type="text/javascript">
         function burgerMenuShowHide() {
-            // show/hide menu
-            // var ico = document.getElementById("bMenuButton");
-            // var text = document.getElementById("bMenuText");
+                var button = document.getElementById("bMenuButton");
+                var bMenu = document.getElementById("bMenu");
 
-            // var Main = document.getElementById("mainContent");
-            // var Smenu = document.getElementById("sMenu");
-            // var SmenuClear = document.getElementById("sMenuClear");
+                // open
+                if(bMenu.className === "bMenu bMenuClosed") {
+                    bMenu.className = "bMenu";
+                    
+                    button.innerHTML = '<i class="fas fa-times"></i>';
+                    console.log("open");
+                }
 
-            // if (ico.className === "fas fa-angle-left") {
-            // ico.className = "fas fa-angle-right";
-            // text.className = "bMenuTextShowMessage";
+                // close
+                else {
+                    bMenu.className = "bMenu bMenuClosed";
 
-            // Main.className += " main_content_full";
-
-
-            // sMenu.className += " top_band_closed";
-            // sMenuClear.className += " top_band_fix_closed";
-            // }
-            // // open
-            // else {
-            // ico.className = "fas fa-angle-left";
-            // text.className = "bMenuTextHideMessage";
-
-            // Main.className = "main_content";
-            // sMenu.className = "top_band";
-            // sMenuClear.className = "top_band_fix";
-
-            var button = document.getElementById("bMenuButton");
-            var bMenu = document.getElementById("bMenu");
-
-            // open
-            if(bMenu.className === "bMenu bMenuClosed") {
-                bMenu.className = "bMenu";
-                
-                button.innerHTML = '<i class="fas fa-times"></i>';
-                console.log("open");
-            }
-
-            // close
-            else {
-                bMenu.className = "bMenu bMenuClosed";
-
-                button.innerHTML = '<i class="fas fa-bars"></i>';
-                console.log("close");
-            }
-
+                    button.innerHTML = '<i class="fas fa-bars"></i>';
+                    console.log("close");
+                }
             }
         
   </script>
@@ -68,12 +41,6 @@
     </title>
     <link rel="icon" href="/icon.ico">
     <link rel="stylesheet" href="/css/styles.css">
-
-    <style>
-    
-    
-    </style>
-
 
     {{-- Used to determine if the topbar should be transparent or not --}}
     @isset ($charCount)
@@ -106,9 +73,7 @@
 
 <body>
     <div class="topbar">
-        
         <a class="logo-container-top" href="/"><img src="/icon.png" alt="hanzibase"> <span>HanziBase</span></a>
-
         <div class="search-container-top">
             <form action="/search" method="POST">
                 @csrf
@@ -116,9 +81,6 @@
                 <button type="submit"><i class="fa fa-search"></i></button>
             </form>
         </div>
-    
-
-
 
         <div class="links-container-top">
             <a href="/">Home</a>

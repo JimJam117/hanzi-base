@@ -13,6 +13,7 @@
 
 // Search
 Route::post('/search', 'CharacterController@fetchSearch');
+Route::get('/search', 'CharacterController@goHome');
 Route::get('/search/{search}', 'CharacterController@showSearch')->name('search');
 Route::get('/radical/search/{search}', 'CharacterController@showRadicalSearch')->name('radicalSearch');
 

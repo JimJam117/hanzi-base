@@ -314,16 +314,17 @@ class CharacterController extends Controller
     }
 
     /**
-     * Fetches search results from an array of strings
+     * Fetches search results from a string
      * 
-     * @param Array $inputArray An array consisting of the strings to be searched for
+     * THis function is used mainly for pinyin and translations.
+     * 
+     * @param String $input The search query
      * @return LengthAwarePaginator $results The results for the array
      * 
      */
-    public function fetchArraySearchResults($inputArray) {
-
-        // incase $inputArray is a string, convert it to an array
-        if (is_string($inputArray)) { $inputArray = array($inputArray); }
+    public function fetchSearchResults($input) {
+        
+        $inputArray = explode(" ", $input);
 
         // these settings are for the custom LengthAwarePaginator
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
@@ -384,7 +385,8 @@ class CharacterController extends Controller
         }
         
         // return the results array as a paginatior
-        $results = new LengthAwarePaginator($results, count($results), $perPage, $currentPage);
+        $results = collect($results);
+        $results = new LengthAwarePaginator($results->forPage($currentPage, $perPage), $results->count(), $perPage, $currentPage, ['path' => "/search/$input"]);
         return $results;
     }
 
@@ -397,7 +399,6 @@ class CharacterController extends Controller
      * @return view The search view
      */
     public function showSearch($search = null) {
-
         $resultArray = [];
         $newCharArray = [];
 
@@ -405,7 +406,7 @@ class CharacterController extends Controller
 
         // if the search is only 1 character long
         if (mb_strlen($search) == 1) {
-            $results = $this->fetchArraySearchResults($search);
+            $results = $this->fetchSearchResults($search);
 
             // if there were no results, do a check to see if it is a valid single character
             if($results->total() <= 1) {
@@ -414,22 +415,10 @@ class CharacterController extends Controller
                 $charData = $this->grabCharacterData($search);
                 if($charData != null) { return redirect('/character/' . $search); }  
             }
-
-            // return the results
-            return view('character.search', compact('search', 'results'));
-        }
-
-        // there are no chinese charcters in it
-        if (! preg_match("/\p{Han}+/u", $search)) {
-            $searchExploded = explode(" ", $search);
-            $results = $this->fetchArraySearchResults($searchExploded);
-            
-            // return the results
-            return view('character.search', compact('search', 'results'));  
         }
 
         // if the search contains chinese characters
-        if(preg_match("/\p{Han}+/u", $search) ) {
+        else if (preg_match("/\p{Han}+/u", $search) ) {
             $searchExploded = mb_str_split($search);
 
             $resultArray = [];
@@ -439,9 +428,9 @@ class CharacterController extends Controller
                 preg_match("/\p{Han}+/u", $searchCharacter) ? array_push($resultArray, $searchCharacter) : null ;
             }
             
-            // the list of new chars added to the db
             $newCharArray = $this->addArrayToDatabase($resultArray);
-            
+
+            // use the $resultArray to find the characters in the DB
             $results = \App\Character::where(function ($query) use($resultArray) {
 
                 // find the chars
@@ -450,13 +439,15 @@ class CharacterController extends Controller
                 }      
             })->paginate(30);
         }
-        
-        if($newCharArray) {
-            return view('character.search', compact('search', 'results', 'newCharArray'));
-        }
+
+        // there are no chinese charcters in search
         else {
-            return view('character.search', compact('search', 'results'));
-        }        
+            $results = $this->fetchSearchResults($search);
+        }
+        
+        // return view
+        if($newCharArray) { return view('character.search', compact('search', 'results', 'newCharArray')); }
+        else { return view('character.search', compact('search', 'results')); }        
     }
 
 

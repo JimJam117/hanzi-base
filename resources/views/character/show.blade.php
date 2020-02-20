@@ -108,16 +108,21 @@ if($char->char == $char->simp_char) {
             
             <div class="translations">
             <h3 class="translation_title">TRANSLATION</h3>
-            @php
-                $translationsArray = explode(";", $char->translations);
-            @endphp
-            <ul class="translation_text">
-                @foreach ($translationsArray as $translation)
-                <li>{{$translation}}</li>
-                @endforeach
-            </ul>
-           
-        </div>
+            @if ($char->translations)
+                @php
+                    $translationsArray = explode(";", $char->translations);
+                @endphp
+                <ul class="translation_text">
+                    @foreach ($translationsArray as $translation)
+                    <li>{{$translation}}</li>
+                    @endforeach
+                </ul>
+            @else
+                <p>No translations found</p>
+            @endif
+            
+           </div>
+
             <br>
             @if (!empty($char->heisig_keyword) && !empty($char->heisig_number))
             <h3 class="heisig_title">HEISIG</h3>

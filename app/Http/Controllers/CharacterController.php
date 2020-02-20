@@ -48,22 +48,20 @@ class CharacterController extends Controller
      * @return void
      */
     public function addHeisigCharacters($heisigCharsJson = null) {
-
-        // used to manually set the string
-        // $heisigCharsJson = '';
-
+    
         //decode the characters into an array
         $heisigChars = json_decode($heisigCharsJson, TRUE);
- 
 
-        foreach ($heisigChars as $data) {
+        foreach ($HeisigArray as $data) {
 
+            //dd("was");
             // get the character data passing in the heisig properties
             $charData = $this->grabCharacterData(
                 $data['Character'], // Character
                 $data['Number'], // Heisig Number 
                 $data['Keyword'] // Heisig Keyword
             );
+
             
             // add to db 
             $this->addToDatabase($charData);
@@ -183,6 +181,12 @@ class CharacterController extends Controller
         // add the heisig data
         $ccdb += ['heisig_number' => $heisig_number];
         $ccdb += ['heisig_keyword' => $heisig_keyword];
+
+        // if the kFrequency is null, set it to 6 instead
+        // (this is to make it less of a priority when searching)
+        if ($ccdb['kFrequency'] == null) {
+            $ccdb['kFrequency'] = 6;
+        }
 
         // return the character obj
         return $ccdb;
@@ -389,8 +393,6 @@ class CharacterController extends Controller
         $results = new LengthAwarePaginator($results->forPage($currentPage, $perPage), $results->count(), $perPage, $currentPage, ['path' => "/search/$input"]);
         return $results;
     }
-
-
 
     /**
      * Show the search

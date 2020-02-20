@@ -14,7 +14,7 @@ HanziBase
         <div class="search-container">
             <form action="/search" method="POST">
                 @csrf
-                <input type="text" placeholder="Search.." name="query" autocomplete="off">
+                <input type="text" placeholder="Search.." name="query" autocomplete="off" maxlength="32" required="required">
                 <button type="submit"><i class="fa fa-search"></i></button>
             </form>
         </div>       

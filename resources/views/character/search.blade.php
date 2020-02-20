@@ -24,13 +24,13 @@ results for "{{$search}}"
     <h1>Results for "{{$search}}"</h1>
    @endif
     
+
+    {{-- If there are no results --}}
+    @if ($results->count() == 0)
+        <div class="noResults">Sorry, no results found ;(</div>
+    @endif
     <div class="characters_container">
         
-        {{-- If there are no results --}}
-        @if ($results->count() == 0)
-            <div class="noResults">Sorry, no results found ;(</div>
-        @endif
-
         @foreach ($results as $char)
 
         {{-- Check if char has trad/simp --}}

@@ -7,10 +7,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="description" content="Free resource for learning Chinese characters">
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC|Noto+Sans+SC|Open+Sans|ZCOOL+XiaoWei|Noto+Serif+SC:200,400|Noto+Serif+TC:200,400&display=swap"
-        rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" media="all" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@2.2/dist/hanzi-writer.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        rel="stylesheet" defer>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" media="all" rel="stylesheet" defer>
+    <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@2.2/dist/hanzi-writer.min.js" async></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" defer></script>
 
     <script type="text/javascript">
         function burgerMenuShowHide() {
@@ -77,8 +77,9 @@
         <div class="search-container-top">
             <form action="/search" method="POST">
                 @csrf
-                <input type="text" placeholder="Search.." name="query" autocomplete="off" maxlength="32" required="required">
-                <button type="submit"><i class="fa fa-search"></i></button>
+                <input id="search" type="text" placeholder="Search.." name="query" autocomplete="off" maxlength="32" required="required">
+                <label style="display: none;" for="search">Search field</label>
+                <button aria-label="Search Button" type="submit"><i class="fa fa-search"></i></button>
             </form>
         </div>
 
@@ -87,7 +88,7 @@
             <a href="/browse">Browse</a>
             <a href="/about">About</a>
         </div>
-        <button onclick="burgerMenuShowHide()" id="bMenuButton" class="hamburger-button">
+        <button aria-label="Menu Button" onclick="burgerMenuShowHide()" id="bMenuButton" class="hamburger-button">
             <i class="fas fa-bars"></i>
         </button>
 

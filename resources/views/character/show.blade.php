@@ -122,28 +122,17 @@ if($char->char == $char->simp_char) {
             @endif
             
            </div>
-
             <br>
-            @if (!empty($char->heisig_keyword) && !empty($char->heisig_number))
-            <h3 class="heisig_title">HEISIG</h3>
-            <p class="heisig">{{$char->heisig_keyword}} : {{$char->heisig_number}}</p>
-            @endif
+                @if (!empty($char->heisig_keyword) && !empty($char->heisig_number))
+                <h3 class="heisig_title">HEISIG</h3>
+                <p class="heisig">{{$char->heisig_keyword}} : {{$char->heisig_number}}</p>
+                @endif
             <hr>
-
-
         </div>
-
-
-
-
-
     </div>
 
 
-
-    <script>
-        
-        
+    <script async>
         var writer = HanziWriter.create('character-target-div',
             {!!"'" . $char->char . "'"!!}, 
             {

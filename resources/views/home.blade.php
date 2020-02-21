@@ -14,8 +14,9 @@ HanziBase
         <div class="search-container">
             <form action="/search" method="POST">
                 @csrf
-                <input type="text" placeholder="Search.." name="query" autocomplete="off" maxlength="32" required="required">
-                <button type="submit"><i class="fa fa-search"></i></button>
+                <input id="search" type="text" placeholder="Search.." name="query" autocomplete="off" maxlength="32" required="required">
+                <label style="display: none;" for="search">Search field</label>
+                <button aria-label="Search Button" type="submit"><i class="fa fa-search"></i></button>
             </form>
         </div>       
     </div>
@@ -114,7 +115,7 @@ HanziBase
     }
 
     body{
-        background-image: linear-gradient(rgba(0, 0, 0, 0.35), rgba(12, 12, 12, 0.73)), url(bk.jpg);
+        background-image: linear-gradient(rgba(0, 0, 0, 0.35), rgba(12, 12, 12, 0.73)), url(bk.webp);
         background-attachment: fixed;
         background-size: cover;
         background-position: center;
@@ -296,7 +297,7 @@ HanziBase
 
 
 
-<script>
+<script defer async>
     var CurrentChar = "\u6211";
 
     var chars = [
@@ -396,7 +397,7 @@ HanziBase
 
 </script>
 
-<script>
+<script defer>
     if (
         "IntersectionObserver" in window &&
         "IntersectionObserverEntry" in window &&

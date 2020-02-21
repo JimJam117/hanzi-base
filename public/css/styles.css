@@ -251,7 +251,7 @@ footer h2{
 
     /* styles for the logo image */
     .logo-container-top img {
-        padding: 1em;
+        margin: 1em;
         height: 5em;
     }
     
@@ -298,7 +298,7 @@ footer h2{
         display: flex;
         align-items: center;
         justify-content: space-evenly;
-        padding-top: 2em;
+        padding-top: 100px;
         z-index: 3;
     }
 
@@ -414,7 +414,7 @@ footer h2{
             width: 100px;
         }
         .topbar img {
-            padding: 1em 0 1em 1em;
+            margin: 1em 0 1em 1em;
         }
         .search-container-top button{
             display: none;

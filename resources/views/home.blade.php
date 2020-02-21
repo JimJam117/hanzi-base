@@ -33,34 +33,41 @@ HanziBase
         <h2 class="stat-title"><span class='red'>{{$charCount}}</span> Characters on HanziBase</h2>
         <p>HanziBase is a free resource for learning Chinese characters, both simplifed and traditional. You can search by character, pinyin, translation or Heisig keyword (if you are using <em>Remembering the Hanzi</em>) to find a character's details.</p>
         <br>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis esse temporibus voluptates est debitis accusantium ea veniam! Est, consequuntur debitis.</p>
+        <p></p>
     </div>
 
 
 </div>
-<hr>
+
+<hr style="border:none;">
 
 <div class="sub-features">
     
         <h2 class="feature-title">Translations</h2>
         <h2 class="feature-title">Stroke Order</h2>
-        <h2 class="feature-title">API Generated Content</h2>
+        <h2 class="feature-title">Generated Content</h2>
 
         <i class="fas fa-language feature-icon"></i>
     <i class="fas fa-pen-fancy feature-icon"></i>
     <i class="fas fa-cloud feature-icon"></i>
 
-        <p class="feature-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde nisi ad deserunt quibusdam ipsum ducimus blanditiis ab, illo rem repellat?</p>
+        <p class="feature-text">
+            Some characters may have multiple translations, and they will all be listed on the character page. Heisig keywords are listed as seperate from API generated translations.
+        </p>
     
     
         
         
-        <p class="feature-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde nisi ad deserunt quibusdam ipsum ducimus blanditiis ab, illo rem repellat?</p>
+        <p class="feature-text">
+            The amazing <a href="https://hanziwriter.org/">HanziWriter javascript library</a> is used to render all characters that support it, providing the stroke order of the character. Characters will also have information about the total number of strokes, as well as the radical.
+        </p>
     
    
         
         
-        <p class="feature-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde nisi ad deserunt quibusdam ipsum ducimus blanditiis ab, illo rem repellat?</p>
+        <p class="feature-text">
+            If a character is not within the websites database, it will attempt to find information about it through the <a href="http://ccdb.hemiola.com/">CCDB API</a> as well as the <a href="https://glosbe.com/a-api">Glosbe Translation API</a>. This content is then added to the local database for future use.
+        </p>
 
 </div>
 
@@ -68,26 +75,33 @@ HanziBase
     <div class="feature">
         <h2>Translations</h2>
         <i class="fas fa-language"></i>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde nisi ad deserunt quibusdam ipsum ducimus blanditiis ab, illo rem repellat?</p>
+        <p>
+            Some characters may have multiple translations, and they will all be listed on the character page. Heisig keywords are listed as seperate from API generated translations.
+        </p>
     </div>
     <div class="feature">
         <h2>Stroke Order</h2>
         </i><i class="fas fa-pen-fancy"></i>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde nisi ad deserunt quibusdam ipsum ducimus blanditiis ab, illo rem repellat?</p>
+        <p>
+            The amazing <a href="https://hanziwriter.org/">HanziWriter javascript library</a> is used to render all characters that support it, providing the stroke order of the character. Characters will also have information about the total number of strokes, as well as the radical.
+        </p>
     </div>
     <div class="feature">
         <h2>API Generated Content</h2>
         <i class="fas fa-cloud"></i>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde nisi ad deserunt quibusdam ipsum ducimus blanditiis ab, illo rem repellat?</p>
+        <p>
+            If a character is not within the websites database, it will attempt to find information about it through the <a href="http://ccdb.hemiola.com/">CCDB API</a> as well as the <a href="https://glosbe.com/a-api">Glosbe Translation API</a>. This content is then added to the local database for future use.
+        </p>
     </div>
 </div>
 
-<hr>
+<hr style="border:none;">
+{{-- <hr>
 <div class="main-section">
     <h1>Title</h1>
     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque velit ea quo blanditiis tenetur, incidunt rem magni expedita laudantium, libero aliquid nemo aspernatur, deserunt quod laborum perspiciatis sapiente officia fugit recusandae eum porro ut illum. Veritatis doloremque vel reiciendis a enim itaque aut nisi aspernatur earum rerum. Neque exercitationem voluptates sed esse fuga modi cum non dicta assumenda saepe, delectus, praesentium, nemo expedita impedit obcaecati dignissimos reiciendis dolor eos iusto rerum soluta nihil sunt ex?</p>
 </div>
-
+ --}}
 
 
 
@@ -227,22 +241,34 @@ HanziBase
     }
 
     /* Sub-feature */
+
     .sub-features-small {
         display: none;
     }
 
     .sub-features{
         display: grid;
-        grid-template-columns: 33% 33% 33%;
+        grid-template-columns: 25% 25% 25%;
         width: 100%;
         text-align: center;
+        align-items: baseline;
+        justify-content: space-evenly;
     }
+    .sub-features a, .sub-features-small a{
+        color: #20897f;
+    text-decoration: none;
+    }
+
     .feature-icon{
         padding: 0.5em 0;
         font-size: 5em;
     }
-    .feature-title, .feature-text{
+    .feature-title{
         padding: 0 0.25em;
+    }
+    .feature-text{
+        padding: 0 0.25em;
+        text-align: justify
     }
 
     .feature{

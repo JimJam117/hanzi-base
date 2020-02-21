@@ -184,7 +184,7 @@ footer a, footer a:visited{
 }
 
 footer h2{
-    padding: 1em;
+    padding: 1em 0;
 }
 
 @media screen and (max-width: 500px) {

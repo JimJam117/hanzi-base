@@ -25,7 +25,7 @@ export default function Chars() {
     const observer = useRef()
     const lastCharacterRef = useCallback(
         (node) => {
-            if(!loading) {
+            if(!loading && !(currentPage >= lastPage)) {
                 if(observer.current) {observer.current.disconnect();}
                 observer.current = new IntersectionObserver(entries => {
                     if(entries[0].isIntersecting) {

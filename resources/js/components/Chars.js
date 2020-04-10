@@ -1,6 +1,10 @@
 import React, {useEffect, useState, useRef, useCallback} from 'react'
 import ReactDOM from 'react-dom';
 
+import { css } from "@emotion/core";
+import ClipLoader from "react-spinners/ClipLoader";
+
+
 export default function Chars() {
 
     // abort controller
@@ -95,6 +99,9 @@ export default function Chars() {
         };
     }, [loading])
 
+
+
+
     return (
     
         <div>
@@ -179,7 +186,7 @@ export default function Chars() {
                 }
             </div>
             
-            {displayLoading || loading ? "loading..." : null}
+            {displayLoading || loading ? <div className="spinner"><ClipLoader /></div> : null}
             
             {/* if the current page isn't 1, show last page button
             {currentPage !== 1 ?

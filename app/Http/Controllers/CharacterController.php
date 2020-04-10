@@ -481,9 +481,9 @@ class CharacterController extends Controller
             $results = \App\Character::where('radical', 'like', '%' . $search .'%')
                         ->orWhere('simp_radical', 'like', '%' . $search .'%')->paginate(30);
 
-            return view('character.search', compact('search', 'results'));
+            return view('character.radical-search', compact('search', 'results'));
         }
-}
+    }
     
 
     /*

@@ -50852,6 +50852,8 @@ __webpack_require__(/*! ./components/Example */ "./resources/js/components/Examp
 
 __webpack_require__(/*! ./components/Chars */ "./resources/js/components/Chars.js");
 
+__webpack_require__(/*! ./components/RadicalSingle */ "./resources/js/components/RadicalSingle.js");
+
 /***/ }),
 
 /***/ "./resources/js/bootstrap.js":
@@ -51288,6 +51290,311 @@ if (document.getElementById('example')) {
   react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(
   /*#__PURE__*/
   react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Example, null), document.getElementById('example'));
+}
+
+/***/ }),
+
+/***/ "./resources/js/components/RadicalSingle.js":
+/*!**************************************************!*\
+  !*** ./resources/js/components/RadicalSingle.js ***!
+  \**************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return RadicalSingle; });
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _emotion_core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @emotion/core */ "./node_modules/@emotion/core/dist/core.browser.esm.js");
+/* harmony import */ var react_spinners_ClipLoader__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-spinners/ClipLoader */ "./node_modules/react-spinners/ClipLoader.js");
+/* harmony import */ var react_spinners_ClipLoader__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react_spinners_ClipLoader__WEBPACK_IMPORTED_MODULE_4__);
+
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
+
+
+
+function RadicalSingle(props) {
+  // abort controller
+  var controller = new AbortController();
+  var signal = controller.signal;
+
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(true),
+      _useState2 = _slicedToArray(_useState, 2),
+      loading = _useState2[0],
+      setLoading = _useState2[1];
+
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(false),
+      _useState4 = _slicedToArray(_useState3, 2),
+      displayLoading = _useState4[0],
+      setDisplayLoading = _useState4[1];
+
+  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])([]),
+      _useState6 = _slicedToArray(_useState5, 2),
+      results = _useState6[0],
+      setResults = _useState6[1]; // pagination state
+
+
+  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(1),
+      _useState8 = _slicedToArray(_useState7, 2),
+      currentPage = _useState8[0],
+      setCurrentPage = _useState8[1];
+
+  var _useState9 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(),
+      _useState10 = _slicedToArray(_useState9, 2),
+      lastPage = _useState10[0],
+      setLastPage = _useState10[1];
+
+  var observer = Object(react__WEBPACK_IMPORTED_MODULE_1__["useRef"])();
+  var lastCharacterRef = Object(react__WEBPACK_IMPORTED_MODULE_1__["useCallback"])(function (node) {
+    if (!loading && !(currentPage >= lastPage)) {
+      if (observer.current) {
+        observer.current.disconnect();
+      }
+
+      observer.current = new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) {
+          setDisplayLoading(true);
+          setTimeout(function () {
+            setCurrentPage(currentPage + 1);
+            setDisplayLoading(false);
+            setLoading(true);
+          }, 500);
+        }
+      });
+
+      if (node) {
+        observer.current.observe(node);
+      }
+    }
+  }); // pagination function
+
+  var changePage = function changePage(pageToChangeTo) {
+    if (pageToChangeTo < 1 || pageToChangeTo > lastPage) {
+      console.log("Page to change to: " + pageToChangeTo + " is not within boundries");
+    } else {
+      setCurrentPage(pageToChangeTo);
+      setLoading(true);
+    }
+  };
+
+  var fetchItems =
+  /*#__PURE__*/
+  function () {
+    var _ref = _asyncToGenerator(
+    /*#__PURE__*/
+    _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+      var apiUrl,
+          _args2 = arguments;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              apiUrl = _args2.length > 0 && _args2[0] !== undefined ? _args2[0] : "/api/radical/search/".concat(props.radical, "?page=").concat(currentPage);
+              console.log("load");
+              _context2.next = 4;
+              return fetch(apiUrl, {
+                signal: signal
+              }).then(
+              /*#__PURE__*/
+              function () {
+                var _ref2 = _asyncToGenerator(
+                /*#__PURE__*/
+                _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(response) {
+                  var data;
+                  return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+                    while (1) {
+                      switch (_context.prev = _context.next) {
+                        case 0:
+                          //throw errors if issues
+                          if (response.status === 500) {
+                            console.log("500");
+                          } else if (response.status === 404) {
+                            console.log("404");
+                          } else if (response.status === 419) {
+                            console.log("419");
+                          }
+
+                          _context.next = 3;
+                          return response.json();
+
+                        case 3:
+                          data = _context.sent;
+                          console.log(currentPage, props);
+
+                          if (results.length > 0) {
+                            console.log("heres", data);
+                            setResults([].concat(_toConsumableArray(results), _toConsumableArray(data.results.data)));
+                          } else {
+                            setResults(data.results.data);
+                          }
+
+                          setCurrentPage(data.results.current_page);
+                          setLastPage(data.results.last_page);
+                          setLoading(false);
+
+                        case 9:
+                        case "end":
+                          return _context.stop();
+                      }
+                    }
+                  }, _callee);
+                }));
+
+                return function (_x) {
+                  return _ref2.apply(this, arguments);
+                };
+              }());
+
+            case 4:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2);
+    }));
+
+    return function fetchItems() {
+      return _ref.apply(this, arguments);
+    };
+  }();
+
+  Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
+    if (loading) {
+      fetchItems();
+    }
+
+    return function () {
+      controller.abort();
+    };
+  }, [loading]);
+  return (
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null,
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+      className: "characters_container"
+    }, results.map(function (result, i) {
+      var hasSimplified = result.simp_char ? true : false;
+      var hasTraditional = result.trad_char ? true : false;
+
+      if (hasTraditional) {
+        var trads = result.trad_char;
+        trads = trads.split(","); // if has same trad as char, then does not have a traditional version
+
+        trads.forEach(function (trad) {
+          if (trad == result["char"]) {
+            hasTraditional = false;
+          }
+        });
+      } // if the char is the same as the simp_char, then does not have simplified version
+
+
+      if (result["char"] == result.simp_char) {
+        hasSimplified = false;
+      }
+
+      var translations = result.translations.substr(0, 20); //let translations = s.substr(0, strrpos($s, ' '));
+
+      var lastLetter = translations[translations.length - 1];
+
+      if (lastLetter == ";" || lastLetter == "." || lastLetter == ",") {
+        translations = translations.substr(0, -1);
+      }
+
+      translations.concat("..");
+      return results.length - 1 == i ?
+      /*#__PURE__*/
+      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("a", {
+        ref: lastCharacterRef,
+        key: "character".concat(result.id),
+        href: "/character/".concat(result["char"]),
+        className: "character_link"
+      },
+      /*#__PURE__*/
+      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+        className: "top-details"
+      },
+      /*#__PURE__*/
+      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, result.radical),
+      /*#__PURE__*/
+      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, hasSimplified ? "Trad" : hasTraditional ? "Simp" : null)),
+      /*#__PURE__*/
+      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h2", {
+        className: "character"
+      }, result["char"]),
+      /*#__PURE__*/
+      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h3", null, result.heisig_keyword ? "H ".concat(result.heisig_keyword, " (").concat(result.heisig_number, ")") : translations),
+      /*#__PURE__*/
+      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", {
+        className: "pinyin"
+      }, result.pinyin)) :
+      /*#__PURE__*/
+      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("a", {
+        key: "character".concat(result.id),
+        href: "/character/".concat(result["char"]),
+        className: "character_link"
+      },
+      /*#__PURE__*/
+      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+        className: "top-details"
+      },
+      /*#__PURE__*/
+      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, result.radical),
+      /*#__PURE__*/
+      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, hasSimplified ? "Trad" : hasTraditional ? "Simp" : null)),
+      /*#__PURE__*/
+      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h2", {
+        className: "character"
+      }, result["char"]),
+      /*#__PURE__*/
+      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h3", null, result.heisig_keyword ? "H ".concat(result.heisig_keyword, " (").concat(result.heisig_number, ")") : translations),
+      /*#__PURE__*/
+      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", {
+        className: "pinyin"
+      }, result.pinyin));
+    })), displayLoading || loading ?
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+      className: "spinner"
+    },
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react_spinners_ClipLoader__WEBPACK_IMPORTED_MODULE_4___default.a, null)) : null)
+  );
+}
+
+if (document.getElementById('radical-single')) {
+  var element = document.getElementById('radical-single');
+  var props = Object.assign({}, element.dataset);
+  console.log(element);
+  react_dom__WEBPACK_IMPORTED_MODULE_2___default.a.render(
+  /*#__PURE__*/
+  react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(RadicalSingle, props), element);
 }
 
 /***/ }),

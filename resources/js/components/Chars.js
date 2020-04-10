@@ -61,6 +61,10 @@ export default function Chars(props) {
     if (props.radical) {
         query = `/api/radical/search/${props.radical}`;
     } 
+    else if (props.search) {
+        console.log("Search!!!");
+        query = `/api/search/${props.search}`;
+    } 
 
     const fetchItems = async (apiUrl = `${query}?page=${currentPage}`) =>  {
         console.log("load");
@@ -80,10 +84,22 @@ export default function Chars(props) {
         
                         const data = await response.json();
 
-                        console.log(currentPage, data.chars);
+                        // if there are already results
                         if(results.length > 0){
-                            console.log("heres", [...results, ...data.chars.data]);
-                            setResults([...results, ...data.chars.data]);
+                            // the new results data
+                            let newResults = data.chars.data;
+
+                            // if the new results data has come back as an object instead of an array (happens sometimes)
+                            // then convert it into an array before adding to the old results
+                            if (typeof newResults === 'object' && newResults !== null) {
+                                let newResultsArray = [];
+                                Object.keys(newResults).map(function(key, index) {
+                                    newResultsArray.push(newResults[key]);
+                                });
+                                newResults = newResultsArray;
+                            }
+
+                            setResults([...results, ...newResults]);
                         }
                         else{
                             setResults(data.chars.data);

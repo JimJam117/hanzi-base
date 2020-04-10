@@ -50915,6 +50915,8 @@ function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -50999,6 +51001,9 @@ function Chars(props) {
 
   if (props.radical) {
     query = "/api/radical/search/".concat(props.radical);
+  } else if (props.search) {
+    console.log("Search!!!");
+    query = "/api/search/".concat(props.search);
   }
 
   var fetchItems =
@@ -51024,7 +51029,7 @@ function Chars(props) {
                 var _ref2 = _asyncToGenerator(
                 /*#__PURE__*/
                 _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(response) {
-                  var data;
+                  var data, newResults, newResultsArray;
                   return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
                     while (1) {
                       switch (_context.prev = _context.next) {
@@ -51043,11 +51048,22 @@ function Chars(props) {
 
                         case 3:
                           data = _context.sent;
-                          console.log(currentPage, data.chars);
 
+                          // if there are already results
                           if (results.length > 0) {
-                            console.log("heres", [].concat(_toConsumableArray(results), _toConsumableArray(data.chars.data)));
-                            setResults([].concat(_toConsumableArray(results), _toConsumableArray(data.chars.data)));
+                            // the new results data
+                            newResults = data.chars.data; // if the new results data has come back as an object instead of an array (happens sometimes)
+                            // then convert it into an array before adding to the old results
+
+                            if (_typeof(newResults) === 'object' && newResults !== null) {
+                              newResultsArray = [];
+                              Object.keys(newResults).map(function (key, index) {
+                                newResultsArray.push(newResults[key]);
+                              });
+                              newResults = newResultsArray;
+                            }
+
+                            setResults([].concat(_toConsumableArray(results), _toConsumableArray(newResults)));
                           } else {
                             setResults(data.chars.data);
                           }
@@ -51056,7 +51072,7 @@ function Chars(props) {
                           setLastPage(data.chars.last_page);
                           setLoading(false);
 
-                        case 9:
+                        case 8:
                         case "end":
                           return _context.stop();
                       }

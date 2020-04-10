@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useRef, useCallback} from 'react'
 import ReactDOM from 'react-dom';
 
 export default function Chars() {
@@ -8,12 +8,39 @@ export default function Chars() {
     var signal = controller.signal;
 
 
+
     const [loading, setLoading] = useState(true);
+    const [displayLoading, setDisplayLoading] = useState(false);
     const [results, setResults] = useState([]);
 
     // pagination state
     const [currentPage, setCurrentPage] = useState(1);
     const [lastPage, setLastPage] = useState();
+
+
+    const observer = useRef()
+    const lastCharacterRef = useCallback(
+        (node) => {
+            if(!loading) {
+                if(observer.current) {observer.current.disconnect();}
+                observer.current = new IntersectionObserver(entries => {
+                    if(entries[0].isIntersecting) {
+                        setDisplayLoading(true);
+                        setTimeout(() => {
+                            setCurrentPage(currentPage +1);
+                            setDisplayLoading(false);
+                            setLoading(true);
+                        }, 500);
+                        
+                        
+                        
+                    }
+                })
+                if (node) {observer.current.observe(node)}
+            }
+        },
+    )
+
 
     // pagination function
     const changePage = (pageToChangeTo) => {
@@ -46,7 +73,14 @@ export default function Chars() {
                         const data = await response.json();
 
                         console.log(currentPage, data.chars);
-                        setResults(data.chars.data);
+                        if(results.length > 0){
+                            console.log("heres", [...results, ...data.chars.data]);
+                            setResults([...results, ...data.chars.data]);
+                        }
+                        else{
+                            setResults(data.chars.data);
+                        }
+                        
 
                         setCurrentPage(data.chars.current_page);
                         setLastPage(data.chars.last_page);
@@ -66,7 +100,7 @@ export default function Chars() {
         <div>
             <div className="characters_container">
                 {
-                    results.map((result) => {
+                    results.map((result, i) => {
                         let hasSimplified = result.simp_char ? true : false;
                         let hasTraditional = result.trad_char ? true : false;
 
@@ -99,8 +133,8 @@ export default function Chars() {
                         
 
                         return (
-                            <a key={`character${result.id}`} href={`/character/${result.char}`} className="character_link">
-
+                            results.length - 1 == (i) ? 
+                            <a ref={lastCharacterRef} key={`character${result.id}`} href={`/character/${result.char}`} className="character_link">
                             {/* {{-- Top details, radical and trad/simp --}} */}
                             <div className="top-details"> 
                                 <p>{ result.radical }</p>
@@ -118,24 +152,46 @@ export default function Chars() {
                             
                             {/* {{-- Pinyin --}} */}
                             <p className="pinyin">{ result.pinyin }</p>
-                        </a>
+                            </a> : 
+                            <a key={`character${result.id}`} href={`/character/${result.char}`} className="character_link">
+                                {/* {{-- Top details, radical and trad/simp --}} */}
+                                <div className="top-details"> 
+                                    
+                                    <p>{ result.radical }</p>
+                                    <p>
+                                        {hasSimplified ? "Trad" : hasTraditional ? "Simp" : null}
+                                    </p>
+                                </div>
+
+                                <h2 className="character">{result.char}</h2>
+
+                                {/* {{-- Translations or heisig --}} */}
+                                <h3>
+                                    {result.heisig_keyword ? `H ${result.heisig_keyword} (${result.heisig_number})` : translations}
+                                </h3>
+
+                                {/* {{-- Pinyin --}} */}
+                                <p className="pinyin">{ result.pinyin }</p>
+                            </a>
                         )
 
                     })
                 }
             </div>
             
-            {/* if the current page isn't 1, show last page button */}
+            {displayLoading || loading ? "loading..." : null}
+            
+            {/* if the current page isn't 1, show last page button
             {currentPage !== 1 ?
                 <button className="btn" onClick={() => changePage(currentPage - 1)}>Last Page</button> :
                 null
             }
 
-            {/* if the current page isn't equal to the last page, show next page button */}
-            {currentPage !== lastPage ?
-                <button className="btn" onClick={() => changePage(currentPage + 1)}>Next Page</button> :
-                null
-            }
+            // {/* if the current page isn't equal to the last page, show next page button */}
+            {/* // {currentPage !== lastPage ?
+            //     <button className="btn" onClick={() => changePage(currentPage + 1)}>Next Page</button> :
+            //     null
+            // } */}
           
         </div>
     )

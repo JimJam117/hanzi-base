@@ -48614,6 +48614,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_2__);
 
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -48638,22 +48646,50 @@ function Chars() {
       loading = _useState2[0],
       setLoading = _useState2[1];
 
-  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])([]),
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(false),
       _useState4 = _slicedToArray(_useState3, 2),
-      results = _useState4[0],
-      setResults = _useState4[1]; // pagination state
+      displayLoading = _useState4[0],
+      setDisplayLoading = _useState4[1];
 
-
-  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(1),
+  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])([]),
       _useState6 = _slicedToArray(_useState5, 2),
-      currentPage = _useState6[0],
-      setCurrentPage = _useState6[1];
+      results = _useState6[0],
+      setResults = _useState6[1]; // pagination state
 
-  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(),
+
+  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(1),
       _useState8 = _slicedToArray(_useState7, 2),
-      lastPage = _useState8[0],
-      setLastPage = _useState8[1]; // pagination function
+      currentPage = _useState8[0],
+      setCurrentPage = _useState8[1];
 
+  var _useState9 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(),
+      _useState10 = _slicedToArray(_useState9, 2),
+      lastPage = _useState10[0],
+      setLastPage = _useState10[1];
+
+  var observer = Object(react__WEBPACK_IMPORTED_MODULE_1__["useRef"])();
+  var lastCharacterRef = Object(react__WEBPACK_IMPORTED_MODULE_1__["useCallback"])(function (node) {
+    if (!loading) {
+      if (observer.current) {
+        observer.current.disconnect();
+      }
+
+      observer.current = new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) {
+          setDisplayLoading(true);
+          setTimeout(function () {
+            setCurrentPage(currentPage + 1);
+            setDisplayLoading(false);
+            setLoading(true);
+          }, 500);
+        }
+      });
+
+      if (node) {
+        observer.current.observe(node);
+      }
+    }
+  }); // pagination function
 
   var changePage = function changePage(pageToChangeTo) {
     if (pageToChangeTo < 1 || pageToChangeTo > lastPage) {
@@ -48707,7 +48743,14 @@ function Chars() {
                         case 3:
                           data = _context.sent;
                           console.log(currentPage, data.chars);
-                          setResults(data.chars.data);
+
+                          if (results.length > 0) {
+                            console.log("heres", [].concat(_toConsumableArray(results), _toConsumableArray(data.chars.data)));
+                            setResults([].concat(_toConsumableArray(results), _toConsumableArray(data.chars.data)));
+                          } else {
+                            setResults(data.chars.data);
+                          }
+
                           setCurrentPage(data.chars.current_page);
                           setLastPage(data.chars.last_page);
                           setLoading(false);
@@ -48753,7 +48796,7 @@ function Chars() {
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
       className: "characters_container"
-    }, results.map(function (result) {
+    }, results.map(function (result, i) {
       var hasSimplified = result.simp_char ? true : false;
       var hasTraditional = result.trad_char ? true : false;
 
@@ -48782,47 +48825,57 @@ function Chars() {
       }
 
       translations.concat("..");
-      return (
-        /*#__PURE__*/
-        react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("a", {
-          key: "character".concat(result.id),
-          href: "/character/".concat(result["char"]),
-          className: "character_link"
-        },
-        /*#__PURE__*/
-        react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-          className: "top-details"
-        },
-        /*#__PURE__*/
-        react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, result.radical),
-        /*#__PURE__*/
-        react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, hasSimplified ? "Trad" : hasTraditional ? "Simp" : null)),
-        /*#__PURE__*/
-        react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h2", {
-          className: "character"
-        }, result["char"]),
-        /*#__PURE__*/
-        react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h3", null, result.heisig_keyword ? "H ".concat(result.heisig_keyword, " (").concat(result.heisig_number, ")") : translations),
-        /*#__PURE__*/
-        react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", {
-          className: "pinyin"
-        }, result.pinyin))
-      );
-    })), currentPage !== 1 ?
-    /*#__PURE__*/
-    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
-      className: "btn",
-      onClick: function onClick() {
-        return changePage(currentPage - 1);
-      }
-    }, "Last Page") : null, currentPage !== lastPage ?
-    /*#__PURE__*/
-    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
-      className: "btn",
-      onClick: function onClick() {
-        return changePage(currentPage + 1);
-      }
-    }, "Next Page") : null)
+      return results.length - 1 == i ?
+      /*#__PURE__*/
+      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("a", {
+        ref: lastCharacterRef,
+        key: "character".concat(result.id),
+        href: "/character/".concat(result["char"]),
+        className: "character_link"
+      },
+      /*#__PURE__*/
+      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+        className: "top-details"
+      },
+      /*#__PURE__*/
+      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, result.radical),
+      /*#__PURE__*/
+      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, hasSimplified ? "Trad" : hasTraditional ? "Simp" : null)),
+      /*#__PURE__*/
+      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h2", {
+        className: "character"
+      }, result["char"]),
+      /*#__PURE__*/
+      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h3", null, result.heisig_keyword ? "H ".concat(result.heisig_keyword, " (").concat(result.heisig_number, ")") : translations),
+      /*#__PURE__*/
+      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", {
+        className: "pinyin"
+      }, result.pinyin)) :
+      /*#__PURE__*/
+      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("a", {
+        key: "character".concat(result.id),
+        href: "/character/".concat(result["char"]),
+        className: "character_link"
+      },
+      /*#__PURE__*/
+      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+        className: "top-details"
+      },
+      /*#__PURE__*/
+      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, result.radical),
+      /*#__PURE__*/
+      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, hasSimplified ? "Trad" : hasTraditional ? "Simp" : null)),
+      /*#__PURE__*/
+      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h2", {
+        className: "character"
+      }, result["char"]),
+      /*#__PURE__*/
+      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h3", null, result.heisig_keyword ? "H ".concat(result.heisig_keyword, " (").concat(result.heisig_number, ")") : translations),
+      /*#__PURE__*/
+      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", {
+        className: "pinyin"
+      }, result.pinyin));
+    })), displayLoading || loading ? "loading..." : null)
   );
 }
 

@@ -39,10 +39,10 @@ class CharacterController extends Controller
 
         // if input is valid, return the view
         
-            $results = \App\Character::where('radical', 'like', '%' . $search .'%')
+            $chars = \App\Character::where('radical', 'like', '%' . $search .'%')
                         ->orWhere('simp_radical', 'like', '%' . $search .'%')->paginate(30);
 
-            return (compact('search', 'results'));
+            return (compact('search', 'chars'));
         
     }
 }

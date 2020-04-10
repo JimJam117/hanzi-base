@@ -29,7 +29,7 @@ results for "{{$search}}"
     @if ($results->count() == 0)
         <div class="noResults">Sorry, no results found ;(</div>
     @else
-        <div id="radical-single" data-radical={{ $search }}></div>
+        <div id="chars" data-radical={{ $search }}></div>
             <script src="/js/app.js"></script>
     @endif
 

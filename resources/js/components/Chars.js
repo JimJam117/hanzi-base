@@ -5,7 +5,7 @@ import { css } from "@emotion/core";
 import ClipLoader from "react-spinners/ClipLoader";
 
 
-export default function Chars() {
+export default function Chars(props) {
 
     // abort controller
     var controller = new AbortController();
@@ -57,8 +57,12 @@ export default function Chars() {
         }
     }
 
+    let query = "/api/chars/index";
+    if (props.radical) {
+        query = `/api/radical/search/${props.radical}`;
+    } 
 
-    const fetchItems = async (apiUrl = `/api/chars/index?page=${currentPage}`) =>  {
+    const fetchItems = async (apiUrl = `${query}?page=${currentPage}`) =>  {
         console.log("load");
                 await fetch(apiUrl, {signal})
                     .then(async (response) => {
@@ -206,26 +210,7 @@ export default function Chars() {
 
 
 if (document.getElementById('chars')) {
-    ReactDOM.render(<Chars />, document.getElementById('chars'));
+    const element = document.getElementById('chars');
+    const props = Object.assign({}, element.dataset);
+    ReactDOM.render(<Chars {...props}/>, element);
 }
-
-
-
-
-
-
-
-
-/*
-
- @foreach ($chars as $char)
-
-
-
-        {{-- The character link --}}
-        
-        @endforeach
-
-
-
-*/

@@ -51041,7 +51041,8 @@ function Chars(props) {
                 var _ref2 = _asyncToGenerator(
                 /*#__PURE__*/
                 _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(response) {
-                  var data, newResults, newResultsArray;
+                  var data, newResults, newResultsArray, _results, resultsArray;
+
                   return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
                     while (1) {
                       switch (_context.prev = _context.next) {
@@ -51077,7 +51078,18 @@ function Chars(props) {
 
                             setResults([].concat(_toConsumableArray(results), _toConsumableArray(newResults)));
                           } else {
-                            setResults(data.chars.data);
+                            _results = data.chars.data; // if the results data has come back as an object instead of an array (happens sometimes)
+                            // then convert it into an array
+
+                            if (_typeof(_results) === 'object' && _results !== null) {
+                              resultsArray = [];
+                              Object.keys(_results).map(function (key, index) {
+                                resultsArray.push(_results[key]);
+                              });
+                              _results = resultsArray;
+                            }
+
+                            setResults(_results);
                           }
 
                           setCurrentPage(data.chars.current_page);
@@ -51112,18 +51124,7 @@ function Chars(props) {
 
   Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
     if (loading) {
-      var sortUrl = "";
-
-      if (sortBy == 'pinyin') {
-        sortUrl = "/sortBy/pinyin";
-      } else if (sortBy == 'freq') {
-        sortUrl = "/sortBy/freq";
-      } else if (sortBy == 'heisig') {
-        sortUrl = "/sortBy/heisig";
-      } else {
-        sortUrl = "/sortBy/default";
-      }
-
+      var sortUrl = "/sortBy/" + sortBy;
       fetchItems(sortUrl);
     }
 
@@ -51139,10 +51140,16 @@ function Chars(props) {
     console.log(sortBy);
   };
 
-  console.log("thing", props.contains_hanzi);
+  console.log("thing", results);
   return (
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null,
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+      style: {
+        color: 'red'
+      }
+    }, "Sorted by: ", sortBy),
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
       onClick: function onClick() {
@@ -51155,6 +51162,24 @@ function Chars(props) {
         return changeSortBy('default');
       }
     }, "Sort by default"),
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
+      onClick: function onClick() {
+        return changeSortBy('freq');
+      }
+    }, "Sort by freq"),
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
+      onClick: function onClick() {
+        return changeSortBy('heisig_number');
+      }
+    }, "Sort by Heisig Number"),
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
+      onClick: function onClick() {
+        return changeSortBy('stroke_count');
+      }
+    }, "Sort by strokes"),
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
       className: "characters_container"

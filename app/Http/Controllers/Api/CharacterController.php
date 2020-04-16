@@ -70,6 +70,28 @@ class CharacterController extends Controller
     }
 
     
+    private function charSearch($inputArray = []) {
+        $results = [];
+        $charResults = [];
+
+        // character results, items that match a character exactly
+        foreach ($inputArray as $inputItem) {
+
+            $charResults = \App\Character::where('char', $inputItem)->get();
+
+            // for each result in the above collections, add to results array
+
+            foreach($charResults as $result) {
+                if (! in_array($result, $results)) {
+                    array_unshift($results, $result);
+                }
+            }
+        }
+
+        return $results;
+    }
+
+
     /**
      * Returns a staggered set of search results
      * 
@@ -86,25 +108,10 @@ class CharacterController extends Controller
      */
     private function staggeredSearch($inputArray = []) {
         $results = [];
-        $charResults = [];
         $exactMatchesResults = [];
         $pinyinResults = [];
         $translationResults = [];
         
-
-        // character results, items that match a character exactly
-        foreach ($inputArray as $inputItem) {
-
-            $charResults = \App\Character::where('char', $inputItem)->get();
-
-            // for each result in the above collections, add to results array
-
-            foreach($charResults as $result) {
-                if (! in_array($result, $results)) {
-                    array_push($results, $result);
-                }
-            }
-        }
 
         // Exact pinyin results, items that match exactly
         foreach ($inputArray as $inputItem) {
@@ -171,10 +178,13 @@ class CharacterController extends Controller
 
         // find all the words within the input string
         $inputArray = [];
-        preg_match_all("/[A-Za-z]+/u", $input, $inputArray);
+        preg_match_all("/[A-Za-z0-9]+/u", $input, $inputArray);
         
         // an extra layer of arrays is created, removing them here
         $inputArray = $inputArray[0];
+
+        $atLeastOneNonHanzi = sizeof($inputArray) > 0;
+
         $hanzi = $hanzi[0];
         
         // reverse the hanzi array it's in the order the user provided
@@ -182,7 +192,7 @@ class CharacterController extends Controller
 
         // add all the hanzi matches to the inputArray
         foreach ($hanzi as $char) {
-            array_unshift($inputArray, $char);
+            array_push($inputArray, $char);
         }
 
 
@@ -193,50 +203,67 @@ class CharacterController extends Controller
 
         // the search results, determined by the sortBy
         if ($sortBy == 'default') {
+            $charResults = $this->charSearch($inputArray);
             $results = $this->staggeredSearch($inputArray);
-        }
-        if ($sortBy == 'pinyin') {
-            $results = [];
-            $charResults = [];
-            $otherResults = [];
-        
-
-        // character results, items that match a character exactly
-        foreach ($inputArray as $inputItem) {
-
-            $charResults = \App\Character::where('char', $inputItem)->get();
-
-            // for each result in the above collections, add to results array
 
             foreach($charResults as $result) {
                 if (! in_array($result, $results)) {
-                    array_push($results, $result);
+                    array_unshift($results, $result);
                 }
             }
+            
+            $results = collect($results);
         }
 
-        // other matches
-        foreach ($inputArray as $inputItem) {
+        else {
+            $sortBy == "pinyin" ? $sortBy = "pinyin_normalised" : null; 
 
-            $otherResults = \App\Character::where('heisig_keyword', 'like', '%' . $inputItem .'%')
-                    ->orWhere('pinyin', 'like', '%' . $inputItem .'%')
-                    ->orWhere('pinyin_normalised', 'like', '%' . $inputItem .'%')
-                    ->orWhere('translations', 'like', '%' . $inputItem .'%')
-                    ->orWhere('heisig_number', 'like', '%' . $inputItem .'%')->orderBy('pinyin_normalised', 'asc')->get();
+            $results = [];
+            $otherResults = [];
+            
+            if($atLeastOneNonHanzi) {
 
-            // for each result in the above collections, add to results array
-
-            foreach($otherResults as $result) {
-                if (! in_array($result, $results)) {
-                    array_push($results, $result);
+                // charResults
+                $charResults = $this->charSearch($inputArray);
+                foreach($charResults as $result) {
+                    if (! in_array($result, $results)) {
+                        array_unshift($results, $result);
+                    }
                 }
+
+                // other matches
+                foreach ($inputArray as $inputItem) {
+
+                    $otherResults = \App\Character::where('heisig_keyword', 'like', '%' . $inputItem .'%')
+                            ->orWhere('pinyin', 'like', '%' . $inputItem .'%')
+                            ->orWhere('pinyin_normalised', 'like', '%' . $inputItem .'%')
+                            ->orWhere('translations', 'like', '%' . $inputItem .'%')
+                            ->orWhere('heisig_number', 'like', '%' . $inputItem .'%')->orderBy($sortBy, 'asc')->get();
+
+                    // for each result in the above collections, add to results array
+
+                    foreach($otherResults as $result) {
+                        if (! in_array($result, $results)) {
+                            array_push($results, $result);
+                        }
+                    }
+                }
+
+                $results = collect($results);
+            }
+
+            // if all the items in the inputArray are hanzi
+            else {
+                $results = $this->charSearch($inputArray);
+                $results = collect($results);
+
+                // sort by the sortBy value, then reset the values for the keys and collect results again
+                $results = $results->sortBy($sortBy)->values()->all();
+                $results = collect($results);
             }
         }
-        }
-        
+        //dd($results);
         // return the results array as a paginatior
-        $results = collect($results);
-
         $chars = new LengthAwarePaginator($results->forPage($currentPage, $perPage), $results->count(), $perPage, $currentPage, ['path' => "/search/$input"]);
        
         $search = $input;

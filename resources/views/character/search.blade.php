@@ -27,7 +27,7 @@ results for "{{$search}}"
 
 
         {{-- <div class="noResults">Sorry, no results found ;(</div> --}}
-        <div style="color: red">{{ $search }}</div>
+        
         <div id="chars" data-search="{{ $search }}"></div>
             <script src="/js/app.js"></script>
  

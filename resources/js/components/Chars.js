@@ -108,7 +108,20 @@ export default function Chars(props) {
                             setResults([...results, ...newResults]);
                         }
                         else{
-                            setResults(data.chars.data);
+
+                            let results = data.chars.data;
+
+                            // if the results data has come back as an object instead of an array (happens sometimes)
+                            // then convert it into an array
+                            if (typeof results === 'object' && results !== null) {
+                                let resultsArray = [];
+                                Object.keys(results).map(function(key, index) {
+                                    resultsArray.push(results[key]);
+                                });
+                                results = resultsArray;
+                            }
+
+                            setResults(results);
                         }
                         
 
@@ -120,19 +133,8 @@ export default function Chars(props) {
 
     useEffect(() => {
         if (loading) {
-            let sortUrl = "";
-            if(sortBy == 'pinyin'){
-                sortUrl = "/sortBy/pinyin";
-            }
-            else if(sortBy == 'freq'){
-                sortUrl = "/sortBy/freq";
-            }
-            else if(sortBy == 'heisig'){
-                sortUrl = "/sortBy/heisig";
-            }
-            else {
-                sortUrl = "/sortBy/default";
-            }
+            let sortUrl = "/sortBy/" + sortBy;
+
             fetchItems(sortUrl)
         }
         return () => {
@@ -152,14 +154,18 @@ export default function Chars(props) {
     }
 
 
-    console.log("thing", props.contains_hanzi);
+    console.log("thing", results);
 
 
     return (
     
         <div>
+            <div style={{ color: 'red' }}>Sorted by: {sortBy}</div>
             <button onClick={() => changeSortBy('pinyin')}>Sort by Pinyin</button>
             <button onClick={() => changeSortBy('default')}>Sort by default</button>
+            <button onClick={() => changeSortBy('freq')}>Sort by freq</button>
+            <button onClick={() => changeSortBy('heisig_number')}>Sort by Heisig Number</button>
+            <button onClick={() => changeSortBy('stroke_count')}>Sort by strokes</button>
             
             <div className="characters_container">
                 {

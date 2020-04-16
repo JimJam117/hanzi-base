@@ -325,7 +325,7 @@ class CharacterController extends Controller
     /**
      * Fetches search results from a string
      * 
-     * THis function is used mainly for pinyin and translations.
+     * This function is used mainly for pinyin and translations.
      * 
      * @param String $input The search query
      * @return LengthAwarePaginator $results The results for the array
@@ -408,6 +408,7 @@ class CharacterController extends Controller
     public function showSearch($search = null) {
         $resultArray = [];
         $newCharArray = [];
+        $containsHanzi = false;
 
         $search = (urldecode($search));
 
@@ -436,15 +437,7 @@ class CharacterController extends Controller
             }
             
             $newCharArray = $this->addArrayToDatabase($resultArray);
-
-            // use the $resultArray to find the characters in the DB
-            $results = \App\Character::where(function ($query) use($resultArray) {
-
-                // find the chars
-                foreach ($resultArray as $resultItem) {
-                    $query->orwhere('char', 'like',  '%' . $resultItem .'%');
-                }      
-            })->paginate(30);
+            $containsHanzi = true;
         }
 
         // there are no chinese charcters in search
@@ -453,8 +446,8 @@ class CharacterController extends Controller
         }
         
         // return view
-        if($newCharArray) { return view('character.search', compact('search', 'results', 'newCharArray')); }
-        else { return view('character.search', compact('search', 'results')); }        
+        if($newCharArray) { return view('character.search', compact('search', 'newCharArray', 'containsHanzi')); }
+        else { return view('character.search', compact('search', 'containsHanzi')); }        
     }
 
 

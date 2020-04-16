@@ -10,15 +10,26 @@ use App\Libraries\Radicals;
 
 class CharacterController extends Controller
 {
+
+    public function sortBy() {
+
+    }
+
     /**
      * Returns all of the characters, paginated
      * 
      * @return All characters
      */
-    public function index()
+    public function index($sortBy)
     {
+        if($sortBy === 'pinyin') {
+            
+            $chars = DB::table('characters')->orderBy('pinyin_normalised', 'desc')->paginate(30);
+        }
+        else{
+            $chars = DB::table('characters')->paginate(30);
+        }
         
-        $chars = DB::table('characters')->paginate(30);
         return (compact('chars'));
     }
 
@@ -30,7 +41,7 @@ class CharacterController extends Controller
      * @param $search The search input
      * @return radical search 
      */
-    public function showRadicalSearch ($search = null) {
+    public function showRadicalSearch ($search = null, $sortBy) {
         
         // check if the input is in either radical array
         $isInArray = array_search($search, Radicals::returnArray());
@@ -38,14 +49,58 @@ class CharacterController extends Controller
 
 
         // if input is valid, return the view
-        
+
+        if($sortBy === 'pinyin') {
+            $chars = \App\Character::where('radical', 'like', '%' . $search .'%')
+                        ->orWhere('simp_radical', 'like', '%' . $search .'%')->orderBy('pinyin_normalised', 'desc')->paginate(30);
+        }
+        else{
             $chars = \App\Character::where('radical', 'like', '%' . $search .'%')
                         ->orWhere('simp_radical', 'like', '%' . $search .'%')->paginate(30);
+        }
+
+            
+            
+            
+
+
 
             return (compact('search', 'chars'));
         
     }
 
+    /**
+     * Fetches search results from a string
+     * 
+     * This function is used for if the query contains hanzi
+     * 
+     * @param String $input The search query
+     * @return LengthAwarePaginator $results The results for the array
+     * 
+     */
+    public function fetchHanziSearchResults($input, $sortBy) {
+            $searchExploded = mb_str_split($input);
+
+            $resultArray = [];
+
+            // foreach character in search exploded where the character is a hanzi, add to the resultArray
+            foreach ($searchExploded as $searchCharacter) {
+                preg_match("/\p{Han}+/u", $searchCharacter) ? array_push($resultArray, $searchCharacter) : null ;
+            }
+
+
+            // use the $resultArray to find the characters in the DB
+            $chars = \App\Character::where(function ($query) use($resultArray) {
+
+                // find the chars
+                foreach ($resultArray as $resultItem) {
+                    $query->orwhere('char', 'like',  '%' . $resultItem .'%');
+                }      
+            })->paginate(30);
+
+            $search = $input;
+            return (compact('search', 'chars'));
+    }
 
 
         /**
@@ -57,7 +112,7 @@ class CharacterController extends Controller
      * @return LengthAwarePaginator $results The results for the array
      * 
      */
-    public function fetchSearchResults($input) {
+    public function fetchSearchResults($input, $sortBy) {
         
         $inputArray = explode(" ", $input);
 
@@ -121,6 +176,7 @@ class CharacterController extends Controller
         
         // return the results array as a paginatior
         $results = collect($results);
+
         $chars = new LengthAwarePaginator($results->forPage($currentPage, $perPage), $results->count(), $perPage, $currentPage, ['path' => "/search/$input"]);
        
         $search = $input;

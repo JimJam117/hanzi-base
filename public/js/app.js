@@ -50938,31 +50938,42 @@ function Chars(props) {
   var controller = new AbortController();
   var signal = controller.signal;
 
-  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(true),
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])('default'),
       _useState2 = _slicedToArray(_useState, 2),
-      loading = _useState2[0],
-      setLoading = _useState2[1];
+      sortBy = _useState2[0],
+      setSortBy = _useState2[1];
 
-  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(false),
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(true),
       _useState4 = _slicedToArray(_useState3, 2),
-      displayLoading = _useState4[0],
-      setDisplayLoading = _useState4[1];
+      loading = _useState4[0],
+      setLoading = _useState4[1];
 
-  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])([]),
+  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(false),
       _useState6 = _slicedToArray(_useState5, 2),
-      results = _useState6[0],
-      setResults = _useState6[1]; // pagination state
+      displayLoading = _useState6[0],
+      setDisplayLoading = _useState6[1];
 
-
-  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(1),
+  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])([]),
       _useState8 = _slicedToArray(_useState7, 2),
-      currentPage = _useState8[0],
-      setCurrentPage = _useState8[1];
+      originalResults = _useState8[0],
+      setOriginalResults = _useState8[1]; // this is used to keep the original order of the results after it has been sorted
 
-  var _useState9 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(),
+
+  var _useState9 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])([]),
       _useState10 = _slicedToArray(_useState9, 2),
-      lastPage = _useState10[0],
-      setLastPage = _useState10[1];
+      results = _useState10[0],
+      setResults = _useState10[1]; // pagination state
+
+
+  var _useState11 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(1),
+      _useState12 = _slicedToArray(_useState11, 2),
+      currentPage = _useState12[0],
+      setCurrentPage = _useState12[1];
+
+  var _useState13 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(),
+      _useState14 = _slicedToArray(_useState13, 2),
+      lastPage = _useState14[0],
+      setLastPage = _useState14[1];
 
   var observer = Object(react__WEBPACK_IMPORTED_MODULE_1__["useRef"])();
   var lastCharacterRef = Object(react__WEBPACK_IMPORTED_MODULE_1__["useCallback"])(function (node) {
@@ -50995,16 +51006,20 @@ function Chars(props) {
       setCurrentPage(pageToChangeTo);
       setLoading(true);
     }
-  };
+  }; // default all chars page
 
-  var query = "/api/chars/index";
+
+  var query = "/api/chars/index"; // radical
 
   if (props.radical) {
     query = "/api/radical/search/".concat(props.radical);
-  } else if (props.search) {
-    console.log("Search!!!");
-    query = "/api/search/".concat(props.search);
-  }
+  } // search with hanzi
+  else if (props.contains_hanzi) {
+      query = "/api/search/hanzi/".concat(props.search);
+    } // search without hanzi
+    else if (props.search) {
+        query = "/api/search/".concat(props.search);
+      }
 
   var fetchItems =
   /*#__PURE__*/
@@ -51012,16 +51027,16 @@ function Chars(props) {
     var _ref = _asyncToGenerator(
     /*#__PURE__*/
     _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
-      var apiUrl,
+      var sortUrl,
           _args2 = arguments;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
-              apiUrl = _args2.length > 0 && _args2[0] !== undefined ? _args2[0] : "".concat(query, "?page=").concat(currentPage);
-              console.log("load");
+              sortUrl = _args2.length > 0 && _args2[0] !== undefined ? _args2[0] : "";
+              console.log("load", sortBy, "".concat(query).concat(sortUrl, "?page=").concat(currentPage));
               _context2.next = 4;
-              return fetch(apiUrl, {
+              return fetch("".concat(query).concat(sortUrl, "?page=").concat(currentPage), {
                 signal: signal
               }).then(
               /*#__PURE__*/
@@ -51100,16 +51115,49 @@ function Chars(props) {
 
   Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
     if (loading) {
-      fetchItems();
+      var sortUrl = "";
+
+      if (sortBy == 'pinyin') {
+        sortUrl = "/sortBy/pinyin";
+      } else if (sortBy == 'freq') {
+        sortUrl = "/sortBy/freq";
+      } else if (sortBy == 'heisig') {
+        sortUrl = "/sortBy/heisig";
+      } else {
+        sortUrl = "/sortBy/default";
+      }
+
+      fetchItems(sortUrl);
     }
 
     return function () {
       controller.abort();
     };
   }, [loading]);
+
+  var changeSortBy = function changeSortBy(str) {
+    setSortBy(str);
+    setResults([]);
+    setLoading(true);
+    console.log(sortBy);
+  };
+
+  console.log("thing", props.contains_hanzi);
   return (
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null,
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
+      onClick: function onClick() {
+        return changeSortBy('pinyin');
+      }
+    }, "Sort by Pinyin"),
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
+      onClick: function onClick() {
+        return changeSortBy('default');
+      }
+    }, "Sort by default"),
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
       className: "characters_container"

@@ -12,9 +12,13 @@ export default function Chars(props) {
     var signal = controller.signal;
 
 
+    const [sortBy, setSortBy] = useState('default');
+
+
 
     const [loading, setLoading] = useState(true);
     const [displayLoading, setDisplayLoading] = useState(false);
+    const [originalResults, setOriginalResults] = useState([]); // this is used to keep the original order of the results after it has been sorted
     const [results, setResults] = useState([]);
 
     // pagination state
@@ -57,18 +61,24 @@ export default function Chars(props) {
         }
     }
 
+    // default all chars page
     let query = "/api/chars/index";
+    // radical
     if (props.radical) {
         query = `/api/radical/search/${props.radical}`;
     } 
+    // search with hanzi
+    else if(props.contains_hanzi) { 
+        query = `/api/search/hanzi/${props.search}`; 
+    }
+    // search without hanzi
     else if (props.search) {
-        console.log("Search!!!");
         query = `/api/search/${props.search}`;
     } 
 
-    const fetchItems = async (apiUrl = `${query}?page=${currentPage}`) =>  {
-        console.log("load");
-                await fetch(apiUrl, {signal})
+    const fetchItems = async (sortUrl = "") =>  {
+        console.log("load", sortBy, `${query}${sortUrl}?page=${currentPage}`);
+                await fetch(`${query}${sortUrl}?page=${currentPage}`, {signal})
                     .then(async (response) => {
                         
                         //throw errors if issues
@@ -113,18 +123,48 @@ export default function Chars(props) {
             }
 
     useEffect(() => {
-        if (loading) {fetchItems()}
+        if (loading) {
+            let sortUrl = "";
+            if(sortBy == 'pinyin'){
+                sortUrl = "/sortBy/pinyin";
+            }
+            else if(sortBy == 'freq'){
+                sortUrl = "/sortBy/freq";
+            }
+            else if(sortBy == 'heisig'){
+                sortUrl = "/sortBy/heisig";
+            }
+            else {
+                sortUrl = "/sortBy/default";
+            }
+            fetchItems(sortUrl)
+        }
         return () => {
             controller.abort();
         };
     }, [loading])
 
+    
 
+    const changeSortBy = (str) => {
+        
+        setSortBy(str);
+        setResults([]);
+        setLoading(true);
+        console.log(sortBy);
+        
+    }
+
+
+    console.log("thing", props.contains_hanzi);
 
 
     return (
     
         <div>
+            <button onClick={() => changeSortBy('pinyin')}>Sort by Pinyin</button>
+            <button onClick={() => changeSortBy('default')}>Sort by default</button>
+            
             <div className="characters_container">
                 {
                     results.map((result, i) => {

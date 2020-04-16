@@ -13,10 +13,15 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('/chars/index', 'Api\CharacterController@index');
 
-Route::get('/search/{input}', 'Api\CharacterController@fetchSearchResults')->name('search');
-Route::get('/radical/search/{search}', 'Api\CharacterController@showRadicalSearch')->name('radicalSearch');
+Route::get('/chars/index/sortBy/{sortBy}', 'Api\CharacterController@index');
+Route::get('/search/hanzi/{input}/sortBy/{sortBy}', 'Api\CharacterController@fetchHanziSearchResults')->name('hanziSearch');
+Route::get('/search/{input}/sortBy/{sortBy}', 'Api\CharacterController@fetchSearchResults')->name('search');
+Route::get('/radical/search/{search}/sortBy/{sortBy}', 'Api\CharacterController@showRadicalSearch')->name('radicalSearch');
+
+// Route::get('/chars/index', 'Api\CharacterController@index');
+// Route::get('/search/{input}', 'Api\CharacterController@fetchSearchResults')->name('search');
+// Route::get('/radical/search/{search}', 'Api\CharacterController@showRadicalSearch')->name('radicalSearch');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

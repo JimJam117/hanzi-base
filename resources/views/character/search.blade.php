@@ -25,13 +25,12 @@ results for "{{$search}}"
    @endif
     
 
-    {{-- If there are no results --}}
-    @if ($results->count() == 0)
-        <div class="noResults">Sorry, no results found ;(</div>
-    @else
-        <div id="chars" data-search={{ $search }}></div>
+
+        {{-- <div class="noResults">Sorry, no results found ;(</div> --}}
+    
+        <div id="chars" data-search={{ $search }} data-contains_hanzi={{ $containsHanzi }}></div>
             <script src="/js/app.js"></script>
-    @endif
+ 
 
   
 

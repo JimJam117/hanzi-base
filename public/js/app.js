@@ -51013,13 +51013,10 @@ function Chars(props) {
 
   if (props.radical) {
     query = "/api/radical/search/".concat(props.radical);
-  } // search with hanzi
-  else if (props.contains_hanzi) {
-      query = "/api/search/hanzi/".concat(props.search);
-    } // search without hanzi
-    else if (props.search) {
-        query = "/api/search/".concat(props.search);
-      }
+  } else if (props.search) {
+    console.log("prop.search", props.search);
+    query = "/api/search/".concat(props.search);
+  }
 
   var fetchItems =
   /*#__PURE__*/

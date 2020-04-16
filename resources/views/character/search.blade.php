@@ -27,8 +27,8 @@ results for "{{$search}}"
 
 
         {{-- <div class="noResults">Sorry, no results found ;(</div> --}}
-    
-        <div id="chars" data-search={{ $search }} data-contains_hanzi={{ $containsHanzi }}></div>
+        <div style="color: red">{{ $search }}</div>
+        <div id="chars" data-search="{{ $search }}"></div>
             <script src="/js/app.js"></script>
  
 

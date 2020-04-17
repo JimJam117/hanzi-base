@@ -17,9 +17,11 @@ export default function Chars(props) {
 
 
     const [loading, setLoading] = useState(true);
+    const [isFetching, setIsFetching] = useState(false);
     const [displayLoading, setDisplayLoading] = useState(false);
     const [originalResults, setOriginalResults] = useState([]); // this is used to keep the original order of the results after it has been sorted
     const [results, setResults] = useState([]);
+    const [currentSearchHanzi, setCurrentSearchHanzi] = useState([]);
 
     // pagination state
     const [currentPage, setCurrentPage] = useState(1);
@@ -68,12 +70,11 @@ export default function Chars(props) {
         query = `/api/radical/search/${props.radical}`;
     } 
     else if (props.search) {
-        console.log("prop.search", props.search);
         query = `/api/search/${props.search}`;
     } 
 
     const fetchItems = async (sortUrl = "") =>  {
-        console.log("load", sortBy, `${query}${sortUrl}?page=${currentPage}`);
+                setIsFetching(true);
                 await fetch(`${query}${sortUrl}?page=${currentPage}`, {signal})
                     .then(async (response) => {
                         
@@ -120,22 +121,22 @@ export default function Chars(props) {
                                 });
                                 results = resultsArray;
                             }
-
+                            
                             setResults(results);
                         }
-                        
 
+                        setCurrentSearchHanzi(data.hanzi);
                         setCurrentPage(data.chars.current_page);
                         setLastPage(data.chars.last_page);
                         setLoading(false);
+                        setIsFetching(false);
                 })
             }
 
     useEffect(() => {
-        if (loading) {
+        if (loading && !isFetching) {
             let sortUrl = "/sortBy/" + sortBy;
-
-            fetchItems(sortUrl)
+            fetchItems(sortUrl);
         }
         return () => {
             controller.abort();
@@ -145,16 +146,12 @@ export default function Chars(props) {
     
 
     const changeSortBy = (str) => {
-        
+        if(isFetching) {return} 
         setSortBy(str);
+        setCurrentPage(1);
         setResults([]);
-        setLoading(true);
-        console.log(sortBy);
-        
+        setLoading(true);        
     }
-
-
-    console.log("thing", results);
 
 
     return (
@@ -190,20 +187,22 @@ export default function Chars(props) {
                             hasSimplified = false;
                         }
 
-                        let translations = result.translations.substr(0, 20);
-                        //let translations = s.substr(0, strrpos($s, ' '));
+                        let translations = result.translations ? result.translations : null;
+                        if(translations) {
+                            translations = translations.substr(0, 20);
 
-                        let lastLetter = translations[translations.length - 1];
-                        if (lastLetter == ";" || lastLetter == "." || lastLetter == ",") {
-                            translations = translations.substr(0, -1);
+                            let lastLetter = translations[translations.length - 1];
+                            if (lastLetter == ";" || lastLetter == "." || lastLetter == ",") {
+                                translations = translations.substr(0, translations.length -1);
+                            }
                         }
-                        translations.concat("..");
-          
+
+                        
                         
 
                         return (
                             results.length - 1 == (i) ? 
-                            <a ref={lastCharacterRef} key={`character${result.id}`} href={`/character/${result.char}`} className="character_link">
+                            <a ref={lastCharacterRef} key={`character${result.id}`} href={`/character/${result.char}`} className={currentSearchHanzi.indexOf(result.char) == -1 ? `character_link` : `character_link currentSearchHanzi`}>
                             {/* {{-- Top details, radical and trad/simp --}} */}
                             <div className="top-details"> 
                                 <p>{ result.radical }</p>
@@ -222,7 +221,7 @@ export default function Chars(props) {
                             {/* {{-- Pinyin --}} */}
                             <p className="pinyin">{ result.pinyin }</p>
                             </a> : 
-                            <a key={`character${result.id}`} href={`/character/${result.char}`} className="character_link">
+                            <a key={`character${result.id}`} href={`/character/${result.char}`} className={currentSearchHanzi.indexOf(result.char) == -1 ? `character_link` : `character_link currentSearchHanzi`}>
                                 {/* {{-- Top details, radical and trad/simp --}} */}
                                 <div className="top-details"> 
                                     

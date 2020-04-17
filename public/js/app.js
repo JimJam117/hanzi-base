@@ -50950,30 +50950,40 @@ function Chars(props) {
 
   var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(false),
       _useState6 = _slicedToArray(_useState5, 2),
-      displayLoading = _useState6[0],
-      setDisplayLoading = _useState6[1];
+      isFetching = _useState6[0],
+      setIsFetching = _useState6[1];
 
-  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])([]),
+  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(false),
       _useState8 = _slicedToArray(_useState7, 2),
-      originalResults = _useState8[0],
-      setOriginalResults = _useState8[1]; // this is used to keep the original order of the results after it has been sorted
-
+      displayLoading = _useState8[0],
+      setDisplayLoading = _useState8[1];
 
   var _useState9 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])([]),
       _useState10 = _slicedToArray(_useState9, 2),
-      results = _useState10[0],
-      setResults = _useState10[1]; // pagination state
+      originalResults = _useState10[0],
+      setOriginalResults = _useState10[1]; // this is used to keep the original order of the results after it has been sorted
 
 
-  var _useState11 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(1),
+  var _useState11 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])([]),
       _useState12 = _slicedToArray(_useState11, 2),
-      currentPage = _useState12[0],
-      setCurrentPage = _useState12[1];
+      results = _useState12[0],
+      setResults = _useState12[1];
 
-  var _useState13 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(),
+  var _useState13 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])([]),
       _useState14 = _slicedToArray(_useState13, 2),
-      lastPage = _useState14[0],
-      setLastPage = _useState14[1];
+      currentSearchHanzi = _useState14[0],
+      setCurrentSearchHanzi = _useState14[1]; // pagination state
+
+
+  var _useState15 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(1),
+      _useState16 = _slicedToArray(_useState15, 2),
+      currentPage = _useState16[0],
+      setCurrentPage = _useState16[1];
+
+  var _useState17 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(),
+      _useState18 = _slicedToArray(_useState17, 2),
+      lastPage = _useState18[0],
+      setLastPage = _useState18[1];
 
   var observer = Object(react__WEBPACK_IMPORTED_MODULE_1__["useRef"])();
   var lastCharacterRef = Object(react__WEBPACK_IMPORTED_MODULE_1__["useCallback"])(function (node) {
@@ -51014,7 +51024,6 @@ function Chars(props) {
   if (props.radical) {
     query = "/api/radical/search/".concat(props.radical);
   } else if (props.search) {
-    console.log("prop.search", props.search);
     query = "/api/search/".concat(props.search);
   }
 
@@ -51031,7 +51040,7 @@ function Chars(props) {
           switch (_context2.prev = _context2.next) {
             case 0:
               sortUrl = _args2.length > 0 && _args2[0] !== undefined ? _args2[0] : "";
-              console.log("load", sortBy, "".concat(query).concat(sortUrl, "?page=").concat(currentPage));
+              setIsFetching(true);
               _context2.next = 4;
               return fetch("".concat(query).concat(sortUrl, "?page=").concat(currentPage), {
                 signal: signal
@@ -51092,11 +51101,13 @@ function Chars(props) {
                             setResults(_results);
                           }
 
+                          setCurrentSearchHanzi(data.hanzi);
                           setCurrentPage(data.chars.current_page);
                           setLastPage(data.chars.last_page);
                           setLoading(false);
+                          setIsFetching(false);
 
-                        case 8:
+                        case 10:
                         case "end":
                           return _context.stop();
                       }
@@ -51123,7 +51134,7 @@ function Chars(props) {
   }();
 
   Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
-    if (loading) {
+    if (loading && !isFetching) {
       var sortUrl = "/sortBy/" + sortBy;
       fetchItems(sortUrl);
     }
@@ -51134,13 +51145,16 @@ function Chars(props) {
   }, [loading]);
 
   var changeSortBy = function changeSortBy(str) {
+    if (isFetching) {
+      return;
+    }
+
     setSortBy(str);
+    setCurrentPage(1);
     setResults([]);
     setLoading(true);
-    console.log(sortBy);
   };
 
-  console.log("thing", results);
   return (
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null,
@@ -51203,22 +51217,24 @@ function Chars(props) {
         hasSimplified = false;
       }
 
-      var translations = result.translations.substr(0, 20); //let translations = s.substr(0, strrpos($s, ' '));
+      var translations = result.translations ? result.translations : null;
 
-      var lastLetter = translations[translations.length - 1];
+      if (translations) {
+        translations = translations.substr(0, 20);
+        var lastLetter = translations[translations.length - 1];
 
-      if (lastLetter == ";" || lastLetter == "." || lastLetter == ",") {
-        translations = translations.substr(0, -1);
+        if (lastLetter == ";" || lastLetter == "." || lastLetter == ",") {
+          translations = translations.substr(0, translations.length - 1);
+        }
       }
 
-      translations.concat("..");
       return results.length - 1 == i ?
       /*#__PURE__*/
       react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("a", {
         ref: lastCharacterRef,
         key: "character".concat(result.id),
         href: "/character/".concat(result["char"]),
-        className: "character_link"
+        className: currentSearchHanzi.indexOf(result["char"]) == -1 ? "character_link" : "character_link currentSearchHanzi"
       },
       /*#__PURE__*/
       react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
@@ -51242,7 +51258,7 @@ function Chars(props) {
       react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("a", {
         key: "character".concat(result.id),
         href: "/character/".concat(result["char"]),
-        className: "character_link"
+        className: currentSearchHanzi.indexOf(result["char"]) == -1 ? "character_link" : "character_link currentSearchHanzi"
       },
       /*#__PURE__*/
       react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {

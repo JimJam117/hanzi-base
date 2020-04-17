@@ -192,10 +192,10 @@ class CharacterController extends Controller
 
         // add all the hanzi matches to the inputArray
         foreach ($hanzi as $char) {
-            array_push($inputArray, $char);
+            array_unshift($inputArray, $char);
         }
 
-
+        //dd($inputArray);
 
         // these settings are for the custom LengthAwarePaginator
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
@@ -203,38 +203,46 @@ class CharacterController extends Controller
 
         // the search results, determined by the sortBy
         if ($sortBy == 'default') {
+            $results = [];
             $charResults = $this->charSearch($inputArray);
-            $results = $this->staggeredSearch($inputArray);
-
+            $otherResults = $this->staggeredSearch($inputArray);
+            
             foreach($charResults as $result) {
                 if (! in_array($result, $results)) {
-                    array_unshift($results, $result);
+                    array_push($results, $result);
+                }
+            }
+            foreach($otherResults as $result) {
+                if (! in_array($result, $results)) {
+                    array_push($results, $result);
                 }
             }
             
             $results = collect($results);
         }
 
+        // is not the default sorting
         else {
             $sortBy == "pinyin" ? $sortBy = "pinyin_normalised" : null; 
 
             $results = [];
             $otherResults = [];
             
+            // if there is at least one word in the query that's not hanzi
             if($atLeastOneNonHanzi) {
 
                 // charResults
                 $charResults = $this->charSearch($inputArray);
                 foreach($charResults as $result) {
                     if (! in_array($result, $results)) {
-                        array_unshift($results, $result);
+                        array_push($results, $result);
                     }
                 }
-
+                
                 // other matches
                 foreach ($inputArray as $inputItem) {
 
-                    $otherResults = \App\Character::where('heisig_keyword', 'like', '%' . $inputItem .'%')
+                    $otherResultsTemp = \App\Character::where('heisig_keyword', 'like', '%' . $inputItem .'%')
                             ->orWhere('pinyin', 'like', '%' . $inputItem .'%')
                             ->orWhere('pinyin_normalised', 'like', '%' . $inputItem .'%')
                             ->orWhere('translations', 'like', '%' . $inputItem .'%')
@@ -242,10 +250,21 @@ class CharacterController extends Controller
 
                     // for each result in the above collections, add to results array
 
-                    foreach($otherResults as $result) {
-                        if (! in_array($result, $results)) {
-                            array_push($results, $result);
+                    foreach($otherResultsTemp as $result) {
+                        if (! in_array($result, $otherResults)) {
+                            // if the sortBy is heisig, then remove all results that don't have heisig data
+                            if (!($sortBy == "heisig_number" && $result->heisig_number == null)) {
+                                array_push($otherResults, $result);
+                            }
                         }
+                    }
+                }
+                $otherResults = collect($otherResults);
+                $otherResults = $otherResults->sortBy($sortBy)->values()->all();
+
+                foreach($otherResults as $result) {
+                    if (! in_array($result, $results)) {
+                        array_push($results, $result);
                     }
                 }
 
@@ -267,6 +286,6 @@ class CharacterController extends Controller
         $chars = new LengthAwarePaginator($results->forPage($currentPage, $perPage), $results->count(), $perPage, $currentPage, ['path' => "/search/$input"]);
        
         $search = $input;
-        return (compact('search', 'chars'));
+        return (compact('search', 'chars', 'hanzi'));
     }
 }

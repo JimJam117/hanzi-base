@@ -65,6 +65,10 @@
 
 }
 
+.currentSearchHanzi{
+    background-color: #6392c4 !important;
+ }
+
 .character_link:hover {
     background-color: #cd223d;
     color: white;

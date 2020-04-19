@@ -269,7 +269,7 @@ class CharacterController extends Controller
      * @return LengthAwarePaginator $results The results for the array
      * 
      */
-    public function fetchSearchResults($input, $sortBy = "default") {
+    public function fetchSearchResults($input, $sortBy = "default", $Hfilter = "all", $Cfilter = "all", $Rfilter = false) {
         
         // find if there are any hanzi in the string
         $hanzi = [];
@@ -300,6 +300,14 @@ class CharacterController extends Controller
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
         $perPage = 30;
 
+        // set the order to either asc or desc
+        $sortOrder = 'asc';
+        $sortBy == "updated_at" ? $sortOrder = 'desc' : null;
+        $sortBy == "pinyin" ? $sortBy = "pinyin_normalised" : null;
+        $sortBy == 'heisig_number' ? $Hfilter = "yes" : null;
+
+        $newChars = [];
+
         // the search results, determined by the sortBy
         if ($sortBy == 'default') {
             $results = [];
@@ -317,7 +325,7 @@ class CharacterController extends Controller
                 }
             }
             
-            $results = collect($results);
+            
         }
         
         // is not the default sorting
@@ -381,7 +389,7 @@ class CharacterController extends Controller
                     }
                 }
 
-                $results = collect($results);
+                
             }
 
             // if all the items in the inputArray are hanzi
@@ -391,12 +399,49 @@ class CharacterController extends Controller
 
                 // sort by the sortBy value, then reset the values for the keys and collect results again
                 $results = $results->sortBy($sortBy)->values()->all();
-                $results = collect($results);
+                
             }
         }
-        //dd($results);
+
+        
+        foreach ($results as $char) {
+            $hasSimplified = $char->simp_char ? true : false;
+            $hasTraditional = $char->trad_char ? true : false;
+            if ($hasTraditional) {
+            $trads = $char->trad_char;
+            $trads = explode(",", $trads);
+            }
+            // if has same trad as char, then does not have a traditional version
+            foreach ($trads as $trad) {
+                if ($trad == $char->char){
+                    $hasTraditional = false;
+                }
+            }
+            // if the char is the same as the simp_char, then does not have simplified version
+            if($char->char == $char->simp_char) {
+                $hasSimplified = false;
+            }
+
+            // if none of the conditions are true
+            if(
+                !(
+                    ($Cfilter == "simp" && $hasSimplified) ||
+                    ($Cfilter == "trad" && $hasTraditional) ||
+                    ($Rfilter == "true" && ($char->char != $char->radical)) || 
+                    ($Hfilter == "no" && $char->heisig_number != null) ||
+                    ($Hfilter == "yes" && $char->heisig_number == null)
+                )
+            )
+            {
+                array_push($newChars, ['char' => $char, 'hasSimplified' => $hasSimplified, 'hasTraditional' => $hasTraditional]);
+            }            
+        }
+        
+        // collect the results
+        $newChars = collect($newChars);
+
         // return the results array as a paginatior
-        $chars = new LengthAwarePaginator($results->forPage($currentPage, $perPage), $results->count(), $perPage, $currentPage, ['path' => "/search/$input"]);
+        $chars = new LengthAwarePaginator($newChars->forPage($currentPage, $perPage), $newChars->count(), $perPage, $currentPage, ['path' => "/search/$input"]);
        
         $search = $input;
         return (compact('search', 'chars', 'hanzi'));

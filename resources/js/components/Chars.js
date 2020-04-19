@@ -18,6 +18,7 @@ export default function Chars(props) {
     // filter states
     const [charsetFilter, setCharsetFilter] = useState('all')
     const [heisigFilter, setHeisigFilter] = useState('all')
+    const [radicalFilter, setRadicalFilter] = useState(false)
 
     const [loading, setLoading] = useState(true);
     const [isFetching, setIsFetching] = useState(false);
@@ -141,7 +142,7 @@ export default function Chars(props) {
 
     useEffect(() => {
         if (loading && !isFetching) {
-            let sortUrl = `/sortBy/${sortBy}/${heisigFilter}/${charsetFilter}`;
+            let sortUrl = `/sortBy/${sortBy}/${heisigFilter}/${charsetFilter}/${radicalFilter}`;
             fetchItems(sortUrl);
         }
         return () => {
@@ -175,6 +176,15 @@ export default function Chars(props) {
         setCurrentPage(1);
         setResults([]);
         setLoading(true);   
+    }
+
+    const radicalFilterChange = (e) => {
+        if(isFetching) {return} 
+        setRadicalFilter(e.target.checked);
+        setCurrentPage(1);
+        setResults([]);
+        setLoading(true);   
+        console.log(radicalFilter);
     }
 
 
@@ -218,6 +228,12 @@ export default function Chars(props) {
             <label>
                 <input type="radio" name="filter_heisig" value="no" onChange={(e) => heisigFilterChange(e)}/>
                 No only
+            </label>
+
+            <h3>Radicals</h3>
+            <label>
+                <input type="checkbox" checked={radicalFilter} onChange={(e) => radicalFilterChange(e)}/>
+                All
             </label>
 
             <div className="characters_container">

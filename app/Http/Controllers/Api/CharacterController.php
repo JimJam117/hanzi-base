@@ -20,7 +20,7 @@ class CharacterController extends Controller
      * 
      * @return All characters
      */
-    public function index($sortBy, $Hfilter = "all", $Cfilter = "all")
+    public function index($sortBy, $Hfilter = "all", $Cfilter = "all", $Rfilter = false)
     {
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
         $perPage = 30;
@@ -64,11 +64,14 @@ class CharacterController extends Controller
                 $hasSimplified = false;
             }
 
-            // if neither simp or trad are filtered out
-            if(!(
-                ($Cfilter == "simp" && $hasSimplified) ||
-                ($Cfilter == "trad" && $hasTraditional))
+            // if none of the conditions are true
+            if(
+                !(
+                    ($Cfilter == "simp" && $hasSimplified) ||
+                    ($Cfilter == "trad" && $hasTraditional) ||
+                    ($Rfilter == "true" && ($char->char != $char->radical))
                 )
+            )
             {
                 array_push($newChars, ['char' => $char, 'hasSimplified' => $hasSimplified, 'hasTraditional' => $hasTraditional]);
             }            

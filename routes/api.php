@@ -14,9 +14,9 @@ use Illuminate\Http\Request;
 */
 
 
-Route::get('/chars/index/sortBy/{sortBy}/{Hfilter}/{Cfilter}', 'Api\CharacterController@index');
-Route::get('/search/{input}/sortBy/{sortBy}/{Hfilter}/{Cfilter}', 'Api\CharacterController@fetchSearchResults')->name('search');
-Route::get('/radical/search/{search}/sortBy/{sortBy}/{Hfilter}/{Cfilter}', 'Api\CharacterController@showRadicalSearch')->name('radicalSearch');
+Route::get('/chars/index/sortBy/{sortBy}/{Hfilter}/{Cfilter}/{Rfilter}', 'Api\CharacterController@index');
+Route::get('/search/{input}/sortBy/{sortBy}/{Hfilter}/{Cfilter}/{Rfilter}', 'Api\CharacterController@fetchSearchResults')->name('search');
+Route::get('/radical/search/{search}/sortBy/{sortBy}/{Hfilter}/{Cfilter}/{Rfilter}', 'Api\CharacterController@showRadicalSearch')->name('radicalSearch');
 
 // Route::get('/chars/index', 'Api\CharacterController@index');
 // Route::get('/search/{input}', 'Api\CharacterController@fetchSearchResults')->name('search');

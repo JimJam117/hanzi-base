@@ -51012,47 +51012,52 @@ function Chars(props) {
       heisigFilter = _useState6[0],
       setHeisigFilter = _useState6[1];
 
-  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(true),
+  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(false),
       _useState8 = _slicedToArray(_useState7, 2),
-      loading = _useState8[0],
-      setLoading = _useState8[1];
+      radicalFilter = _useState8[0],
+      setRadicalFilter = _useState8[1];
 
-  var _useState9 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(false),
+  var _useState9 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(true),
       _useState10 = _slicedToArray(_useState9, 2),
-      isFetching = _useState10[0],
-      setIsFetching = _useState10[1];
+      loading = _useState10[0],
+      setLoading = _useState10[1];
 
   var _useState11 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(false),
       _useState12 = _slicedToArray(_useState11, 2),
-      displayLoading = _useState12[0],
-      setDisplayLoading = _useState12[1];
+      isFetching = _useState12[0],
+      setIsFetching = _useState12[1];
 
-  var _useState13 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])([]),
+  var _useState13 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(false),
       _useState14 = _slicedToArray(_useState13, 2),
-      originalResults = _useState14[0],
-      setOriginalResults = _useState14[1]; // this is used to keep the original order of the results after it has been sorted
-
+      displayLoading = _useState14[0],
+      setDisplayLoading = _useState14[1];
 
   var _useState15 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])([]),
       _useState16 = _slicedToArray(_useState15, 2),
-      results = _useState16[0],
-      setResults = _useState16[1];
+      originalResults = _useState16[0],
+      setOriginalResults = _useState16[1]; // this is used to keep the original order of the results after it has been sorted
+
 
   var _useState17 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])([]),
       _useState18 = _slicedToArray(_useState17, 2),
-      currentSearchHanzi = _useState18[0],
-      setCurrentSearchHanzi = _useState18[1]; // pagination state
+      results = _useState18[0],
+      setResults = _useState18[1];
 
-
-  var _useState19 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(1),
+  var _useState19 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])([]),
       _useState20 = _slicedToArray(_useState19, 2),
-      currentPage = _useState20[0],
-      setCurrentPage = _useState20[1];
+      currentSearchHanzi = _useState20[0],
+      setCurrentSearchHanzi = _useState20[1]; // pagination state
 
-  var _useState21 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(),
+
+  var _useState21 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(1),
       _useState22 = _slicedToArray(_useState21, 2),
-      lastPage = _useState22[0],
-      setLastPage = _useState22[1];
+      currentPage = _useState22[0],
+      setCurrentPage = _useState22[1];
+
+  var _useState23 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(),
+      _useState24 = _slicedToArray(_useState23, 2),
+      lastPage = _useState24[0],
+      setLastPage = _useState24[1];
 
   var observer = Object(react__WEBPACK_IMPORTED_MODULE_1__["useRef"])();
   var lastCharacterRef = Object(react__WEBPACK_IMPORTED_MODULE_1__["useCallback"])(function (node) {
@@ -51210,7 +51215,7 @@ function Chars(props) {
 
   Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
     if (loading && !isFetching) {
-      var sortUrl = "/sortBy/".concat(sortBy, "/").concat(heisigFilter, "/").concat(charsetFilter);
+      var sortUrl = "/sortBy/".concat(sortBy, "/").concat(heisigFilter, "/").concat(charsetFilter, "/").concat(radicalFilter);
       fetchItems(sortUrl);
     }
 
@@ -51256,6 +51261,18 @@ function Chars(props) {
     setCurrentPage(1);
     setResults([]);
     setLoading(true);
+  };
+
+  var radicalFilterChange = function radicalFilterChange(e) {
+    if (isFetching) {
+      return;
+    }
+
+    setRadicalFilter(e.target.checked);
+    setCurrentPage(1);
+    setResults([]);
+    setLoading(true);
+    console.log(radicalFilter);
   };
 
   return (
@@ -51367,6 +51384,18 @@ function Chars(props) {
         return heisigFilterChange(e);
       }
     }), "No only"),
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h3", null, "Radicals"),
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("label", null,
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("input", {
+      type: "checkbox",
+      checked: radicalFilter,
+      onChange: function onChange(e) {
+        return radicalFilterChange(e);
+      }
+    }), "All"),
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
       className: "characters_container"

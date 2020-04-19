@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 
 import { css } from "@emotion/core";
 import ClipLoader from "react-spinners/ClipLoader";
+import CharacterLink from './CharacterLink';
 
 
 export default function Chars(props) {
@@ -124,8 +125,10 @@ export default function Chars(props) {
                             
                             setResults(results);
                         }
-
-                        setCurrentSearchHanzi(data.hanzi);
+                        
+                        if(data.hanzi) {
+                            setCurrentSearchHanzi(data.hanzi);
+                        }
                         setCurrentPage(data.chars.current_page);
                         setLastPage(data.chars.last_page);
                         setLoading(false);
@@ -167,82 +170,15 @@ export default function Chars(props) {
             <div className="characters_container">
                 {
                     results.map((result, i) => {
-                        let hasSimplified = result.simp_char ? true : false;
-                        let hasTraditional = result.trad_char ? true : false;
 
-                        if (hasTraditional) {
-                            let trads = result.trad_char;
-                            trads = trads.split(",");
-
-                            // if has same trad as char, then does not have a traditional version
-                            trads.forEach((trad) => {
-                                if (trad == result.char){
-                                    hasTraditional = false;
-                                }
-                            }) 
-                        }
-
-                        // if the char is the same as the simp_char, then does not have simplified version
-                        if(result.char == result.simp_char) {
-                            hasSimplified = false;
-                        }
-
-                        let translations = result.translations ? result.translations : null;
-                        if(translations) {
-                            translations = translations.substr(0, 20);
-
-                            let lastLetter = translations[translations.length - 1];
-                            if (lastLetter == ";" || lastLetter == "." || lastLetter == ",") {
-                                translations = translations.substr(0, translations.length -1);
-                            }
-                        }
-
-                        
-                        
-
-                        return (
-                            results.length - 1 == (i) ? 
-                            <a ref={lastCharacterRef} key={`character${result.id}`} href={`/character/${result.char}`} className={currentSearchHanzi.indexOf(result.char) == -1 ? `character_link` : `character_link currentSearchHanzi`}>
-                            {/* {{-- Top details, radical and trad/simp --}} */}
-                            <div className="top-details"> 
-                                <p>{ result.radical }</p>
-                                <p>
-                                    {hasSimplified ? "Trad" : hasTraditional ? "Simp" : null}
-                                </p>
-                            </div>
-
-                            <h2 className="character">{result.char}</h2>
-
-                            {/* {{-- Translations or heisig --}} */}
-                            <h3>
-                                {result.heisig_keyword ? `H ${result.heisig_keyword} (${result.heisig_number})` : translations}
-                            </h3>
-                            
-                            {/* {{-- Pinyin --}} */}
-                            <p className="pinyin">{ result.pinyin }</p>
-                            </a> : 
-                            <a key={`character${result.id}`} href={`/character/${result.char}`} className={currentSearchHanzi.indexOf(result.char) == -1 ? `character_link` : `character_link currentSearchHanzi`}>
-                                {/* {{-- Top details, radical and trad/simp --}} */}
-                                <div className="top-details"> 
-                                    
-                                    <p>{ result.radical }</p>
-                                    <p>
-                                        {hasSimplified ? "Trad" : hasTraditional ? "Simp" : null}
-                                    </p>
-                                </div>
-
-                                <h2 className="character">{result.char}</h2>
-
-                                {/* {{-- Translations or heisig --}} */}
-                                <h3>
-                                    {result.heisig_keyword ? `H ${result.heisig_keyword} (${result.heisig_number})` : translations}
-                                </h3>
-
-                                {/* {{-- Pinyin --}} */}
-                                <p className="pinyin">{ result.pinyin }</p>
-                            </a>
-                        )
-
+                        return (<CharacterLink 
+                                        key={result.id}
+                                        hanzi={result} 
+                                        currentSearchHanzi={currentSearchHanzi}
+                                        lastCharacterRef={lastCharacterRef}
+                                        currentCharIndex={i} 
+                                        resultsLength={results.length}/>
+                                );
                     })
                 }
             </div>

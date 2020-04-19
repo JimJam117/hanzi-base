@@ -22,12 +22,14 @@ class CharacterController extends Controller
      */
     public function index($sortBy)
     {
-        if($sortBy === 'pinyin') {
-            
-            $chars = DB::table('characters')->orderBy('pinyin_normalised', 'desc')->paginate(30);
+        if($sortBy === 'pinyin') {         
+            $chars = DB::table('characters')->orderBy('pinyin_normalised', 'asc')->paginate(30);
+        }
+        else if ($sortBy == 'heisig_number'){
+            $chars = DB::table('characters')->where('heisig_number', '!=', null)->orderBy('heisig_number', 'asc')->paginate(30);
         }
         else{
-            $chars = DB::table('characters')->paginate(30);
+            $chars = DB::table('characters')->orderBy($sortBy, 'asc')->paginate(30);
         }
         
         return (compact('chars'));

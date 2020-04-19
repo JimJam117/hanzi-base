@@ -50886,6 +50886,81 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 /***/ }),
 
+/***/ "./resources/js/components/CharacterLink.jsx":
+/*!***************************************************!*\
+  !*** ./resources/js/components/CharacterLink.jsx ***!
+  \***************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return CharacterLink; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+function CharacterLink(props) {
+  var result = props.hanzi;
+  var hasSimplified = result.simp_char ? true : false;
+  var hasTraditional = result.trad_char ? true : false;
+
+  if (hasTraditional) {
+    var trads = result.trad_char;
+    trads = trads.split(","); // if has same trad as char, then does not have a traditional version
+
+    trads.forEach(function (trad) {
+      if (trad == result["char"]) {
+        hasTraditional = false;
+      }
+    });
+  } // if the char is the same as the simp_char, then does not have simplified version
+
+
+  if (result["char"] == result.simp_char) {
+    hasSimplified = false;
+  }
+
+  var translations = result.translations ? result.translations : null;
+
+  if (translations) {
+    translations = translations.substr(0, 20);
+    var lastLetter = translations[translations.length - 1];
+
+    if (lastLetter == ";" || lastLetter == "." || lastLetter == ",") {
+      translations = translations.substr(0, translations.length - 1);
+    }
+  }
+
+  return (
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+      ref: props.resultsLength - 1 == props.currentCharIndex ? props.lastCharacterRef : null,
+      href: "/character/".concat(result["char"]),
+      className: props.currentSearchHanzi && props.currentSearchHanzi.indexOf(result["char"]) == -1 ? "character_link" : "character_link currentSearchHanzi"
+    },
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      className: "top-details"
+    },
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, result.radical),
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, hasSimplified ? "Trad" : hasTraditional ? "Simp" : null)),
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", {
+      className: "character"
+    }, result["char"]),
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, result.heisig_keyword ? "H ".concat(result.heisig_keyword, " (").concat(result.heisig_number, ")") : translations),
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+      className: "pinyin"
+    }, result.pinyin))
+  );
+}
+
+/***/ }),
+
 /***/ "./resources/js/components/Chars.js":
 /*!******************************************!*\
   !*** ./resources/js/components/Chars.js ***!
@@ -50905,6 +50980,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _emotion_core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @emotion/core */ "./node_modules/@emotion/core/dist/core.browser.esm.js");
 /* harmony import */ var react_spinners_ClipLoader__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-spinners/ClipLoader */ "./node_modules/react-spinners/ClipLoader.js");
 /* harmony import */ var react_spinners_ClipLoader__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react_spinners_ClipLoader__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _CharacterLink__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./CharacterLink */ "./resources/js/components/CharacterLink.jsx");
 
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
@@ -50928,6 +51004,7 @@ function _nonIterableRest() { throw new TypeError("Invalid attempt to destructur
 function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 
 
 
@@ -51101,7 +51178,10 @@ function Chars(props) {
                             setResults(_results);
                           }
 
-                          setCurrentSearchHanzi(data.hanzi);
+                          if (data.hanzi) {
+                            setCurrentSearchHanzi(data.hanzi);
+                          }
+
                           setCurrentPage(data.chars.current_page);
                           setLastPage(data.chars.last_page);
                           setLoading(false);
@@ -51198,86 +51278,17 @@ function Chars(props) {
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
       className: "characters_container"
     }, results.map(function (result, i) {
-      var hasSimplified = result.simp_char ? true : false;
-      var hasTraditional = result.trad_char ? true : false;
-
-      if (hasTraditional) {
-        var trads = result.trad_char;
-        trads = trads.split(","); // if has same trad as char, then does not have a traditional version
-
-        trads.forEach(function (trad) {
-          if (trad == result["char"]) {
-            hasTraditional = false;
-          }
-        });
-      } // if the char is the same as the simp_char, then does not have simplified version
-
-
-      if (result["char"] == result.simp_char) {
-        hasSimplified = false;
-      }
-
-      var translations = result.translations ? result.translations : null;
-
-      if (translations) {
-        translations = translations.substr(0, 20);
-        var lastLetter = translations[translations.length - 1];
-
-        if (lastLetter == ";" || lastLetter == "." || lastLetter == ",") {
-          translations = translations.substr(0, translations.length - 1);
-        }
-      }
-
-      return results.length - 1 == i ?
-      /*#__PURE__*/
-      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("a", {
-        ref: lastCharacterRef,
-        key: "character".concat(result.id),
-        href: "/character/".concat(result["char"]),
-        className: currentSearchHanzi.indexOf(result["char"]) == -1 ? "character_link" : "character_link currentSearchHanzi"
-      },
-      /*#__PURE__*/
-      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-        className: "top-details"
-      },
-      /*#__PURE__*/
-      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, result.radical),
-      /*#__PURE__*/
-      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, hasSimplified ? "Trad" : hasTraditional ? "Simp" : null)),
-      /*#__PURE__*/
-      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h2", {
-        className: "character"
-      }, result["char"]),
-      /*#__PURE__*/
-      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h3", null, result.heisig_keyword ? "H ".concat(result.heisig_keyword, " (").concat(result.heisig_number, ")") : translations),
-      /*#__PURE__*/
-      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", {
-        className: "pinyin"
-      }, result.pinyin)) :
-      /*#__PURE__*/
-      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("a", {
-        key: "character".concat(result.id),
-        href: "/character/".concat(result["char"]),
-        className: currentSearchHanzi.indexOf(result["char"]) == -1 ? "character_link" : "character_link currentSearchHanzi"
-      },
-      /*#__PURE__*/
-      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-        className: "top-details"
-      },
-      /*#__PURE__*/
-      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, result.radical),
-      /*#__PURE__*/
-      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, hasSimplified ? "Trad" : hasTraditional ? "Simp" : null)),
-      /*#__PURE__*/
-      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h2", {
-        className: "character"
-      }, result["char"]),
-      /*#__PURE__*/
-      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h3", null, result.heisig_keyword ? "H ".concat(result.heisig_keyword, " (").concat(result.heisig_number, ")") : translations),
-      /*#__PURE__*/
-      react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", {
-        className: "pinyin"
-      }, result.pinyin));
+      return (
+        /*#__PURE__*/
+        react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_CharacterLink__WEBPACK_IMPORTED_MODULE_5__["default"], {
+          key: result.id,
+          hanzi: result,
+          currentSearchHanzi: currentSearchHanzi,
+          lastCharacterRef: lastCharacterRef,
+          currentCharIndex: i,
+          resultsLength: results.length
+        })
+      );
     })), displayLoading || loading ?
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {

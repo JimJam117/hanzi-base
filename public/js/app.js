@@ -51231,6 +51231,10 @@ function Chars(props) {
       return;
     }
 
+    if (e.target.value == "heisig_number" && heisigFilter != "yes") {
+      setHeisigFilter("yes");
+    }
+
     setSortBy(e.target.value);
     setCurrentPage(1);
     setResults([]);
@@ -51255,6 +51259,10 @@ function Chars(props) {
 
     if (isFetching) {
       return;
+    }
+
+    if (e.target.value == "no" && sortBy == "heisig_number") {
+      setSortBy("default");
     }
 
     setHeisigFilter(e.target.value);
@@ -51286,6 +51294,7 @@ function Chars(props) {
     }, "Sorted by: ", sortBy),
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("select", {
+      value: sortBy,
       onChange: function onChange(e) {
         return changeSortBy(e);
       }
@@ -51322,6 +51331,7 @@ function Chars(props) {
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("input", {
       type: "radio",
       name: "filter_charset",
+      checked: charsetFilter == "all",
       value: "all",
       onChange: function onChange(e) {
         return charsetFilterChange(e);
@@ -51333,6 +51343,7 @@ function Chars(props) {
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("input", {
       type: "radio",
       name: "filter_charset",
+      checked: charsetFilter == "simp",
       value: "simp",
       onChange: function onChange(e) {
         return charsetFilterChange(e);
@@ -51344,6 +51355,7 @@ function Chars(props) {
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("input", {
       type: "radio",
       name: "filter_charset",
+      checked: charsetFilter == "trad",
       value: "trad",
       onChange: function onChange(e) {
         return charsetFilterChange(e);
@@ -51357,6 +51369,7 @@ function Chars(props) {
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("input", {
       type: "radio",
       name: "filter_heisig",
+      checked: heisigFilter == "all",
       value: "all",
       onChange: function onChange(e) {
         return heisigFilterChange(e);
@@ -51368,6 +51381,7 @@ function Chars(props) {
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("input", {
       type: "radio",
       name: "filter_heisig",
+      checked: heisigFilter == "yes",
       value: "yes",
       onChange: function onChange(e) {
         return heisigFilterChange(e);
@@ -51379,6 +51393,7 @@ function Chars(props) {
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("input", {
       type: "radio",
       name: "filter_heisig",
+      checked: heisigFilter == "no",
       value: "no",
       onChange: function onChange(e) {
         return heisigFilterChange(e);

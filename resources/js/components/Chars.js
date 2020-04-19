@@ -154,6 +154,10 @@ export default function Chars(props) {
     const changeSortBy = (e) => {
         console.log(e.target.value);
         if(isFetching) {return} 
+
+        if(e.target.value == "heisig_number" && heisigFilter != "yes"){
+            setHeisigFilter("yes");
+        }
         setSortBy(e.target.value);
         setCurrentPage(1);
         setResults([]);
@@ -172,6 +176,10 @@ export default function Chars(props) {
     const heisigFilterChange = (e) => {
         console.log(e.target.value);
         if(isFetching) {return} 
+
+        if(e.target.value == "no" && sortBy == "heisig_number"){
+            setSortBy("default");
+        }
         setHeisigFilter(e.target.value);
         setCurrentPage(1);
         setResults([]);
@@ -193,7 +201,7 @@ export default function Chars(props) {
     
         <div>
             <div style={{ color: 'red' }}>Sorted by: {sortBy}</div>
-            <select onChange={(e) => changeSortBy(e)}>
+            <select value={sortBy} onChange={(e) => changeSortBy(e)}>
                 <option value='default'>Default</option>
                 <option value='updated_at'>Recently Added</option>
                 <option value='pinyin'>Pinyin</option>
@@ -204,29 +212,29 @@ export default function Chars(props) {
 
             <h3>Charset</h3>
             <label>
-                <input type="radio" name="filter_charset" value="all" onChange={(e) => charsetFilterChange(e)}/>
+                <input type="radio" name="filter_charset" checked={charsetFilter == "all"} value="all" onChange={(e) => charsetFilterChange(e)}/>
                 All
             </label>
             <label>
-                <input type="radio" name="filter_charset" value="simp" onChange={(e) => charsetFilterChange(e)}/>
+                <input type="radio" name="filter_charset" checked={charsetFilter == "simp"} value="simp" onChange={(e) => charsetFilterChange(e)}/>
                 Simp Only
             </label>
             <label>
-                <input type="radio" name="filter_charset" value="trad" onChange={(e) => charsetFilterChange(e)}/>
+                <input type="radio" name="filter_charset" checked={charsetFilter == "trad"} value="trad" onChange={(e) => charsetFilterChange(e)}/>
                 Trad Only
             </label>
 
             <h3>Heisig</h3>
             <label>
-                <input type="radio" name="filter_heisig" value="all" onChange={(e) => heisigFilterChange(e)}/>
+                <input type="radio" name="filter_heisig" checked={heisigFilter == "all"} value="all" onChange={(e) => heisigFilterChange(e)}/>
                 All
             </label>
             <label>
-                <input type="radio" name="filter_heisig" value="yes" onChange={(e) => heisigFilterChange(e)}/>
+                <input type="radio" name="filter_heisig" checked={heisigFilter == "yes"} value="yes" onChange={(e) => heisigFilterChange(e)}/>
                 Yes only
             </label>
             <label>
-                <input type="radio" name="filter_heisig" value="no" onChange={(e) => heisigFilterChange(e)}/>
+                <input type="radio" name="filter_heisig" checked={heisigFilter == "no"} value="no" onChange={(e) => heisigFilterChange(e)}/>
                 No only
             </label>
 

@@ -51222,11 +51222,16 @@ function Chars(props) {
     return function () {
       controller.abort();
     };
-  }, [loading]);
+  }, [loading]); // used for changing the filters or sorting
+
+  var changeFilters = function changeFilters(val, callback) {
+    callback(val);
+    setCurrentPage(1);
+    setResults([]);
+    setLoading(true);
+  };
 
   var changeSortBy = function changeSortBy(e) {
-    console.log(e.target.value);
-
     if (isFetching) {
       return;
     }
@@ -51235,28 +51240,18 @@ function Chars(props) {
       setHeisigFilter("yes");
     }
 
-    setSortBy(e.target.value);
-    setCurrentPage(1);
-    setResults([]);
-    setLoading(true);
+    changeFilters(e.target.value, setSortBy);
   };
 
   var charsetFilterChange = function charsetFilterChange(e) {
-    console.log(e.target.value);
-
     if (isFetching) {
       return;
     }
 
-    setCharsetFilter(e.target.value);
-    setCurrentPage(1);
-    setResults([]);
-    setLoading(true);
+    changeFilters(e.target.value, setCharsetFilter);
   };
 
   var heisigFilterChange = function heisigFilterChange(e) {
-    console.log(e.target.value);
-
     if (isFetching) {
       return;
     }
@@ -51265,10 +51260,7 @@ function Chars(props) {
       setSortBy("default");
     }
 
-    setHeisigFilter(e.target.value);
-    setCurrentPage(1);
-    setResults([]);
-    setLoading(true);
+    changeFilters(e.target.value, setHeisigFilter);
   };
 
   var radicalFilterChange = function radicalFilterChange(e) {
@@ -51276,11 +51268,7 @@ function Chars(props) {
       return;
     }
 
-    setRadicalFilter(e.target.checked);
-    setCurrentPage(1);
-    setResults([]);
-    setLoading(true);
-    console.log(radicalFilter);
+    changeFilters(e.target.checked, setRadicalFilter);
   };
 
   return (

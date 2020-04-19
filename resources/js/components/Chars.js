@@ -151,48 +151,38 @@ export default function Chars(props) {
     }, [loading])
 
 
-    const changeSortBy = (e) => {
-        console.log(e.target.value);
-        if(isFetching) {return} 
+    // used for changing the filters or sorting
+    const changeFilters = (val, callback) => {
+        callback(val); 
+        setCurrentPage(1);
+        setResults([]);  
+        setLoading(true);    
+    }
 
+    const changeSortBy = (e) => {
+        if(isFetching) {return}
         if(e.target.value == "heisig_number" && heisigFilter != "yes"){
             setHeisigFilter("yes");
         }
-        setSortBy(e.target.value);
-        setCurrentPage(1);
-        setResults([]);
-        setLoading(true);        
+        changeFilters(e.target.value, setSortBy);
     }
 
     const charsetFilterChange = (e) => {
-        console.log(e.target.value);
-        if(isFetching) {return} 
-        setCharsetFilter(e.target.value);
-        setCurrentPage(1);
-        setResults([]);
-        setLoading(true);   
+        if(isFetching) {return}
+        changeFilters(e.target.value, setCharsetFilter);
     }
 
     const heisigFilterChange = (e) => {
-        console.log(e.target.value);
-        if(isFetching) {return} 
-
+        if(isFetching) {return}
         if(e.target.value == "no" && sortBy == "heisig_number"){
             setSortBy("default");
         }
-        setHeisigFilter(e.target.value);
-        setCurrentPage(1);
-        setResults([]);
-        setLoading(true);   
+        changeFilters(e.target.value, setHeisigFilter); 
     }
 
     const radicalFilterChange = (e) => {
-        if(isFetching) {return} 
-        setRadicalFilter(e.target.checked);
-        setCurrentPage(1);
-        setResults([]);
-        setLoading(true);   
-        console.log(radicalFilter);
+        if(isFetching) {return}
+        changeFilters(e.target.checked, setRadicalFilter);
     }
 
 

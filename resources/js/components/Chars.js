@@ -238,11 +238,16 @@ export default function Chars(props) {
                 No only
             </label>
 
-            <h3>Radicals</h3>
-            <label>
-                <input type="checkbox" checked={radicalFilter} onChange={(e) => radicalFilterChange(e)}/>
-                All
-            </label>
+            {props.radical ? null :
+            <div>
+                <h3>Radicals</h3>
+                <label>
+                    <input type="checkbox" checked={radicalFilter} onChange={(e) => radicalFilterChange(e)}/>
+                    All
+                </label>
+            </div>}
+
+            {results.length == 0 && !loading ? "no posts" : null}
 
             <div className="characters_container">
                 {

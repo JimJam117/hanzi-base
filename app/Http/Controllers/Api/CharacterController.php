@@ -32,9 +32,6 @@ class CharacterController extends Controller
         $sortBy == "updated_at" ? $sortOrder = 'desc' : null;
         $sortBy == "pinyin" ? $sortBy = "pinyin_normalised" : null;
         $sortBy == 'heisig_number' ? $Hfilter = "yes" : null;
-
-            // $chars = DB::table('characters')->where('heisig_number', '!=', null)->orderBy('heisig_number', $sortOrder)->paginate(30);
-
         
         if($Hfilter == "yes") {
             $chars = DB::table('characters')->where('heisig_number', '!=', null)->orderBy($sortBy, $sortOrder)->get();
@@ -91,40 +88,84 @@ class CharacterController extends Controller
      * @param $search The search input
      * @return radical search 
      */
-    public function showRadicalSearch ($search = null, $sortBy) {
+    public function showRadicalSearch ($search = null, $sortBy, $Hfilter = "all", $Cfilter = "all") {
         
         // check if the input is in either radical array
         $isInArray = array_search($search, Radicals::returnArray());
         $isInSimpArray = array_search($search, Radicals::returnSimplifedArray());
 
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $perPage = 30;
+
+        $newChars = [];
+
         // set the order to either asc or desc
         $sortOrder = 'asc';
         $sortBy == "updated_at" ? $sortOrder = 'desc' : null;
+        $sortBy == "pinyin" ? $sortBy = "pinyin_normalised" : null;
+        $sortBy == 'heisig_number' ? $Hfilter = "yes" : null;
 
-        // if input is valid, return the view
-        if($sortBy === 'pinyin') {
-            $chars = \App\Character::where('radical', 'like', '%' . $search .'%')
-                        ->orWhere('simp_radical', 'like', '%' . $search .'%')
-                        ->orderBy('pinyin_normalised', $sortOrder)->paginate(30);
-        }
-        else if ($sortBy == 'heisig_number'){
+
+        if($Hfilter == "yes") {
             $chars = \App\Character::where('heisig_number', '!=', null)
                         // closure for finding radical using $search
                         ->where(function($query) use ($search){
                             $query->where('radical', 'like', '%' . $search .'%')
                             ->orWhere('simp_radical', 'like', '%' . $search .'%');
                         })
-                        ->orderBy('heisig_number', $sortOrder)->paginate(30);
+                        ->orderBy($sortBy, $sortOrder)->get();
+        }
+        else if ($Hfilter == "no"){
+            $chars = \App\Character::where('heisig_number', null)
+                        // closure for finding radical using $search
+                        ->where(function($query) use ($search){
+                            $query->where('radical', 'like', '%' . $search .'%')
+                            ->orWhere('simp_radical', 'like', '%' . $search .'%');
+                        })
+                        ->orderBy($sortBy, $sortOrder)->get();
         }
         else{
             $chars = \App\Character::where('radical', 'like', '%' . $search .'%')
                         ->orWhere('simp_radical', 'like', '%' . $search .'%')
-                        ->orderBy($sortBy, $sortOrder)->paginate(30);
+                        ->orderBy($sortBy, $sortOrder)->get();
         }
 
 
-        return (compact('search', 'chars'));
+        foreach ($chars as $char) {
+            $hasSimplified = $char->simp_char ? true : false;
+            $hasTraditional = $char->trad_char ? true : false;
+            if ($hasTraditional) {
+            $trads = $char->trad_char;
+            $trads = explode(",", $trads);
+            }
+            // if has same trad as char, then does not have a traditional version
+            foreach ($trads as $trad) {
+                if ($trad == $char->char){
+                    $hasTraditional = false;
+                }
+            }
+            // if the char is the same as the simp_char, then does not have simplified version
+            if($char->char == $char->simp_char) {
+                $hasSimplified = false;
+            }
+
+            // if none of the conditions are true
+            if(
+                !(
+                    ($Cfilter == "simp" && $hasSimplified) ||
+                    ($Cfilter == "trad" && $hasTraditional)
+                )
+            )
+            {
+                array_push($newChars, ['char' => $char, 'hasSimplified' => $hasSimplified, 'hasTraditional' => $hasTraditional]);
+            }            
+        }
+      
+
+        $results = collect($newChars);
         
+        $chars = new LengthAwarePaginator($results->forPage($currentPage, $perPage), $results->count(), $perPage, $currentPage, ['path' => "/radical/search/$search"]);
+        return (compact('search', 'chars'));
     }
 
     

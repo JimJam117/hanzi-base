@@ -51398,7 +51398,9 @@ function Chars(props) {
       onChange: function onChange(e) {
         return heisigFilterChange(e);
       }
-    }), "No only"),
+    }), "No only"), props.radical ? null :
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null,
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h3", null, "Radicals"),
     /*#__PURE__*/
@@ -51410,7 +51412,7 @@ function Chars(props) {
       onChange: function onChange(e) {
         return radicalFilterChange(e);
       }
-    }), "All"),
+    }), "All")), results.length == 0 && !loading ? "no posts" : null,
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
       className: "characters_container"

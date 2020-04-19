@@ -54,11 +54,20 @@ class CharacterController extends Controller
 
         if($sortBy === 'pinyin') {
             $chars = \App\Character::where('radical', 'like', '%' . $search .'%')
-                        ->orWhere('simp_radical', 'like', '%' . $search .'%')->orderBy('pinyin_normalised', 'desc')->paginate(30);
+                        ->orWhere('simp_radical', 'like', '%' . $search .'%')->orderBy('pinyin_normalised', 'asc')->paginate(30);
+        }
+        else if ($sortBy == 'heisig_number'){
+            $chars = \App\Character::where('heisig_number', '!=', null)
+                        ->where(function($query) use ($search){
+                            $query->where('radical', 'like', '%' . $search .'%')
+                            ->orWhere('simp_radical', 'like', '%' . $search .'%');
+                        })
+                        ->orderBy('heisig_number', 'asc')->paginate(30);
         }
         else{
             $chars = \App\Character::where('radical', 'like', '%' . $search .'%')
-                        ->orWhere('simp_radical', 'like', '%' . $search .'%')->paginate(30);
+                        ->orWhere('simp_radical', 'like', '%' . $search .'%')
+                        ->orderBy($sortBy, 'asc')->paginate(30);
         }
 
             

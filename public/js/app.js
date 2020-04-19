@@ -51253,6 +51253,12 @@ function Chars(props) {
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
       onClick: function onClick() {
+        return changeSortBy('updated_at');
+      }
+    }, "Sort by Recent"),
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
+      onClick: function onClick() {
         return changeSortBy('default');
       }
     }, "Sort by default"),

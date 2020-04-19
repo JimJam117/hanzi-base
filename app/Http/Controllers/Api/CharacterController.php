@@ -22,14 +22,18 @@ class CharacterController extends Controller
      */
     public function index($sortBy)
     {
+        // set the order to either asc or desc
+        $sortOrder = 'asc';
+        $sortBy == "updated_at" ? $sortOrder = 'desc' : null;
+
         if($sortBy === 'pinyin') {         
-            $chars = DB::table('characters')->orderBy('pinyin_normalised', 'asc')->paginate(30);
+            $chars = DB::table('characters')->orderBy('pinyin_normalised', $sortOrder)->paginate(30);
         }
         else if ($sortBy == 'heisig_number'){
-            $chars = DB::table('characters')->where('heisig_number', '!=', null)->orderBy('heisig_number', 'asc')->paginate(30);
+            $chars = DB::table('characters')->where('heisig_number', '!=', null)->orderBy('heisig_number', $sortOrder)->paginate(30);
         }
         else{
-            $chars = DB::table('characters')->orderBy($sortBy, 'asc')->paginate(30);
+            $chars = DB::table('characters')->orderBy($sortBy, $sortOrder)->paginate(30);
         }
         
         return (compact('chars'));
@@ -37,7 +41,7 @@ class CharacterController extends Controller
 
 
 
-        /**
+    /**
      * Show the radical search
      * 
      * @param $search The search input
@@ -49,34 +53,33 @@ class CharacterController extends Controller
         $isInArray = array_search($search, Radicals::returnArray());
         $isInSimpArray = array_search($search, Radicals::returnSimplifedArray());
 
+        // set the order to either asc or desc
+        $sortOrder = 'asc';
+        $sortBy == "updated_at" ? $sortOrder = 'desc' : null;
 
         // if input is valid, return the view
-
         if($sortBy === 'pinyin') {
             $chars = \App\Character::where('radical', 'like', '%' . $search .'%')
-                        ->orWhere('simp_radical', 'like', '%' . $search .'%')->orderBy('pinyin_normalised', 'asc')->paginate(30);
+                        ->orWhere('simp_radical', 'like', '%' . $search .'%')
+                        ->orderBy('pinyin_normalised', $sortOrder)->paginate(30);
         }
         else if ($sortBy == 'heisig_number'){
             $chars = \App\Character::where('heisig_number', '!=', null)
+                        // closure for finding radical using $search
                         ->where(function($query) use ($search){
                             $query->where('radical', 'like', '%' . $search .'%')
                             ->orWhere('simp_radical', 'like', '%' . $search .'%');
                         })
-                        ->orderBy('heisig_number', 'asc')->paginate(30);
+                        ->orderBy('heisig_number', $sortOrder)->paginate(30);
         }
         else{
             $chars = \App\Character::where('radical', 'like', '%' . $search .'%')
                         ->orWhere('simp_radical', 'like', '%' . $search .'%')
-                        ->orderBy($sortBy, 'asc')->paginate(30);
+                        ->orderBy($sortBy, $sortOrder)->paginate(30);
         }
 
-            
-            
-            
 
-
-
-            return (compact('search', 'chars'));
+        return (compact('search', 'chars'));
         
     }
 
@@ -172,7 +175,7 @@ class CharacterController extends Controller
         return $results;
     }
 
-        /**
+    /**
      * Fetches search results from a string
      * 
      * THis function is used mainly for pinyin and translations.
@@ -231,10 +234,15 @@ class CharacterController extends Controller
             
             $results = collect($results);
         }
-
+        
         // is not the default sorting
         else {
             $sortBy == "pinyin" ? $sortBy = "pinyin_normalised" : null; 
+
+            // set the order to either asc or desc
+            $sortOrder = 'asc';
+            $sortBy == "updated_at" ? $sortOrder = 'desc' : null;
+
 
             $results = [];
             $otherResults = [];
@@ -257,7 +265,8 @@ class CharacterController extends Controller
                             ->orWhere('pinyin', 'like', '%' . $inputItem .'%')
                             ->orWhere('pinyin_normalised', 'like', '%' . $inputItem .'%')
                             ->orWhere('translations', 'like', '%' . $inputItem .'%')
-                            ->orWhere('heisig_number', 'like', '%' . $inputItem .'%')->orderBy($sortBy, 'asc')->get();
+                            ->orWhere('heisig_number', 'like', '%' . $inputItem .'%')
+                            ->orderBy($sortBy, $sortOrder)->get();
 
                     // for each result in the above collections, add to results array
 
@@ -270,8 +279,16 @@ class CharacterController extends Controller
                         }
                     }
                 }
+
+                // collect the other results and sort
                 $otherResults = collect($otherResults);
-                $otherResults = $otherResults->sortBy($sortBy)->values()->all();
+                if($sortOrder == "desc"){
+                    $otherResults = $otherResults->sortByDesc($sortBy)->values()->all();
+                }
+                else {
+                    $otherResults = $otherResults->sortBy($sortBy)->values()->all();
+                }
+                
 
                 foreach($otherResults as $result) {
                     if (! in_array($result, $results)) {

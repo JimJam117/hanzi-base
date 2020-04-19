@@ -162,6 +162,7 @@ export default function Chars(props) {
         <div>
             <div style={{ color: 'red' }}>Sorted by: {sortBy}</div>
             <button onClick={() => changeSortBy('pinyin')}>Sort by Pinyin</button>
+            <button onClick={() => changeSortBy('updated_at')}>Sort by Recent</button>
             <button onClick={() => changeSortBy('default')}>Sort by default</button>
             <button onClick={() => changeSortBy('freq')}>Sort by freq</button>
             <button onClick={() => changeSortBy('heisig_number')}>Sort by Heisig Number</button>

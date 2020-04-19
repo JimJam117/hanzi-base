@@ -2,25 +2,6 @@ import React from 'react'
 
 export default function CharacterLink(props) {
     let result = props.hanzi;
-    let hasSimplified = result.simp_char ? true : false;
-    let hasTraditional = result.trad_char ? true : false;
-
-    if (hasTraditional) {
-        let trads = result.trad_char;
-        trads = trads.split(",");
-
-        // if has same trad as char, then does not have a traditional version
-        trads.forEach((trad) => {
-            if (trad == result.char){
-                hasTraditional = false;
-            }
-        }) 
-    }
-
-    // if the char is the same as the simp_char, then does not have simplified version
-    if(result.char == result.simp_char) {
-        hasSimplified = false;
-    }
 
     let translations = result.translations ? result.translations : null;
     if(translations) {
@@ -44,7 +25,7 @@ export default function CharacterLink(props) {
         <div className="top-details"> 
             <p>{ result.radical }</p>
             <p>
-                {hasSimplified ? "Trad" : hasTraditional ? "Simp" : null}
+                {props.hasSimplified ? "Trad" : props.hasTraditional ? "Simp" : null}
             </p>
         </div>
 

@@ -15,7 +15,9 @@ export default function Chars(props) {
 
     const [sortBy, setSortBy] = useState('default');
 
-
+    // filter states
+    const [charsetFilter, setCharsetFilter] = useState('all')
+    const [heisigFilter, setHeisigFilter] = useState('all')
 
     const [loading, setLoading] = useState(true);
     const [isFetching, setIsFetching] = useState(false);
@@ -76,6 +78,7 @@ export default function Chars(props) {
 
     const fetchItems = async (sortUrl = "") =>  {
                 setIsFetching(true);
+                console.log(`${query}${sortUrl}?page=${currentPage}`);
                 await fetch(`${query}${sortUrl}?page=${currentPage}`, {signal})
                     .then(async (response) => {
                         
@@ -125,7 +128,7 @@ export default function Chars(props) {
                             
                             setResults(results);
                         }
-                        
+                        console.log(results);
                         if(data.hanzi) {
                             setCurrentSearchHanzi(data.hanzi);
                         }
@@ -138,7 +141,7 @@ export default function Chars(props) {
 
     useEffect(() => {
         if (loading && !isFetching) {
-            let sortUrl = "/sortBy/" + sortBy;
+            let sortUrl = `/sortBy/${sortBy}/${heisigFilter}/${charsetFilter}`;
             fetchItems(sortUrl);
         }
         return () => {
@@ -146,7 +149,6 @@ export default function Chars(props) {
         };
     }, [loading])
 
-    
 
     const changeSortBy = (e) => {
         console.log(e.target.value);
@@ -156,6 +158,25 @@ export default function Chars(props) {
         setResults([]);
         setLoading(true);        
     }
+
+    const charsetFilterChange = (e) => {
+        console.log(e.target.value);
+        if(isFetching) {return} 
+        setCharsetFilter(e.target.value);
+        setCurrentPage(1);
+        setResults([]);
+        setLoading(true);   
+    }
+
+    const heisigFilterChange = (e) => {
+        console.log(e.target.value);
+        if(isFetching) {return} 
+        setHeisigFilter(e.target.value);
+        setCurrentPage(1);
+        setResults([]);
+        setLoading(true);   
+    }
+
 
 
     return (
@@ -169,16 +190,45 @@ export default function Chars(props) {
                 <option value='freq'>Frequency</option>
                 <option value='stroke_count'>Stroke Count</option>
                 <option value='heisig_number'>Heisig Number</option>
-
             </select>
+
+            <h3>Charset</h3>
+            <label>
+                <input type="radio" name="filter_charset" value="all" onChange={(e) => charsetFilterChange(e)}/>
+                All
+            </label>
+            <label>
+                <input type="radio" name="filter_charset" value="simp" onChange={(e) => charsetFilterChange(e)}/>
+                Simp Only
+            </label>
+            <label>
+                <input type="radio" name="filter_charset" value="trad" onChange={(e) => charsetFilterChange(e)}/>
+                Trad Only
+            </label>
+
+            <h3>Heisig</h3>
+            <label>
+                <input type="radio" name="filter_heisig" value="all" onChange={(e) => heisigFilterChange(e)}/>
+                All
+            </label>
+            <label>
+                <input type="radio" name="filter_heisig" value="yes" onChange={(e) => heisigFilterChange(e)}/>
+                Yes only
+            </label>
+            <label>
+                <input type="radio" name="filter_heisig" value="no" onChange={(e) => heisigFilterChange(e)}/>
+                No only
+            </label>
 
             <div className="characters_container">
                 {
                     results.map((result, i) => {
 
-                        return (<CharacterLink 
-                                        key={result.id}
-                                        hanzi={result} 
+                        return (<CharacterLink
+                                        key={result.char.id}
+                                        hasSimplified={result.hasSimplified}
+                                        hasTraditional={result.hasTraditional}
+                                        hanzi={result.char} 
                                         currentSearchHanzi={currentSearchHanzi}
                                         lastCharacterRef={lastCharacterRef}
                                         currentCharIndex={i} 

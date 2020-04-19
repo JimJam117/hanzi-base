@@ -50901,25 +50901,6 @@ __webpack_require__.r(__webpack_exports__);
 
 function CharacterLink(props) {
   var result = props.hanzi;
-  var hasSimplified = result.simp_char ? true : false;
-  var hasTraditional = result.trad_char ? true : false;
-
-  if (hasTraditional) {
-    var trads = result.trad_char;
-    trads = trads.split(","); // if has same trad as char, then does not have a traditional version
-
-    trads.forEach(function (trad) {
-      if (trad == result["char"]) {
-        hasTraditional = false;
-      }
-    });
-  } // if the char is the same as the simp_char, then does not have simplified version
-
-
-  if (result["char"] == result.simp_char) {
-    hasSimplified = false;
-  }
-
   var translations = result.translations ? result.translations : null;
 
   if (translations) {
@@ -50945,7 +50926,7 @@ function CharacterLink(props) {
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, result.radical),
     /*#__PURE__*/
-    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, hasSimplified ? "Trad" : hasTraditional ? "Simp" : null)),
+    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, props.hasSimplified ? "Trad" : props.hasTraditional ? "Simp" : null)),
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", {
       className: "character"
@@ -51018,49 +50999,60 @@ function Chars(props) {
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])('default'),
       _useState2 = _slicedToArray(_useState, 2),
       sortBy = _useState2[0],
-      setSortBy = _useState2[1];
+      setSortBy = _useState2[1]; // filter states
 
-  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(true),
+
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])('all'),
       _useState4 = _slicedToArray(_useState3, 2),
-      loading = _useState4[0],
-      setLoading = _useState4[1];
+      charsetFilter = _useState4[0],
+      setCharsetFilter = _useState4[1];
 
-  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(false),
+  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])('all'),
       _useState6 = _slicedToArray(_useState5, 2),
-      isFetching = _useState6[0],
-      setIsFetching = _useState6[1];
+      heisigFilter = _useState6[0],
+      setHeisigFilter = _useState6[1];
 
-  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(false),
+  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(true),
       _useState8 = _slicedToArray(_useState7, 2),
-      displayLoading = _useState8[0],
-      setDisplayLoading = _useState8[1];
+      loading = _useState8[0],
+      setLoading = _useState8[1];
 
-  var _useState9 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])([]),
+  var _useState9 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(false),
       _useState10 = _slicedToArray(_useState9, 2),
-      originalResults = _useState10[0],
-      setOriginalResults = _useState10[1]; // this is used to keep the original order of the results after it has been sorted
+      isFetching = _useState10[0],
+      setIsFetching = _useState10[1];
 
-
-  var _useState11 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])([]),
+  var _useState11 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(false),
       _useState12 = _slicedToArray(_useState11, 2),
-      results = _useState12[0],
-      setResults = _useState12[1];
+      displayLoading = _useState12[0],
+      setDisplayLoading = _useState12[1];
 
   var _useState13 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])([]),
       _useState14 = _slicedToArray(_useState13, 2),
-      currentSearchHanzi = _useState14[0],
-      setCurrentSearchHanzi = _useState14[1]; // pagination state
+      originalResults = _useState14[0],
+      setOriginalResults = _useState14[1]; // this is used to keep the original order of the results after it has been sorted
 
 
-  var _useState15 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(1),
+  var _useState15 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])([]),
       _useState16 = _slicedToArray(_useState15, 2),
-      currentPage = _useState16[0],
-      setCurrentPage = _useState16[1];
+      results = _useState16[0],
+      setResults = _useState16[1];
 
-  var _useState17 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(),
+  var _useState17 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])([]),
       _useState18 = _slicedToArray(_useState17, 2),
-      lastPage = _useState18[0],
-      setLastPage = _useState18[1];
+      currentSearchHanzi = _useState18[0],
+      setCurrentSearchHanzi = _useState18[1]; // pagination state
+
+
+  var _useState19 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(1),
+      _useState20 = _slicedToArray(_useState19, 2),
+      currentPage = _useState20[0],
+      setCurrentPage = _useState20[1];
+
+  var _useState21 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(),
+      _useState22 = _slicedToArray(_useState21, 2),
+      lastPage = _useState22[0],
+      setLastPage = _useState22[1];
 
   var observer = Object(react__WEBPACK_IMPORTED_MODULE_1__["useRef"])();
   var lastCharacterRef = Object(react__WEBPACK_IMPORTED_MODULE_1__["useCallback"])(function (node) {
@@ -51118,7 +51110,8 @@ function Chars(props) {
             case 0:
               sortUrl = _args2.length > 0 && _args2[0] !== undefined ? _args2[0] : "";
               setIsFetching(true);
-              _context2.next = 4;
+              console.log("".concat(query).concat(sortUrl, "?page=").concat(currentPage));
+              _context2.next = 5;
               return fetch("".concat(query).concat(sortUrl, "?page=").concat(currentPage), {
                 signal: signal
               }).then(
@@ -51178,6 +51171,8 @@ function Chars(props) {
                             setResults(_results);
                           }
 
+                          console.log(results);
+
                           if (data.hanzi) {
                             setCurrentSearchHanzi(data.hanzi);
                           }
@@ -51187,7 +51182,7 @@ function Chars(props) {
                           setLoading(false);
                           setIsFetching(false);
 
-                        case 10:
+                        case 11:
                         case "end":
                           return _context.stop();
                       }
@@ -51200,7 +51195,7 @@ function Chars(props) {
                 };
               }());
 
-            case 4:
+            case 5:
             case "end":
               return _context2.stop();
           }
@@ -51215,7 +51210,7 @@ function Chars(props) {
 
   Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
     if (loading && !isFetching) {
-      var sortUrl = "/sortBy/" + sortBy;
+      var sortUrl = "/sortBy/".concat(sortBy, "/").concat(heisigFilter, "/").concat(charsetFilter);
       fetchItems(sortUrl);
     }
 
@@ -51232,6 +51227,32 @@ function Chars(props) {
     }
 
     setSortBy(e.target.value);
+    setCurrentPage(1);
+    setResults([]);
+    setLoading(true);
+  };
+
+  var charsetFilterChange = function charsetFilterChange(e) {
+    console.log(e.target.value);
+
+    if (isFetching) {
+      return;
+    }
+
+    setCharsetFilter(e.target.value);
+    setCurrentPage(1);
+    setResults([]);
+    setLoading(true);
+  };
+
+  var heisigFilterChange = function heisigFilterChange(e) {
+    console.log(e.target.value);
+
+    if (isFetching) {
+      return;
+    }
+
+    setHeisigFilter(e.target.value);
     setCurrentPage(1);
     setResults([]);
     setLoading(true);
@@ -51277,14 +51298,86 @@ function Chars(props) {
       value: "heisig_number"
     }, "Heisig Number")),
     /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h3", null, "Charset"),
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("label", null,
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("input", {
+      type: "radio",
+      name: "filter_charset",
+      value: "all",
+      onChange: function onChange(e) {
+        return charsetFilterChange(e);
+      }
+    }), "All"),
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("label", null,
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("input", {
+      type: "radio",
+      name: "filter_charset",
+      value: "simp",
+      onChange: function onChange(e) {
+        return charsetFilterChange(e);
+      }
+    }), "Simp Only"),
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("label", null,
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("input", {
+      type: "radio",
+      name: "filter_charset",
+      value: "trad",
+      onChange: function onChange(e) {
+        return charsetFilterChange(e);
+      }
+    }), "Trad Only"),
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h3", null, "Heisig"),
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("label", null,
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("input", {
+      type: "radio",
+      name: "filter_heisig",
+      value: "all",
+      onChange: function onChange(e) {
+        return heisigFilterChange(e);
+      }
+    }), "All"),
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("label", null,
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("input", {
+      type: "radio",
+      name: "filter_heisig",
+      value: "yes",
+      onChange: function onChange(e) {
+        return heisigFilterChange(e);
+      }
+    }), "Yes only"),
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("label", null,
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("input", {
+      type: "radio",
+      name: "filter_heisig",
+      value: "no",
+      onChange: function onChange(e) {
+        return heisigFilterChange(e);
+      }
+    }), "No only"),
+    /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
       className: "characters_container"
     }, results.map(function (result, i) {
       return (
         /*#__PURE__*/
         react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_CharacterLink__WEBPACK_IMPORTED_MODULE_5__["default"], {
-          key: result.id,
-          hanzi: result,
+          key: result["char"].id,
+          hasSimplified: result.hasSimplified,
+          hasTraditional: result.hasTraditional,
+          hanzi: result["char"],
           currentSearchHanzi: currentSearchHanzi,
           lastCharacterRef: lastCharacterRef,
           currentCharIndex: i,

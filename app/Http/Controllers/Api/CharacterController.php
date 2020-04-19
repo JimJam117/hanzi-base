@@ -20,22 +20,63 @@ class CharacterController extends Controller
      * 
      * @return All characters
      */
-    public function index($sortBy)
+    public function index($sortBy, $Hfilter = "all", $Cfilter = "all")
     {
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $perPage = 30;
+
+        $newChars = [];
+
         // set the order to either asc or desc
         $sortOrder = 'asc';
         $sortBy == "updated_at" ? $sortOrder = 'desc' : null;
+        $sortBy == "pinyin" ? $sortBy = "pinyin_normalised" : null;
+        $sortBy == 'heisig_number' ? $Hfilter = "yes" : null;
 
-        if($sortBy === 'pinyin') {         
-            $chars = DB::table('characters')->orderBy('pinyin_normalised', $sortOrder)->paginate(30);
+            // $chars = DB::table('characters')->where('heisig_number', '!=', null)->orderBy('heisig_number', $sortOrder)->paginate(30);
+
+        
+        if($Hfilter == "yes") {
+            $chars = DB::table('characters')->where('heisig_number', '!=', null)->orderBy($sortBy, $sortOrder)->get();
         }
-        else if ($sortBy == 'heisig_number'){
-            $chars = DB::table('characters')->where('heisig_number', '!=', null)->orderBy('heisig_number', $sortOrder)->paginate(30);
+        else if ($Hfilter == "no"){
+            $chars = DB::table('characters')->where('heisig_number', null)->orderBy($sortBy, $sortOrder)->get();
         }
         else{
-            $chars = DB::table('characters')->orderBy($sortBy, $sortOrder)->paginate(30);
+            $chars = DB::table('characters')->orderBy($sortBy, $sortOrder)->get();
         }
         
+        foreach ($chars as $char) {
+            $hasSimplified = $char->simp_char ? true : false;
+            $hasTraditional = $char->trad_char ? true : false;
+            if ($hasTraditional) {
+            $trads = $char->trad_char;
+            $trads = explode(",", $trads);
+            }
+            // if has same trad as char, then does not have a traditional version
+            foreach ($trads as $trad) {
+                if ($trad == $char->char){
+                    $hasTraditional = false;
+                }
+            }
+            // if the char is the same as the simp_char, then does not have simplified version
+            if($char->char == $char->simp_char) {
+                $hasSimplified = false;
+            }
+
+            // if neither simp or trad are filtered out
+            if(!(
+                ($Cfilter == "simp" && $hasSimplified) ||
+                ($Cfilter == "trad" && $hasTraditional))
+                )
+            {
+                array_push($newChars, ['char' => $char, 'hasSimplified' => $hasSimplified, 'hasTraditional' => $hasTraditional]);
+            }            
+        }
+
+        $results = collect($newChars);
+        
+        $chars = new LengthAwarePaginator($results->forPage($currentPage, $perPage), $results->count(), $perPage, $currentPage, ['path' => "/index"]);
         return (compact('chars'));
     }
 

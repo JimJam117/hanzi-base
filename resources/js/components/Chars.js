@@ -148,9 +148,10 @@ export default function Chars(props) {
 
     
 
-    const changeSortBy = (str) => {
+    const changeSortBy = (e) => {
+        console.log(e.target.value);
         if(isFetching) {return} 
-        setSortBy(str);
+        setSortBy(e.target.value);
         setCurrentPage(1);
         setResults([]);
         setLoading(true);        
@@ -161,13 +162,16 @@ export default function Chars(props) {
     
         <div>
             <div style={{ color: 'red' }}>Sorted by: {sortBy}</div>
-            <button onClick={() => changeSortBy('pinyin')}>Sort by Pinyin</button>
-            <button onClick={() => changeSortBy('updated_at')}>Sort by Recent</button>
-            <button onClick={() => changeSortBy('default')}>Sort by default</button>
-            <button onClick={() => changeSortBy('freq')}>Sort by freq</button>
-            <button onClick={() => changeSortBy('heisig_number')}>Sort by Heisig Number</button>
-            <button onClick={() => changeSortBy('stroke_count')}>Sort by strokes</button>
-            
+            <select onChange={(e) => changeSortBy(e)}>
+                <option value='default'>Default</option>
+                <option value='updated_at'>Recently Added</option>
+                <option value='pinyin'>Pinyin</option>
+                <option value='freq'>Frequency</option>
+                <option value='stroke_count'>Stroke Count</option>
+                <option value='heisig_number'>Heisig Number</option>
+
+            </select>
+
             <div className="characters_container">
                 {
                     results.map((result, i) => {

@@ -51224,12 +51224,14 @@ function Chars(props) {
     };
   }, [loading]);
 
-  var changeSortBy = function changeSortBy(str) {
+  var changeSortBy = function changeSortBy(e) {
+    console.log(e.target.value);
+
     if (isFetching) {
       return;
     }
 
-    setSortBy(str);
+    setSortBy(e.target.value);
     setCurrentPage(1);
     setResults([]);
     setLoading(true);
@@ -51245,41 +51247,35 @@ function Chars(props) {
       }
     }, "Sorted by: ", sortBy),
     /*#__PURE__*/
-    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
-      onClick: function onClick() {
-        return changeSortBy('pinyin');
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("select", {
+      onChange: function onChange(e) {
+        return changeSortBy(e);
       }
-    }, "Sort by Pinyin"),
+    },
     /*#__PURE__*/
-    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
-      onClick: function onClick() {
-        return changeSortBy('updated_at');
-      }
-    }, "Sort by Recent"),
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("option", {
+      value: "default"
+    }, "Default"),
     /*#__PURE__*/
-    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
-      onClick: function onClick() {
-        return changeSortBy('default');
-      }
-    }, "Sort by default"),
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("option", {
+      value: "updated_at"
+    }, "Recently Added"),
     /*#__PURE__*/
-    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
-      onClick: function onClick() {
-        return changeSortBy('freq');
-      }
-    }, "Sort by freq"),
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("option", {
+      value: "pinyin"
+    }, "Pinyin"),
     /*#__PURE__*/
-    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
-      onClick: function onClick() {
-        return changeSortBy('heisig_number');
-      }
-    }, "Sort by Heisig Number"),
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("option", {
+      value: "freq"
+    }, "Frequency"),
     /*#__PURE__*/
-    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
-      onClick: function onClick() {
-        return changeSortBy('stroke_count');
-      }
-    }, "Sort by strokes"),
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("option", {
+      value: "stroke_count"
+    }, "Stroke Count"),
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("option", {
+      value: "heisig_number"
+    }, "Heisig Number")),
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
       className: "characters_container"

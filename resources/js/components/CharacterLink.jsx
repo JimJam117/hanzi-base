@@ -3,15 +3,29 @@ import React from 'react'
 export default function CharacterLink(props) {
     let result = props.hanzi;
 
-    let translations = result.translations ? result.translations : null;
-    if(translations) {
-        translations = translations.substr(0, 20);
 
-        let lastLetter = translations[translations.length - 1];
-        if (lastLetter == ";" || lastLetter == "." || lastLetter == ",") {
-            translations = translations.substr(0, translations.length -1);
+    let translations = "";
+
+    if(result.translations) {
+        let translationsArr = result.translations.match(/[a-zA-Z0-9]+/gi);
+        
+        // remove any duplicates
+        translationsArr = [...new Set(translationsArr)];
+
+        let letterCount = 0;
+        let i = 0;
+
+        do {
+            if(translationsArr[i]){
+                let comma = (translations == "") ? "" : ", ";
+                translations = translations.concat(comma + translationsArr[i]); 
+                letterCount = letterCount + translationsArr[i].length;
+            }
+            i++;
         }
+        while(letterCount < 10 && i < translationsArr.length);
     }
+
 
     const isRadical = result.radical == result.char;
 

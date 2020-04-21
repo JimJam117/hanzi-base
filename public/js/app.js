@@ -50898,18 +50898,35 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return CharacterLink; });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
 
 function CharacterLink(props) {
   var result = props.hanzi;
-  var translations = result.translations ? result.translations : null;
+  var translations = "";
 
-  if (translations) {
-    translations = translations.substr(0, 20);
-    var lastLetter = translations[translations.length - 1];
+  if (result.translations) {
+    var translationsArr = result.translations.match(/[a-zA-Z0-9]+/gi); // remove any duplicates
 
-    if (lastLetter == ";" || lastLetter == "." || lastLetter == ",") {
-      translations = translations.substr(0, translations.length - 1);
-    }
+    translationsArr = _toConsumableArray(new Set(translationsArr));
+    var letterCount = 0;
+    var i = 0;
+
+    do {
+      if (translationsArr[i]) {
+        var comma = translations == "" ? "" : ", ";
+        translations = translations.concat(comma + translationsArr[i]);
+        letterCount = letterCount + translationsArr[i].length;
+      }
+
+      i++;
+    } while (letterCount < 10 && i < translationsArr.length);
   }
 
   var isRadical = result.radical == result["char"];

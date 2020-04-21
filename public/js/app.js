@@ -50922,7 +50922,7 @@ function CharacterLink(props) {
     },
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-      className: "top-details " + (isRadical ? "active" : "")
+      className: "details top-details " + (isRadical ? "active" : "")
     }, isRadical ?
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Radical") :
@@ -50933,11 +50933,19 @@ function CharacterLink(props) {
       className: "character"
     }, result["char"]),
     /*#__PURE__*/
-    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, result.heisig_keyword ? "H ".concat(result.heisig_keyword, " (").concat(result.heisig_number, ")") : translations),
-    /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
       className: "pinyin"
-    }, result.pinyin))
+    }, result.pinyin),
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, translations),
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      className: "details bottom-details"
+    }, result.heisig_keyword ?
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null,
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "".concat(result.heisig_keyword, " (").concat(result.heisig_number, ")"))) : null))
   );
 }
 

@@ -21,20 +21,32 @@ export default function CharacterLink(props) {
             href={`/character/${result.char}`} 
             className={props.currentSearchHanzi && props.currentSearchHanzi.indexOf(result.char) == -1 ? `character_link` : `character_link currentSearchHanzi`}>
         {/* {{-- Top details, radical and trad/simp --}} */}
-        <div className={"top-details " + (isRadical ? "active" : "")}> 
+        <div className={"details top-details " + (isRadical ? "active" : "")}> 
             {isRadical ? <p>Radical</p> :  <p>{result.radical}</p> }
             {!isRadical && (props.hasSimplified ? "Traditional" : props.hasTraditional ? "Simplified" : null)}
         </div>
-        
+
         <h2 className="character">{result.char}</h2>
 
-        {/* {{-- Translations or heisig --}} */}
+        {/* Pinyin */}
+        <p className="pinyin">
+            { result.pinyin }
+        </p>
+        
+        {/* Translations */}
         <h3>
-            {result.heisig_keyword ? `H ${result.heisig_keyword} (${result.heisig_number})` : translations}
+            {translations}
         </h3>
         
-        {/* {{-- Pinyin --}} */}
-        <p className="pinyin">{ result.pinyin }</p>
+
+
+        <div className="details bottom-details">
+            {result.heisig_keyword ? <>
+                
+                <div>{`${result.heisig_keyword} (${result.heisig_number})`}</div>
+                </> : null}
+        </div>
+        
         </a> 
     )
 

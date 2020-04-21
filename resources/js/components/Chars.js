@@ -241,7 +241,7 @@ export default function Chars(props) {
                 </label>
             </div>}
 
-            {results.length == 0 && !loading ? "no posts" : null}
+            {results.length == 0 && !loading ? <div class="noResults">Sorry, no results found ;(</div> : null}
 
             <div className="characters_container">
                 {

@@ -3,7 +3,6 @@ import React from 'react'
 export default function CharacterLink(props) {
     let result = props.hanzi;
 
-
     let translations = "";
 
     if(result.translations) {

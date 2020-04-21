@@ -25,24 +25,8 @@ results for "{{$search}}"
    @endif
     
 
-    {{-- If there are no results --}}
-    @if ($results->count() == 0)
-        <div class="noResults">Sorry, no results found ;(</div>
-    @else
-        <div id="chars" data-radical={{ $search }}></div>
-            <script src="/js/app.js"></script>
-    @endif
 
-  
-
-@endsection
-
-@section('extra-scripts')  
-<style>
-    .noResults{
-        text-align: center;
-        padding: 3em 1em;
-        font-size: 2rem;
-    }
-</style>
+    <div id="chars" data-radical={{ $search }}></div>
+    <script src="/js/app.js"></script>
+    
 @endsection

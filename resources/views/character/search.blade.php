@@ -23,25 +23,10 @@ results for "{{$search}}"
    @else
     <h1>Results for "{{$search}}"</h1>
    @endif
-    
 
-
-        {{-- <div class="noResults">Sorry, no results found ;(</div> --}}
         
         <div id="chars" data-search="{{ $search }}"></div>
             <script src="/js/app.js"></script>
- 
-
-  
 
 @endsection
 
-@section('extra-scripts')  
-<style>
-    .noResults{
-        text-align: center;
-        padding: 3em 1em;
-        font-size: 2rem;
-    }
-</style>
-@endsection

@@ -51426,7 +51426,11 @@ function Chars(props) {
       onChange: function onChange(e) {
         return radicalFilterChange(e);
       }
-    }), "All")), results.length == 0 && !loading ? "no posts" : null,
+    }), "All")), results.length == 0 && !loading ?
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+      "class": "noResults"
+    }, "Sorry, no results found ;(") : null,
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
       className: "characters_container"

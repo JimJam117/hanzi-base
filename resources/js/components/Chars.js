@@ -23,6 +23,7 @@ export default function Chars(props) {
     const [loading, setLoading] = useState(true);
     const [isFetching, setIsFetching] = useState(false);
     const [displayLoading, setDisplayLoading] = useState(false);
+    
     const [originalResults, setOriginalResults] = useState([]); // this is used to keep the original order of the results after it has been sorted
     const [results, setResults] = useState([]);
     const [currentSearchHanzi, setCurrentSearchHanzi] = useState([]);
@@ -129,7 +130,9 @@ export default function Chars(props) {
                             
                             setResults(results);
                         }
-                        console.log(results);
+
+                        //console.log(results);
+
                         if(data.hanzi) {
                             setCurrentSearchHanzi(data.hanzi);
                         }
@@ -159,6 +162,7 @@ export default function Chars(props) {
         setLoading(true);    
     }
 
+    // filter / sorting functions
     const changeSortBy = (e) => {
         if(isFetching) {return}
         if(e.target.value == "heisig_number" && heisigFilter != "yes"){
@@ -259,17 +263,6 @@ export default function Chars(props) {
             
             {displayLoading || loading ? <div className="spinner"><ClipLoader /></div> : null}
             
-            {/* if the current page isn't 1, show last page button
-            {currentPage !== 1 ?
-                <button className="btn" onClick={() => changePage(currentPage - 1)}>Last Page</button> :
-                null
-            }
-
-            // {/* if the current page isn't equal to the last page, show next page button */}
-            {/* // {currentPage !== lastPage ?
-            //     <button className="btn" onClick={() => changePage(currentPage + 1)}>Next Page</button> :
-            //     null
-            // } */}
           
         </div>
     )

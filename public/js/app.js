@@ -50912,6 +50912,7 @@ function CharacterLink(props) {
     }
   }
 
+  var isRadical = result.radical == result["char"];
   return (
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
@@ -50921,12 +50922,12 @@ function CharacterLink(props) {
     },
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-      className: "top-details"
-    },
+      className: "top-details " + (isRadical ? "active" : "")
+    }, isRadical ?
     /*#__PURE__*/
-    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, result.radical),
+    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Radical") :
     /*#__PURE__*/
-    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, props.hasSimplified ? "Trad" : props.hasTraditional ? "Simp" : null)),
+    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, result.radical), !isRadical && (props.hasSimplified ? "Traditional" : props.hasTraditional ? "Simplified" : null)),
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", {
       className: "character"
@@ -51174,9 +51175,8 @@ function Chars(props) {
                             }
 
                             setResults(_results);
-                          }
+                          } //console.log(results);
 
-                          console.log(results);
 
                           if (data.hanzi) {
                             setCurrentSearchHanzi(data.hanzi);
@@ -51187,7 +51187,7 @@ function Chars(props) {
                           setLoading(false);
                           setIsFetching(false);
 
-                        case 11:
+                        case 10:
                         case "end":
                           return _context.stop();
                       }
@@ -51229,7 +51229,8 @@ function Chars(props) {
     setCurrentPage(1);
     setResults([]);
     setLoading(true);
-  };
+  }; // filter / sorting functions
+
 
   var changeSortBy = function changeSortBy(e) {
     if (isFetching) {

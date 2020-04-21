@@ -59,10 +59,15 @@
     transition: 0.2s;
     color: #222222;
     text-decoration: none;
-    width: 100%;
-    max-width: 215px;
-    margin: 1rem auto;
-
+    /* width: 100%; */
+    width: 215px;
+    /* height: 100%; */
+    height: 215px;
+    margin: auto;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .currentSearchHanzi{
@@ -85,9 +90,6 @@
     grid-gap: 1rem;
 }
 
-.pinyin{
-    padding: 0.25em 1em 1em;
-}
 
 @media screen and (max-width: 1075px) {
     .main {
@@ -122,15 +124,27 @@
 .translations {}
 
 .top-details {
-    color: #B5183A;
-    padding: 1em 1em 0 1em;
-    font-weight: bold;
+    color: #cd223d;
+    height: 1.75em;
     display: flex;
+    width: 100%;
+    padding: 0 1em;
+    align-items: center;
+    font-weight: bold;
     justify-content: space-between;
-    align-items: baseline;
+    padding-top: 1em;
+}
+.active {
+    background-color: #cd223d;
+    color: #fff;
+    justify-content: center;
+    padding: 0;
 }
 
-.pinyin {}
+
+.pinyin {
+    padding: 0 1em 1em 1em;
+}
 
 /* ==============================
      Pagination

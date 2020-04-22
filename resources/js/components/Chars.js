@@ -1,5 +1,6 @@
 import React, {useEffect, useState, useRef, useCallback} from 'react'
 import ReactDOM from 'react-dom';
+import Select from 'react-select';
 
 import { css } from "@emotion/core";
 import ClipLoader from "react-spinners/ClipLoader";
@@ -155,8 +156,7 @@ export default function Chars(props) {
 
 
     // used for changing the filters or sorting
-    const changeFilters = (val, callback) => {
-        callback(val); 
+    const reset = () => {
         setCurrentPage(1);
         setResults([]);  
         setLoading(true);    
@@ -165,83 +165,133 @@ export default function Chars(props) {
     // filter / sorting functions
     const changeSortBy = (e) => {
         if(isFetching) {return}
-        if(e.target.value == "heisig_number" && heisigFilter != "yes"){
+        if(e.value == "heisig_number" && heisigFilter != "yes"){
             setHeisigFilter("yes");
         }
-        changeFilters(e.target.value, setSortBy);
+        reset();
+        setSortBy(e.value);
     }
 
-    const charsetFilterChange = (e) => {
+
+    const changeCharsetFilter = (e) => {
         if(isFetching) {return}
-        changeFilters(e.target.value, setCharsetFilter);
+        reset();
+        setCharsetFilter(e.value);
     }
 
-    const heisigFilterChange = (e) => {
+    const changeHeisigFilter = (e) => {
         if(isFetching) {return}
-        if(e.target.value == "no" && sortBy == "heisig_number"){
+        if(e.value == "no" && sortBy == "heisig_number"){
             setSortBy("default");
         }
-        changeFilters(e.target.value, setHeisigFilter); 
+        reset();
+        setHeisigFilter(e.value); 
     }
 
     const radicalFilterChange = (e) => {
         if(isFetching) {return}
-        changeFilters(e.target.checked, setRadicalFilter);
+        reset();
+        setRadicalFilter(e.target.checked);
     }
 
+    let sortBySelectOptions = [
+        {value: 'default', label: 'Default'},
+        {value: 'updated_at', label: 'Recently Added'},
+        {value: 'pinyin', label: 'Pinyin'},
+        {value: 'freq', label: 'Frequency'},
+        {value: 'stroke_count', label: 'Stroke Count'},
+        {value: 'heisig_number', label: 'Heisig Number'},
+    ];
+    let charsetSelectOptions = [
+        {value: 'all', label: 'Both'},
+        {value: 'simp', label: 'Simplified'},
+        {value: 'trad', label: 'Traditional'},
+
+    ];
+    let heisigSelectOptions = [
+        {value: 'all', label: 'Include Heisig results'},
+        {value: 'no', label: 'Exclude Heisig results'},
+        {value: 'yes', label: 'Show only Heisig results'},
+    ];
 
 
     return (
     
         <div>
-            <div style={{ color: 'red' }}>Sorted by: {sortBy}</div>
-            <select value={sortBy} onChange={(e) => changeSortBy(e)}>
-                <option value='default'>Default</option>
-                <option value='updated_at'>Recently Added</option>
-                <option value='pinyin'>Pinyin</option>
-                <option value='freq'>Frequency</option>
-                <option value='stroke_count'>Stroke Count</option>
-                <option value='heisig_number'>Heisig Number</option>
-            </select>
+            <div className="filter-section">
 
-            <h3>Charset</h3>
-            <label>
-                <input type="radio" name="filter_charset" checked={charsetFilter == "all"} value="all" onChange={(e) => charsetFilterChange(e)}/>
-                All
-            </label>
-            <label>
-                <input type="radio" name="filter_charset" checked={charsetFilter == "simp"} value="simp" onChange={(e) => charsetFilterChange(e)}/>
-                Simp Only
-            </label>
-            <label>
-                <input type="radio" name="filter_charset" checked={charsetFilter == "trad"} value="trad" onChange={(e) => charsetFilterChange(e)}/>
-                Trad Only
+
+            <label>Sorted By:
+            <Select className="filter-select"
+                value={sortBySelectOptions.find(o => o.value === sortBy)} 
+                onChange={changeSortBy} 
+                options={sortBySelectOptions} 
+
+                theme={theme => ({
+                    ...theme,
+                    borderRadius: 0,
+                    colors: {
+                      ...theme.colors,
+                      primary25: '#cd223d33',
+                      primary50: '#cd223d7d',
+                      primary75: '#cd223dc4',
+                      primary: '#cd223d',
+                }})}
+            />
             </label>
 
-            <h3>Heisig</h3>
-            <label>
-                <input type="radio" name="filter_heisig" checked={heisigFilter == "all"} value="all" onChange={(e) => heisigFilterChange(e)}/>
-                All
+            <label>Traditional/Simplified:
+            <Select className="filter-select" 
+                value={charsetSelectOptions.find(o => o.value === charsetFilter)} 
+                onChange={changeCharsetFilter} 
+                options={charsetSelectOptions} 
+
+                theme={theme => ({
+                    ...theme,
+                    borderRadius: 0,
+                    colors: {
+                      ...theme.colors,
+                      primary25: '#cd223d33',
+                      primary50: '#cd223d7d',
+                      primary75: '#cd223dc4',
+                      primary: '#cd223d',
+                }})}
+            />
             </label>
-            <label>
-                <input type="radio" name="filter_heisig" checked={heisigFilter == "yes"} value="yes" onChange={(e) => heisigFilterChange(e)}/>
-                Yes only
+
+            <label>Heisig:
+            <Select className="filter-select" 
+                value={heisigSelectOptions.find(o => o.value === heisigFilter)} 
+                onChange={changeHeisigFilter} 
+                options={heisigSelectOptions} 
+
+                theme={theme => ({
+                    ...theme,
+                    borderRadius: 0,
+                    colors: {
+                      ...theme.colors,
+                      primary25: '#cd223d33',
+                      primary50: '#cd223d7d',
+                      primary75: '#cd223dc4',
+                      primary: '#cd223d',
+                }})}
+            />
             </label>
-            <label>
-                <input type="radio" name="filter_heisig" checked={heisigFilter == "no"} value="no" onChange={(e) => heisigFilterChange(e)}/>
-                No only
-            </label>
+
+            
+
 
             {props.radical ? null :
-            <div>
-                <h3>Radicals</h3>
                 <label>
                     <input type="checkbox" checked={radicalFilter} onChange={(e) => radicalFilterChange(e)}/>
-                    All
+                    Show Only Radicals
                 </label>
-            </div>}
+            }
 
-            {results.length == 0 && !loading ? <div class="noResults">Sorry, no results found ;(</div> : null}
+            </div>
+            
+
+            {results.length == 0 && !loading ? <div className="noResults">Sorry, no results found ;(</div> : null}
 
             <div className="characters_container">
                 {

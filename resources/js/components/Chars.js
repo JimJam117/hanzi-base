@@ -17,6 +17,7 @@ export default function Chars(props) {
     const [sortBy, setSortBy] = useState('default');
 
     // filter states
+    const [filterIsVisible, setFilterIsVisible] = useState(false)
     const [charsetFilter, setCharsetFilter] = useState('all')
     const [heisigFilter, setHeisigFilter] = useState('all')
     const [radicalFilter, setRadicalFilter] = useState(false)
@@ -218,9 +219,14 @@ export default function Chars(props) {
     return (
     
         <div>
+
+            <div className="top-section">
+            <button className="filters-button" value={filterIsVisible} onClick={() => setFilterIsVisible(!filterIsVisible)}>
+                Filters {filterIsVisible ? <i className="fas fa-arrow-circle-up"></i> : <i className="fas fa-arrow-circle-down"></i>}
+            </button>
+            {
+                filterIsVisible ? 
             <div className="filter-section">
-
-
             <label>Sorted By:
             <Select className="filter-select"
                 value={sortBySelectOptions.find(o => o.value === sortBy)} 
@@ -289,6 +295,9 @@ export default function Chars(props) {
             }
 
             </div>
+            : null
+        }
+        </div>
             
 
             {results.length == 0 && !loading ? <div className="noResults">Sorry, no results found ;(</div> : null}

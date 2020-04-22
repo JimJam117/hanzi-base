@@ -162,6 +162,11 @@
 /* ==============================
      Filters
     ==============================*/
+.top-section{
+    display: flex;
+    flex-direction: column;
+    margin: 1em 0 3em 0;
+}
 
 .filter-section{
     background-color: #cd223dc9;
@@ -169,12 +174,19 @@
     padding: 1em;
     display: flex;
     justify-content: space-evenly;
-    margin: 1em 0 3em 0;
 }
 
 .filter-select{
     min-width: 250px;
     color: #222;
+}
+
+.filters-button{
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    align-self: flex-end;
+    margin-bottom: 1em;
 }
 
 

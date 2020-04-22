@@ -56754,62 +56754,67 @@ function Chars(props) {
       setSortBy = _useState2[1]; // filter states
 
 
-  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])('all'),
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(false),
       _useState4 = _slicedToArray(_useState3, 2),
-      charsetFilter = _useState4[0],
-      setCharsetFilter = _useState4[1];
+      filterIsVisible = _useState4[0],
+      setFilterIsVisible = _useState4[1];
 
   var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])('all'),
       _useState6 = _slicedToArray(_useState5, 2),
-      heisigFilter = _useState6[0],
-      setHeisigFilter = _useState6[1];
+      charsetFilter = _useState6[0],
+      setCharsetFilter = _useState6[1];
 
-  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(false),
+  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])('all'),
       _useState8 = _slicedToArray(_useState7, 2),
-      radicalFilter = _useState8[0],
-      setRadicalFilter = _useState8[1];
+      heisigFilter = _useState8[0],
+      setHeisigFilter = _useState8[1];
 
-  var _useState9 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(true),
+  var _useState9 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(false),
       _useState10 = _slicedToArray(_useState9, 2),
-      loading = _useState10[0],
-      setLoading = _useState10[1];
+      radicalFilter = _useState10[0],
+      setRadicalFilter = _useState10[1];
 
-  var _useState11 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(false),
+  var _useState11 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(true),
       _useState12 = _slicedToArray(_useState11, 2),
-      isFetching = _useState12[0],
-      setIsFetching = _useState12[1];
+      loading = _useState12[0],
+      setLoading = _useState12[1];
 
   var _useState13 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(false),
       _useState14 = _slicedToArray(_useState13, 2),
-      displayLoading = _useState14[0],
-      setDisplayLoading = _useState14[1];
+      isFetching = _useState14[0],
+      setIsFetching = _useState14[1];
 
-  var _useState15 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])([]),
+  var _useState15 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(false),
       _useState16 = _slicedToArray(_useState15, 2),
-      originalResults = _useState16[0],
-      setOriginalResults = _useState16[1]; // this is used to keep the original order of the results after it has been sorted
-
+      displayLoading = _useState16[0],
+      setDisplayLoading = _useState16[1];
 
   var _useState17 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])([]),
       _useState18 = _slicedToArray(_useState17, 2),
-      results = _useState18[0],
-      setResults = _useState18[1];
+      originalResults = _useState18[0],
+      setOriginalResults = _useState18[1]; // this is used to keep the original order of the results after it has been sorted
+
 
   var _useState19 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])([]),
       _useState20 = _slicedToArray(_useState19, 2),
-      currentSearchHanzi = _useState20[0],
-      setCurrentSearchHanzi = _useState20[1]; // pagination state
+      results = _useState20[0],
+      setResults = _useState20[1];
 
-
-  var _useState21 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(1),
+  var _useState21 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])([]),
       _useState22 = _slicedToArray(_useState21, 2),
-      currentPage = _useState22[0],
-      setCurrentPage = _useState22[1];
+      currentSearchHanzi = _useState22[0],
+      setCurrentSearchHanzi = _useState22[1]; // pagination state
 
-  var _useState23 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(),
+
+  var _useState23 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(1),
       _useState24 = _slicedToArray(_useState23, 2),
-      lastPage = _useState24[0],
-      setLastPage = _useState24[1];
+      currentPage = _useState24[0],
+      setCurrentPage = _useState24[1];
+
+  var _useState25 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(),
+      _useState26 = _slicedToArray(_useState25, 2),
+      lastPage = _useState26[0],
+      setLastPage = _useState26[1];
 
   var observer = Object(react__WEBPACK_IMPORTED_MODULE_1__["useRef"])();
   var lastCharacterRef = Object(react__WEBPACK_IMPORTED_MODULE_1__["useCallback"])(function (node) {
@@ -57070,6 +57075,26 @@ function Chars(props) {
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null,
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+      className: "top-section"
+    },
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
+      className: "filters-button",
+      value: filterIsVisible,
+      onClick: function onClick() {
+        return setFilterIsVisible(!filterIsVisible);
+      }
+    }, "Filters ", filterIsVisible ?
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("i", {
+      className: "fas fa-arrow-circle-up"
+    }) :
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("i", {
+      className: "fas fa-arrow-circle-down"
+    })), filterIsVisible ?
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
       className: "filter-section"
     },
     /*#__PURE__*/
@@ -57147,7 +57172,7 @@ function Chars(props) {
       onChange: function onChange(e) {
         return radicalFilterChange(e);
       }
-    }), "Show Only Radicals")), results.length == 0 && !loading ?
+    }), "Show Only Radicals")) : null), results.length == 0 && !loading ?
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
       className: "noResults"

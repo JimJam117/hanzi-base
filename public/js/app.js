@@ -56654,7 +56654,11 @@ function CharacterLink(props) {
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
       className: "details top-details " + (isRadical ? "active" : "")
-    }, isRadical ?
+    }, isRadical ? props.hasSimplified ?
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Traditional Radical") : props.hasTraditional ?
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Simplified Radical") :
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Radical") :
     /*#__PURE__*/

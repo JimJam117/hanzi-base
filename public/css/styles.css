@@ -91,7 +91,7 @@
 }
 
 
-@media screen and (max-width: 1075px) {
+@media screen and (max-width: 1350px) {
     .main {
         padding: 2em;
     }
@@ -255,6 +255,19 @@
 .total{
     text-align: right;
 }
+
+
+@media screen and (max-width: 1075px) {
+    .filter-section{
+       height: 500px;
+       justify-content: space-between;
+       flex-direction: column;
+    }
+    .filter-section-invisible{
+        height: 0;
+    }
+}
+
 
 /* ==============================
      Pagination

@@ -155,7 +155,6 @@ export default function Chars(props) {
         };
     }, [loading])
 
-
     // used for changing the filters or sorting
     const reset = () => {
         setCurrentPage(1);
@@ -224,9 +223,8 @@ export default function Chars(props) {
             <button className="filters-button" value={filterIsVisible} onClick={() => setFilterIsVisible(!filterIsVisible)}>
                 Filters {filterIsVisible ? <i className="fas fa-arrow-circle-up"></i> : <i className="fas fa-arrow-circle-down"></i>}
             </button>
-            {
-                filterIsVisible ? 
-            <div className="filter-section">
+          
+            <div id="filters" className={"filter-section " + (!filterIsVisible && "filter-section-invisible")}>
             <label>Sorted By:
             <Select className="filter-select"
                 value={sortBySelectOptions.find(o => o.value === sortBy)} 
@@ -295,8 +293,7 @@ export default function Chars(props) {
             }
 
             </div>
-            : null
-        }
+
         </div>
             
 

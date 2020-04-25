@@ -168,13 +168,35 @@
     margin: 1em 0 3em 0;
 }
 
+/* The filter section */
 .filter-section{
-    background-color: #cd223dc9;
+    background-color: #3f3f3f;
     color: #fff;
     padding: 1em;
     display: flex;
+    height: 95px;
+    line-height: initial;
     justify-content: space-evenly;
+    
+    transition: 0.4s;
+    transition-timing-function: cubic-bezier(.68,-0.55,.27,1.55);
 }
+.filter-section * {
+    opacity: 1;
+    transition: 0.5s;   
+}
+
+/* filter section when invisible */
+.filter-section-invisible{
+    height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    overflow: hidden;
+}
+.filter-section-invisible *{
+  opacity: 0;
+}
+
 
 .filter-select{
     min-width: 250px;
@@ -182,6 +204,7 @@
 }
 
 .filters-button{
+    text-transform: uppercase;
     background: none;
     border: none;
     font-size: 1.5rem;
@@ -189,6 +212,19 @@
     margin-bottom: 1em;
 }
 
+
+
+/* keyframe */
+@keyframes display {
+    from {
+        
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+        
+    }
+  }
 
 /* ==============================
      Pagination

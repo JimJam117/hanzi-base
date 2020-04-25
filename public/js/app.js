@@ -57092,10 +57092,11 @@ function Chars(props) {
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("i", {
       className: "fas fa-arrow-circle-down"
-    })), filterIsVisible ?
+    })),
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-      className: "filter-section"
+      id: "filters",
+      className: "filter-section " + (!filterIsVisible && "filter-section-invisible")
     },
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("label", null, "Sorted By:",
@@ -57172,7 +57173,7 @@ function Chars(props) {
       onChange: function onChange(e) {
         return radicalFilterChange(e);
       }
-    }), "Show Only Radicals")) : null), results.length == 0 && !loading ?
+    }), "Show Only Radicals"))), results.length == 0 && !loading ?
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
       className: "noResults"

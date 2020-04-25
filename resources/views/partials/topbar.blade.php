@@ -13,6 +13,11 @@
     <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@2.2/dist/hanzi-writer.min.js" async></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" defer></script>
 
+    <script>
+        window.FontAwesomeConfig = {
+          searchPseudoElements: true
+        }
+      </script>
     <script type="text/javascript">
         function burgerMenuShowHide() {
                 var button = document.getElementById("bMenuButton");

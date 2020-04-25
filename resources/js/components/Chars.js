@@ -221,7 +221,7 @@ export default function Chars(props) {
 
             <div className="top-section">
             <button className="filters-button" value={filterIsVisible} onClick={() => setFilterIsVisible(!filterIsVisible)}>
-                Filters {filterIsVisible ? <i className="fas fa-arrow-circle-up"></i> : <i className="fas fa-arrow-circle-down"></i>}
+                Filters {filterIsVisible ? <i className="filter-arrow fas fa-arrow-circle-up"></i> : <i className="filter-arrow fas fa-arrow-circle-down text-red"></i>}
             </button>
           
             <div id="filters" className={"filter-section " + (!filterIsVisible && "filter-section-invisible")}>
@@ -287,8 +287,9 @@ export default function Chars(props) {
 
             {props.radical ? null :
                 <label>
-                    <input type="checkbox" checked={radicalFilter} onChange={(e) => radicalFilterChange(e)}/>
                     Show Only Radicals
+                    <input className="filter-section-checkbox icon-square" type="checkbox" checked={radicalFilter} onChange={(e) => radicalFilterChange(e)}/>
+                    
                 </label>
             }
 

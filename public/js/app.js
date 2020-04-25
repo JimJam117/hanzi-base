@@ -57087,11 +57087,11 @@ function Chars(props) {
     }, "Filters ", filterIsVisible ?
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("i", {
-      className: "fas fa-arrow-circle-up"
+      className: "filter-arrow fas fa-arrow-circle-up"
     }) :
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("i", {
-      className: "fas fa-arrow-circle-down"
+      className: "filter-arrow fas fa-arrow-circle-down text-red"
     })),
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
@@ -57165,15 +57165,16 @@ function Chars(props) {
       }
     })), props.radical ? null :
     /*#__PURE__*/
-    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("label", null,
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("label", null, "Show Only Radicals",
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("input", {
+      className: "filter-section-checkbox icon-square",
       type: "checkbox",
       checked: radicalFilter,
       onChange: function onChange(e) {
         return radicalFilterChange(e);
       }
-    }), "Show Only Radicals"))), results.length == 0 && !loading ?
+    })))), results.length == 0 && !loading ?
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
       className: "noResults"

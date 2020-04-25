@@ -234,10 +234,6 @@
     opacity: 0;
 } */
 
-.text-red {
-    color: #cd223d;
-}
-
 .filter-select{
     min-width: 250px;
     color: #222;
@@ -253,21 +249,12 @@
     transition: 0.5s;
     font-weight: 700;
     letter-spacing: 2px;
+    cursor: pointer;
 }
 
-
-
-/* keyframe */
-@keyframes display {
-    from {
-        
-        opacity: 1;
-    }
-    to {
-        opacity: 0;
-        
-    }
-  }
+.total{
+    text-align: right;
+}
 
 /* ==============================
      Pagination
@@ -350,6 +337,10 @@ footer h2{
     }
 
 }
+
+
+
+
 
 
 
@@ -515,6 +506,23 @@ footer h2{
         font-size: 1.25em;
         background-color: #ffffff29;
     }
+
+
+
+
+
+    .text-red {
+        color: #cd223d !important;
+    }
+    .text-white {
+        color: #fff !important;
+    }
+    .text-black {
+        color: #222 !important;
+    }
+
+
+
 
 
     /* ========= MEDIA QUERIES ========= */

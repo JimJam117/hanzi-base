@@ -36,7 +36,22 @@ if($char->char == $char->simp_char) {
         <div class="newCharAdded">This character has now been added to HanziBase!</div>
     @endif
    
-    <div class="character_section">
+
+    @if($isRadical)
+        <div class="radical-header">
+            <h2>Radical</h2>
+            <form method="post" action="/search">
+                @csrf
+                <input type="hidden" name="search" value="{{$char->radical}}">
+                <input type="hidden" name="radical" value="{{true}}">
+
+                <button type="submit" class="radical-button">
+                    View Characters with this Radical
+                </button>
+            </form>
+        </div>
+    @endif
+        <div class={{ "character_section" . ($isRadical ? " character_section_radical" : "") }}>
         <div class="left_section">
             <div id="character-target-div"></div>
             <h3>{{$char->stroke_count}} Strokes</h3>
@@ -167,6 +182,19 @@ if($char->char == $char->simp_char) {
 
 
 <style>
+    .radical-header{
+        width: 100%;
+        background-color: #c82929;
+        border-radius: 10px 10px 0% 0%;
+        color: #fff;
+        padding: 1em 2em;
+        font-size: 1.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+    }
     .character_section {
         background-color: #ffffff;
         min-height: 70vh;
@@ -176,6 +204,10 @@ if($char->char == $char->simp_char) {
         border-radius: 10px;
         display: flex;
     }
+    .character_section_radical{
+        border-radius: 0 0 10px 10px;
+    }
+
     .character_type{
         margin: 1em;
     }
@@ -258,6 +290,21 @@ if($char->char == $char->simp_char) {
         background: none;
         border: none;
         cursor: pointer;
+    }
+
+    .radical-button {
+        color: #c82929;
+        background-color: #fff;
+        padding: 1em;
+        text-transform: uppercase;
+        border: none;
+        cursor: pointer;
+        transition: 0.2s;
+        transition-timing-function: cubic-bezier(1,0,0,1);
+    }
+    .radical-button:hover{
+        color: #fff;
+        background-color: #c82929;
     }
 
     @media screen and (max-width: 1350px) {

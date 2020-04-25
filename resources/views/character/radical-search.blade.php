@@ -18,11 +18,11 @@ results for "{{$search}}"
        
    @endif
 
-   @if (isset($isRadicalSearch))
-    <h1>Results for Radical: {{$search}}</h1>
-   @else
-    <h1>Results for "{{$search}}"</h1>
-   @endif
+
+    <h1>Characters with Radical {{$search}}</h1>
+        
+
+
     
 
 

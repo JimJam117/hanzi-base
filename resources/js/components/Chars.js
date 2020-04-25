@@ -28,6 +28,7 @@ export default function Chars(props) {
     
     const [originalResults, setOriginalResults] = useState([]); // this is used to keep the original order of the results after it has been sorted
     const [results, setResults] = useState([]);
+    const [data, setData] = useState([]);
     const [currentSearchHanzi, setCurrentSearchHanzi] = useState([]);
 
     // pagination state
@@ -140,6 +141,7 @@ export default function Chars(props) {
                         }
                         setCurrentPage(data.chars.current_page);
                         setLastPage(data.chars.last_page);
+                        setData(data.chars);
                         setLoading(false);
                         setIsFetching(false);
                 })
@@ -215,10 +217,21 @@ export default function Chars(props) {
     ];
 
 
+    const selectTheme = theme => ({
+        ...theme,
+        borderRadius: 0,
+        colors: {
+          ...theme.colors,
+          primary25: '#cd223d33',
+          primary50: '#cd223d7d',
+          primary75: '#cd223dc4',
+          primary: '#cd223d',
+    }});
+
     return (
     
         <div>
-
+            {!loading && <p className="total">{data.total} total</p>}
             <div className="top-section">
             <button className="filters-button" value={filterIsVisible} onClick={() => setFilterIsVisible(!filterIsVisible)}>
                 Filters {filterIsVisible ? <i className="filter-arrow fas fa-arrow-circle-up"></i> : <i className="filter-arrow fas fa-arrow-circle-down text-red"></i>}
@@ -231,16 +244,7 @@ export default function Chars(props) {
                 onChange={changeSortBy} 
                 options={sortBySelectOptions} 
 
-                theme={theme => ({
-                    ...theme,
-                    borderRadius: 0,
-                    colors: {
-                      ...theme.colors,
-                      primary25: '#cd223d33',
-                      primary50: '#cd223d7d',
-                      primary75: '#cd223dc4',
-                      primary: '#cd223d',
-                }})}
+                theme={selectTheme}
             />
             </label>
 
@@ -250,16 +254,7 @@ export default function Chars(props) {
                 onChange={changeCharsetFilter} 
                 options={charsetSelectOptions} 
 
-                theme={theme => ({
-                    ...theme,
-                    borderRadius: 0,
-                    colors: {
-                      ...theme.colors,
-                      primary25: '#cd223d33',
-                      primary50: '#cd223d7d',
-                      primary75: '#cd223dc4',
-                      primary: '#cd223d',
-                }})}
+                theme={selectTheme}
             />
             </label>
 
@@ -269,16 +264,7 @@ export default function Chars(props) {
                 onChange={changeHeisigFilter} 
                 options={heisigSelectOptions} 
 
-                theme={theme => ({
-                    ...theme,
-                    borderRadius: 0,
-                    colors: {
-                      ...theme.colors,
-                      primary25: '#cd223d33',
-                      primary50: '#cd223d7d',
-                      primary75: '#cd223dc4',
-                      primary: '#cd223d',
-                }})}
+                theme={selectTheme}
             />
             </label>
 

@@ -267,8 +267,21 @@ class CharacterController extends Controller
             default: $characterObj->frequencyTitle =  "Unknown"; break;
         }
 
+        
+
+        // check if the input is in either radical array
+        $isInArray = array_search($char, Radicals::returnArray());
+        $isInSimpArray = array_search($char, Radicals::returnSimplifedArray());
+
         $char = $characterObj;
-        return view('character.show', compact('char', 'newCharAdded'));
+
+        $isRadical = false;
+
+        if($isInArray || $isInSimpArray) {
+            $isRadical = true;
+        }
+        
+        return view('character.show', compact('char', 'newCharAdded', 'isRadical'));
     }
 
 

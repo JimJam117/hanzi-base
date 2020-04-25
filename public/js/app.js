@@ -56802,19 +56802,24 @@ function Chars(props) {
 
   var _useState21 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])([]),
       _useState22 = _slicedToArray(_useState21, 2),
-      currentSearchHanzi = _useState22[0],
-      setCurrentSearchHanzi = _useState22[1]; // pagination state
+      data = _useState22[0],
+      setData = _useState22[1];
 
-
-  var _useState23 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(1),
+  var _useState23 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])([]),
       _useState24 = _slicedToArray(_useState23, 2),
-      currentPage = _useState24[0],
-      setCurrentPage = _useState24[1];
+      currentSearchHanzi = _useState24[0],
+      setCurrentSearchHanzi = _useState24[1]; // pagination state
 
-  var _useState25 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(),
+
+  var _useState25 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(1),
       _useState26 = _slicedToArray(_useState25, 2),
-      lastPage = _useState26[0],
-      setLastPage = _useState26[1];
+      currentPage = _useState26[0],
+      setCurrentPage = _useState26[1];
+
+  var _useState27 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(),
+      _useState28 = _slicedToArray(_useState27, 2),
+      lastPage = _useState28[0],
+      setLastPage = _useState28[1];
 
   var observer = Object(react__WEBPACK_IMPORTED_MODULE_1__["useRef"])();
   var lastCharacterRef = Object(react__WEBPACK_IMPORTED_MODULE_1__["useCallback"])(function (node) {
@@ -56940,10 +56945,11 @@ function Chars(props) {
 
                           setCurrentPage(data.chars.current_page);
                           setLastPage(data.chars.last_page);
+                          setData(data.chars);
                           setLoading(false);
                           setIsFetching(false);
 
-                        case 10:
+                        case 11:
                         case "end":
                           return _context.stop();
                       }
@@ -57070,9 +57076,26 @@ function Chars(props) {
     value: 'yes',
     label: 'Show only Heisig results'
   }];
+
+  var selectTheme = function selectTheme(theme) {
+    return _objectSpread({}, theme, {
+      borderRadius: 0,
+      colors: _objectSpread({}, theme.colors, {
+        primary25: '#cd223d33',
+        primary50: '#cd223d7d',
+        primary75: '#cd223dc4',
+        primary: '#cd223d'
+      })
+    });
+  };
+
   return (
     /*#__PURE__*/
-    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null,
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, !loading &&
+    /*#__PURE__*/
+    react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", {
+      className: "total"
+    }, data.total, " total"),
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
       className: "top-section"
@@ -57108,17 +57131,7 @@ function Chars(props) {
       }),
       onChange: changeSortBy,
       options: sortBySelectOptions,
-      theme: function theme(_theme) {
-        return _objectSpread({}, _theme, {
-          borderRadius: 0,
-          colors: _objectSpread({}, _theme.colors, {
-            primary25: '#cd223d33',
-            primary50: '#cd223d7d',
-            primary75: '#cd223dc4',
-            primary: '#cd223d'
-          })
-        });
-      }
+      theme: selectTheme
     })),
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("label", null, "Traditional/Simplified:",
@@ -57130,17 +57143,7 @@ function Chars(props) {
       }),
       onChange: changeCharsetFilter,
       options: charsetSelectOptions,
-      theme: function theme(_theme2) {
-        return _objectSpread({}, _theme2, {
-          borderRadius: 0,
-          colors: _objectSpread({}, _theme2.colors, {
-            primary25: '#cd223d33',
-            primary50: '#cd223d7d',
-            primary75: '#cd223dc4',
-            primary: '#cd223d'
-          })
-        });
-      }
+      theme: selectTheme
     })),
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("label", null, "Heisig:",
@@ -57152,17 +57155,7 @@ function Chars(props) {
       }),
       onChange: changeHeisigFilter,
       options: heisigSelectOptions,
-      theme: function theme(_theme3) {
-        return _objectSpread({}, _theme3, {
-          borderRadius: 0,
-          colors: _objectSpread({}, _theme3.colors, {
-            primary25: '#cd223d33',
-            primary50: '#cd223d7d',
-            primary75: '#cd223dc4',
-            primary: '#cd223d'
-          })
-        });
-      }
+      theme: selectTheme
     })), props.radical ? null :
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("label", null, "Show Only Radicals",

@@ -14,10 +14,11 @@ HanziBase
         <div class="search-container">
             <form action="/search" method="POST">
                 @csrf
-                <input id="search" type="text" placeholder="Search.." name="query" autocomplete="off" maxlength="32" required="required">
+                <input id="search" type="text" placeholder="Jia, 家, home..." name="query" autocomplete="off" maxlength="32" required="required">
                 <label style="display: none;" for="search">Search field</label>
                 <button aria-label="Search Button" type="submit"><i class="fa fa-search"></i></button>
             </form>
+            <div class="search-msg">Search using Pinyin, unicode Chinese characters or translations</div>
         </div>       
     </div>
 </div>
@@ -161,9 +162,9 @@ HanziBase
         padding: 1em;
         margin: 0;
         border: 0;
-        border-radius: 1em 0 0 1em;
+        border-radius: 1em 0 0 0;
         font-size: 1.25em;
-        width: 80%;
+        width: 100%;
         outline: none;
         opacity: 0.9;
     }
@@ -183,6 +184,14 @@ HanziBase
         background-color: #B5183A;
         font-size: 1.25em;
 
+    }
+
+    .search-msg {
+        background-color: #e82048bd;
+        width: 40%;
+        padding: 0.5em 1em;
+        border-radius: 0 0 1em 1em;
+        text-align: initial;
     }
 
    
@@ -314,6 +323,13 @@ HanziBase
         .sub-features-small{
             display: flex;
             flex-direction: column;
+        }
+        .search-container input{
+            width: 80%;
+            border-bottom-left-radius: 10px;
+        }
+        .search-msg{
+            display: none;
         }
     }
 

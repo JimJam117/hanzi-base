@@ -25,25 +25,40 @@ HanziBase
 @endsection
     
 @section('main')
-<div class="main-section stat-section">
+<div class="main-section">
     <div class="nihao">
         <h2 class="stat-title"><span class='red'>{{$charCount}}</span> Characters on HanziBase</h2>
         <div id="writer"></div>
     </div>
-    <div class="stat-title-section">
+    <div class="title-section">
         <h2 class="stat-title"><span class='red'>{{$charCount}}</span> Characters on HanziBase</h2>
         <p>HanziBase is a free resource for learning Chinese characters, both simplifed and traditional. You can search by character, pinyin, translation or Heisig keyword (if you are using <em>Remembering the Hanzi</em>) to find a character's details.</p>
         <br>
         <p></p>
     </div>
-
-
 </div>
 
-<hr style="border:none;">
+<div class="main-section">
+    <div class="title-section">
+        <h2 class="how-it-works-title red">How It Works</h2>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt fugiat impedit nemo eveniet mollitia eos alias sed, hic expedita repudiandae sunt ipsa laudantium accusamus soluta.</p>
+    </div>
 
+    <div class="character_link_example">
+        <div class="details top-details ">Radical</div>
+        <h2 class="character">字</h2>
+        <p class="pinyin">pinyin</p>
+        <h3>translations</h3>
+        
+        <div class="details bottom-details">
+                <div>heisig keyword (heisig number)</div>
+        </div>
+    </div>
+</div>
+
+
+{{-- 
 <div class="sub-features">
-    
         <h2 class="feature-title">Translations</h2>
         <h2 class="feature-title">Stroke Order</h2>
         <h2 class="feature-title">Generated Content</h2>
@@ -55,17 +70,11 @@ HanziBase
         <p class="feature-text">
             Some characters may have multiple translations, and they will all be listed on the character page. Heisig keywords are listed as seperate from API generated translations.
         </p>
-    
-    
-        
-        
+      
         <p class="feature-text">
             The amazing <a href="https://hanziwriter.org/">HanziWriter javascript library</a> is used to render all characters that support it, providing the stroke order of the character. Characters will also have information about the total number of strokes, as well as the radical.
         </p>
     
-   
-        
-        
         <p class="feature-text">
             If a character is not within the websites database, it will attempt to find information about it through the <a href="http://ccdb.hemiola.com/">CCDB API</a> as well as the <a href="https://glosbe.com/a-api">Glosbe Translation API</a>. This content is then added to the local database for future use.
         </p>
@@ -96,13 +105,12 @@ HanziBase
     </div>
 </div>
 
-<hr style="border:none;">
 {{-- <hr>
 <div class="main-section">
     <h1>Title</h1>
     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque velit ea quo blanditiis tenetur, incidunt rem magni expedita laudantium, libero aliquid nemo aspernatur, deserunt quod laborum perspiciatis sapiente officia fugit recusandae eum porro ut illum. Veritatis doloremque vel reiciendis a enim itaque aut nisi aspernatur earum rerum. Neque exercitationem voluptates sed esse fuga modi cum non dicta assumenda saepe, delectus, praesentium, nemo expedita impedit obcaecati dignissimos reiciendis dolor eos iusto rerum soluta nihil sunt ex?</p>
 </div>
- --}}
+ --}} 
 
 
 
@@ -187,7 +195,7 @@ HanziBase
     }
 
     .search-msg {
-        background-color: #e82048bd;
+        background-color: #373737db;
         width: 40%;
         padding: 0.5em 1em;
         border-radius: 0 0 1em 1em;
@@ -216,7 +224,7 @@ HanziBase
     }
 
     /*Character Stat Section*/
-    .stat-section{
+    .main-section{
         display: flex;
         flex-direction: row;
         max-width: 1200px;
@@ -225,9 +233,13 @@ HanziBase
         font-weight: 100;
         font-size: 2em;
     }
+    .how-it-works-title{
+        font-weight: 100;
+        font-size: 2em;
+    }
     .red{
         color: #b5183a;
-        font-size: 3em;
+        font-size: 4rem;
     }
 
     .nihao{
@@ -245,8 +257,10 @@ HanziBase
         padding: 5px;  
     }
 
-    .stat-title-section {
-        padding-left: 75px;
+    .title-section {
+        align-self: flex-start;
+        padding: 0 75px 75px 75px;
+        max-width: 60%;
     }
 
     /* Sub-feature */
@@ -256,6 +270,7 @@ HanziBase
     }
 
     .sub-features{
+        padding-top: 3em;
         display: grid;
         grid-template-columns: 25% 25% 25%;
         width: 100%;
@@ -266,6 +281,9 @@ HanziBase
     .sub-features a, .sub-features-small a{
         color: #20897f;
     text-decoration: none;
+    }
+    .sub-features i, .sub-features-small i{
+        color: #333;
     }
 
     .feature-icon{
@@ -292,7 +310,27 @@ HanziBase
         font-size: 2em;
     }
 
+    @media screen and (max-width: 970px) {
+        .character_link_example{
+            font-size: 1rem;
+            min-width: 215px;
+            min-height: 215px;
+        }
+        .title-section{
+            max-width: 70%;
+            padding: 0 50px 50px 50px; 
+        }
+        .red{
+            font-size: 3rem;
+        }
+    }
+
     @media screen and (max-width: 700px) {
+        .title-section{
+            max-width: 100%;
+            padding: 0; 
+            padding-bottom: 1em; 
+        }
         .landing-area-content h1 {
             font-size: 20vw;
         }
@@ -309,7 +347,7 @@ HanziBase
             font-size: 2rem;
         }
 
-        .stat-title-section {
+        .title-section {
             padding-left: 0px;
         }
         
@@ -330,6 +368,19 @@ HanziBase
         }
         .search-msg{
             display: none;
+        }
+    }
+
+    @media screen and (max-width: 360px) {
+        .character_link_example{
+            width: 125px;
+            height: 125px;
+            font-size: 0.5rem;
+            min-width: 0;
+            min-height: 0;
+        }
+        .character_link_example .bottom-details{
+            font-size: inherit;
         }
     }
 

@@ -51,7 +51,7 @@
     align-items: center;    
  }
 
- .character_link, .character_link:visited {
+ .character_link, .character_link_example, .character_link:visited {
     background-color: white;
     text-align: center;
     border: 2px #0000004d solid;
@@ -68,6 +68,12 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+}
+
+.character_link_example{
+    min-width: 322px;
+    min-height: 322px;
+    font-size: 1.5rem;
 }
 
 .currentSearchHanzi{

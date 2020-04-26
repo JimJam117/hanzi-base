@@ -28,13 +28,17 @@ export default function CharacterLink(props) {
 
     const isRadical = result.radical == result.char;
 
+    const classNameString = props.currentSearchHanzi && props.currentSearchHanzi.indexOf(result.char) == -1 ? `character_link` : `character_link currentSearchHanzi`;
+
     return (
         
         <a  ref={props.resultsLength - 1 == (props.currentCharIndex) ? props.lastCharacterRef : null} 
             href={`/character/${result.char}`} 
-            className={props.currentSearchHanzi && props.currentSearchHanzi.indexOf(result.char) == -1 ? `character_link` : `character_link currentSearchHanzi`}>
+            // <p>{props.newchars}</p>
+            className={props.newchars.includes(result.char) ? `${classNameString} newCharLink` : `${classNameString}`}>
         {/* {{-- Top details, radical and trad/simp --}} */}
         <div className={"details top-details " + (isRadical ? "active" : "")}> 
+            
             {isRadical ? (props.hasSimplified ? <p>Traditional Radical</p> : props.hasTraditional ? <p>Simplified Radical</p> : <p>Radical</p>) :  <p>{result.radical}</p> }
             {!isRadical && (props.hasSimplified ? "Traditional" : props.hasTraditional ? "Simplified" : null)}
         </div>

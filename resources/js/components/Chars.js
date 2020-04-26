@@ -228,6 +228,8 @@ export default function Chars(props) {
           primary: '#cd223d',
     }});
 
+    console.log(props);
+
     return (
     
         <div>
@@ -297,7 +299,8 @@ export default function Chars(props) {
                                         hanzi={result.char} 
                                         currentSearchHanzi={currentSearchHanzi}
                                         lastCharacterRef={lastCharacterRef}
-                                        currentCharIndex={i} 
+                                        currentCharIndex={i}
+                                        newchars={props.newchars}
                                         resultsLength={results.length}/>
                                 );
                     })

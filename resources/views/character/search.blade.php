@@ -8,11 +8,7 @@ results for "{{$search}}"
 @section('main')
     
    @if (isset($newCharArray))
-        <div class="newCharAdded">New characters "
-            @foreach ($newCharArray as $item)
-                {{ $item['original'] }}
-            @endforeach
-            " have now been added to HanziBase!</div>   
+        <div class="newCharAdded">New characters "{{ $newCharString }}" have now been added to HanziBase!</div>   
    {{-- @elseif() --}}
        
    @endif
@@ -34,8 +30,9 @@ results for "{{$search}}"
     <h1>Results for "{{$search}}"</h1>
    @endif
 
+
         
-        <div id="chars" data-search="{{ $search }}"></div>
+        <div id="chars" data-search="{{ $search }}" data-newChars="{{ $newCharString ?? null }}"></div>
             <script src="/js/app.js"></script>
 
 @endsection

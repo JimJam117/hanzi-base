@@ -364,6 +364,7 @@ class CharacterController extends Controller
         $resultArray = [];
         $newCharArray = [];
         $failedRequestsArray = [];
+        $newCharString = "";
         $containsHanzi = false;
         $tooManyRequests = false;
 
@@ -395,6 +396,9 @@ class CharacterController extends Controller
             
             $arrayToDatabaseOutput = $this->addArrayToDatabase($resultArray);
             $newCharArray = $arrayToDatabaseOutput[0];
+            foreach ($newCharArray as $char) {
+                $newCharString .= $char['original'];
+            }
             $tooManyRequests = $arrayToDatabaseOutput[1];
             $failedRequestsArray = $arrayToDatabaseOutput[2];
 
@@ -407,7 +411,7 @@ class CharacterController extends Controller
         }
         
         // return view
-        if($newCharArray) { return view('character.search', compact('search', 'newCharArray', 'containsHanzi', 'tooManyRequests', 'failedRequestsArray')); }
+        if($newCharArray) { return view('character.search', compact('search', 'newCharArray', 'newCharString', 'containsHanzi', 'tooManyRequests', 'failedRequestsArray')); }
         else { return view('character.search', compact('search', 'containsHanzi', 'tooManyRequests', 'failedRequestsArray')); }        
     }
 

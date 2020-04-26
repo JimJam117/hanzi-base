@@ -56644,12 +56644,14 @@ function CharacterLink(props) {
   }
 
   var isRadical = result.radical == result["char"];
+  var classNameString = props.currentSearchHanzi && props.currentSearchHanzi.indexOf(result["char"]) == -1 ? "character_link" : "character_link currentSearchHanzi";
   return (
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
       ref: props.resultsLength - 1 == props.currentCharIndex ? props.lastCharacterRef : null,
-      href: "/character/".concat(result["char"]),
-      className: props.currentSearchHanzi && props.currentSearchHanzi.indexOf(result["char"]) == -1 ? "character_link" : "character_link currentSearchHanzi"
+      href: "/character/".concat(result["char"]) // <p>{props.newchars}</p>
+      ,
+      className: props.newchars.includes(result["char"]) ? "".concat(classNameString, " newCharLink") : "".concat(classNameString)
     },
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -57089,6 +57091,7 @@ function Chars(props) {
     });
   };
 
+  console.log(props);
   return (
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, !loading &&
@@ -57186,6 +57189,7 @@ function Chars(props) {
           currentSearchHanzi: currentSearchHanzi,
           lastCharacterRef: lastCharacterRef,
           currentCharIndex: i,
+          newchars: props.newchars,
           resultsLength: results.length
         })
       );

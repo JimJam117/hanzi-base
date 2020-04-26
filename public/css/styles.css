@@ -74,6 +74,10 @@
     box-shadow:#7adef7 0 0 10px;
     border: 2px solid #acd4dd !important;
 }
+.newCharLink{
+    box-shadow:#89f77a 0 0 10px;
+    border: 2px solid #aeddac !important;
+}
 .character_link:hover {
     background-color: #cd223d;
     color: white;

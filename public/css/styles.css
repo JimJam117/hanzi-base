@@ -11,6 +11,7 @@
  body {
      font-family: Calibri, 'Trebuchet MS', sans-serif;
      margin: 0;
+     min-width: 295px;
  }
 
  .spinner{
@@ -273,7 +274,7 @@
         font-size: 5em;
     }
     .feature-icon-large{
-        font-size: 15rem;
+        font-size: 13rem;
         color:#b5183a;
     }
     .feature-title{
@@ -377,6 +378,10 @@
         .search-msg{
             display: none;
         }
+        .bottom-links-section a{
+        font-size: 1rem;
+            margin: 0;
+        }
     }
 
     @media screen and (max-width: 360px) {
@@ -390,6 +395,8 @@
         .character_link_example .bottom-details{
             font-size: inherit;
         }
+
+
     }
 
 

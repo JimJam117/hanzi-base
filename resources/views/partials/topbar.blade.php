@@ -93,7 +93,7 @@
         <div class="links-container-top">
             <a href="/">Home</a>
             <a href="/browse">Browse</a>
-            <a href="/about">About</a>
+            <a href="/random">Random</a>
         </div>
         <button aria-label="Menu Button" onclick="burgerMenuShowHide()" id="bMenuButton" class="hamburger-button">
             <i class="fas fa-bars"></i>
@@ -108,7 +108,7 @@
         <div class="bMenu-container">
         <a href="/">Home</a>
         <a href="/browse">Browse</a>
-        <a href="/about">About</a>
+        <a href="/random">Random</a>
 
         <div class="bMenu-bottom-link">
             <a href="https://jsparrow.uk">HanziBase by James Sparrow</a>

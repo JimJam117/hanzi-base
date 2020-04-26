@@ -11,6 +11,9 @@
 |
 */
 
+//history page
+Route::get('/history', 'CharacterController@history');
+
 // Search
 Route::post('/search', 'CharacterController@fetchSearch');
 Route::get('/search', 'CharacterController@goHome');

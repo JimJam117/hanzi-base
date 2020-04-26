@@ -22,7 +22,11 @@ class CharacterController extends Controller
         return redirect('/character/' . $char[0]->char);
     }
 
+    public function history() {
+        $chars = \App\Character::orderBy('updated_at', 'desc')->paginate(100);
 
+        return view('character.history', compact('chars'));
+    }
 
 
 

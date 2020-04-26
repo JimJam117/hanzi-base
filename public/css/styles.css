@@ -921,3 +921,17 @@ footer h2{
             font-size: 1rem;
         }
     }
+
+
+/* ==============================
+    History Page
+==============================*/
+
+.history th{
+    padding: 1em;
+}
+.history-character a{
+    color: #333;
+    font-size: 2.5rem;
+    text-decoration: none;
+}

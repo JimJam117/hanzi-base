@@ -65,6 +65,9 @@ class CharacterController extends Controller
 
             
             // add to db 
+            if($charData == 429) {
+                dd("too many requests error");
+            }
             $this->addToDatabase($charData);
         }
     }
@@ -116,12 +119,14 @@ class CharacterController extends Controller
         curl_setopt($curlSession, CURLOPT_RETURNTRANSFER, true);
     
         $ccdb = json_decode(curl_exec($curlSession), true);
-        $ccdb = $ccdb['ccdb'];
+        $http_code = curl_getinfo($curlSession)['http_code'];
         curl_close($curlSession);
-
+        
         if (empty($ccdb)) {
-            return null;
+            return $http_code;
         }
+
+        $ccdb = $ccdb['ccdb'];
        
         return $ccdb;
     }
@@ -178,7 +183,7 @@ class CharacterController extends Controller
             // check if the character is within the database
             $data = $this->grabCharacterData($char);
             if ($data == null) { return view('errors.notfound', compact('char')); }
-            
+            else if ($data == 429) {return view('errors.429', compact('char')); } 
             // if the character exists, add it to the database
             $this->addToDatabase($data);
             $characterObj = \App\Character::where('char', $char)->orWhere('id', $char)->first();
@@ -233,6 +238,10 @@ class CharacterController extends Controller
     function addArrayToDatabase($inputArray) {
         // for chars that are new to HanziBase
         $newArray = [];
+        $failedRequestsArray = [];
+
+        //for if there is a 429 error within the output
+        $tooManyRequests = false;
 
         foreach ($inputArray as $item) {
             
@@ -240,16 +249,21 @@ class CharacterController extends Controller
             if (! \App\Character::where('char', $item)->first()) {
                 $charData = $this->grabCharacterData($item);
                 
-                if($charData != null) { 
+                if($charData == 429) {
+                     $tooManyRequests = true;
+                     array_push($failedRequestsArray, $item);   
+                }
+                else if($charData != null) { 
                     
                     $this->addToDatabase($charData); 
-                   
+                
                     array_push($newArray, $charData);
                 }
             }
             
         }
-        return $newArray;
+        //dd([$newArray, $tooManyRequests, $failedRequestsArray]);
+        return [$newArray, $tooManyRequests, $failedRequestsArray];
     }
 
 
@@ -349,7 +363,9 @@ class CharacterController extends Controller
     public function showSearch($search = null) {
         $resultArray = [];
         $newCharArray = [];
+        $failedRequestsArray = [];
         $containsHanzi = false;
+        $tooManyRequests = false;
 
         $search = (urldecode($search));
 
@@ -377,7 +393,11 @@ class CharacterController extends Controller
                 preg_match("/\p{Han}+/u", $searchCharacter) ? array_push($resultArray, $searchCharacter) : null ;
             }
             
-            $newCharArray = $this->addArrayToDatabase($resultArray);
+            $arrayToDatabaseOutput = $this->addArrayToDatabase($resultArray);
+            $newCharArray = $arrayToDatabaseOutput[0];
+            $tooManyRequests = $arrayToDatabaseOutput[1];
+            $failedRequestsArray = $arrayToDatabaseOutput[2];
+
             $containsHanzi = true;
         }
 
@@ -387,8 +407,8 @@ class CharacterController extends Controller
         }
         
         // return view
-        if($newCharArray) { return view('character.search', compact('search', 'newCharArray', 'containsHanzi')); }
-        else { return view('character.search', compact('search', 'containsHanzi')); }        
+        if($newCharArray) { return view('character.search', compact('search', 'newCharArray', 'containsHanzi', 'tooManyRequests', 'failedRequestsArray')); }
+        else { return view('character.search', compact('search', 'containsHanzi', 'tooManyRequests', 'failedRequestsArray')); }        
     }
 
 

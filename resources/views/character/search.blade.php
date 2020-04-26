@@ -8,7 +8,6 @@ results for "{{$search}}"
 @section('main')
     
    @if (isset($newCharArray))
-
         <div class="newCharAdded">New characters "
             @foreach ($newCharArray as $item)
                 {{ $item['original'] }}
@@ -16,6 +15,17 @@ results for "{{$search}}"
             " have now been added to HanziBase!</div>   
    {{-- @elseif() --}}
        
+   @endif
+
+   @if($tooManyRequests)
+            <p>too many requests</p>
+            <div class="failedRequests">New characters "
+            @foreach ( $failedRequestsArray as $item )
+                {{ $item }}
+            @endforeach
+            " could not be added right now due to rate limits. Please try again later.</div>  
+   @else
+            <p>not too many requests</p>
    @endif
 
    @if (isset($isRadicalSearch))

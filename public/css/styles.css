@@ -423,6 +423,19 @@
     max-width: 700px;
 }
 
+.failedRequests {
+    padding: 1em;
+    background-color: #f28b8b;
+    color: #840000;
+    border: 1px solid #dfdfdf;
+    margin: 0em auto 1em;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.25em;
+    border-radius: 10px;
+    max-width: 700px;
+}
+
 .translations {}
 
 .details {

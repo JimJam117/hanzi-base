@@ -16,6 +16,13 @@ class CharacterController extends Controller
         return redirect('/');
     }
 
+    // random character page
+    public function randomCharacterRedirect() {
+        $char = \App\Character::all()->random(1);
+        return redirect('/character/' . $char[0]->char);
+    }
+
+
     /**
      * Converts the input character into a readable unicode character
      * 

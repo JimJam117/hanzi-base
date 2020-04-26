@@ -19,6 +19,8 @@ Route::get('/radical/search/{search}', 'CharacterController@showRadicalSearch')-
 
 Route::get('/', 'HomeController@index');
 
+Route::get('/random', 'CharacterController@randomCharacterRedirect');
+
 Route::get('/browse', 'CharacterController@index');
 Route::get('/all', 'CharacterController@index');
 

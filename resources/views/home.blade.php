@@ -39,7 +39,7 @@ HanziBase
 <div class="home-section">
     <div class="title-section">
         <h2 class="how-it-works-title red">How It Works</h2>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt fugiat impedit nemo eveniet mollitia eos alias sed, hic expedita repudiandae sunt ipsa laudantium accusamus soluta.</p>
+        <p>When you search for a character by typing in at least one unicode Chinese Character into the search, Hanzibase will attempt to find it within the local database. If a character is not within the website's database, it will attempt to find information about it through the <a href="http://ccdb.hemiola.com/">CCDB API</a> as well as the <a href="https://glosbe.com/a-api">Glosbe Translation API</a>. This content is then added to the local database for future use.</p>
     </div>
     <i class="fas fa-cloud-download-alt feature-icon-large"></i>
 </div>
@@ -71,11 +71,11 @@ HanziBase
 <div class="sub-features">
         <h2 class="feature-title">Translations</h2>
         <h2 class="feature-title">Stroke Order</h2>
-        <h2 class="feature-title">Generated Content</h2>
+        <h2 class="feature-title">Radicals</h2>
 
         <i class="fas fa-language feature-icon"></i>
     <i class="fas fa-pen-fancy feature-icon"></i>
-    <i class="fas fa-cloud feature-icon"></i>
+    <i class="fas fa-star feature-icon"></i>
 
         <p class="feature-text">
             Some characters may have multiple translations, and they will all be listed on the character page. Heisig keywords are listed as seperate from API generated translations.
@@ -86,7 +86,7 @@ HanziBase
         </p>
     
         <p class="feature-text">
-            If a character is not within the websites database, it will attempt to find information about it through the <a href="http://ccdb.hemiola.com/">CCDB API</a> as well as the <a href="https://glosbe.com/a-api">Glosbe Translation API</a>. This content is then added to the local database for future use.
+            Every character either has a radical or is a radical. Some radicals will have both a simplifed and traditional variant, and the radicals conterpart will be displayed as a link on the character page if this is the case. You can filter in the search to show only radicals.
         </p>
 
 </div>
@@ -107,10 +107,10 @@ HanziBase
         </p>
     </div>
     <div class="feature">
-        <h2>API Generated Content</h2>
-        <i class="fas fa-cloud"></i>
+        <h2>Radicals</h2>
+        <i class="fas fa-star feature-icon"></i>
         <p>
-            If a character is not within the websites database, it will attempt to find information about it through the <a href="http://ccdb.hemiola.com/">CCDB API</a> as well as the <a href="https://glosbe.com/a-api">Glosbe Translation API</a>. This content is then added to the local database for future use.
+            Every character either has a radical or is a radical. Some radicals will have both a simplifed and traditional variant, and the radicals conterpart will be displayed as a link on the character page if this is the case. You can filter in the search to show only radicals.
         </p>
     </div>
 </div>

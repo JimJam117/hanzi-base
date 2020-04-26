@@ -205,6 +205,7 @@
         justify-content: space-between;
         margin: 4em auto;
         padding: 2em;
+        align-items: center;
     }
     .reverse-section{
         flex-direction: row-reverse
@@ -256,7 +257,7 @@
         align-items: baseline;
         justify-content: space-evenly;
     }
-    .sub-features a, .sub-features-small a{
+    .sub-features a, .sub-features-small a, .title-section a{
         color: #20897f;
     text-decoration: none;
     }
@@ -346,7 +347,6 @@
         .home-section{
             flex-direction: column;
             text-align: center;
-            align-items: center;
         }
         .nihao .stat-title{
             display: initial;

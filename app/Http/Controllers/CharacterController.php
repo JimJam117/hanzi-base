@@ -23,18 +23,7 @@ class CharacterController extends Controller
     }
 
 
-    /**
-     * Converts the input character into a readable unicode character
-     * 
-     * @param String $input The input string 
-     * @return String The character in the correct unicode format
-     */
-    function grabUnicodeChar($input) {
-        
-        $trimmed = trim($input, "U+");
-        $unicodeChar = "\u$trimmed";
-        return json_decode('"'.$unicodeChar.'"');
-    }
+
 
 
 
@@ -120,87 +109,20 @@ class CharacterController extends Controller
         // make sure only one character is used
         $char = mb_substr($char, 0, 1);
         
-        // grab the data from ccdb
-        $ccdb = json_decode(file_get_contents("http://ccdb.hemiola.com/characters/string/" . $char . "?fields=kDefinition,kFrequency,kTotalStrokes,kSimplifiedVariant,kTraditionalVariant,kRSUnicode"), true);
+        // grab the data from local api using curl, returns ccdb obj
+        $curlSession = curl_init();
+        curl_setopt($curlSession, CURLOPT_URL, (env('APP_URL') . "/api/grabCharacterData/" . $char));
+        curl_setopt($curlSession, CURLOPT_BINARYTRANSFER, true);
+        curl_setopt($curlSession, CURLOPT_RETURNTRANSFER, true);
+    
+        $ccdb = json_decode(curl_exec($curlSession), true);
+        $ccdb = $ccdb['ccdb'];
+        curl_close($curlSession);
+
         if (empty($ccdb)) {
             return null;
         }
-        $ccdb = $ccdb[0];
-
-        // add the orignal to the output
-        $ccdb += ['original' => $char];
-
-        // grab the trad and simp chars
-        $raw_trads = explode ( " " , $ccdb['kTraditionalVariant']);
-        $raw_trad = "";
-        $i = 0;
-        if (!empty($raw_trads)){
-            foreach ($raw_trads as $trad) {
-                if($i != 0) {
-                    $raw_trad = $raw_trad . ",";
-                }
-                else{
-                    $i = 1;
-                }
-                $raw_trad = $raw_trad . $this->grabUnicodeChar($trad);
-            }
-        }
-        
-        if(empty($raw_trad)) {
-            $raw_trad = $char;
-        }
-
-        $raw_simp = $this->grabUnicodeChar($ccdb['kSimplifiedVariant']) ?? $char;
-        
-        // add the trad and simp chars
-        $ccdb += ['traditional_actual' => $raw_trad];
-        $ccdb += ['simplified_actual' => $raw_simp];
-
-        
-        // ====== radicals ====== //
-
-        // grab the radical number from the kRSUnicode, which is in the format 'radical-number','extra-strokes'
-        // only the radical number is needed, so explode then grab first element
-        $radicalNumber = explode(".", $ccdb['kRSUnicode']);
-
-        // also remove any "'" that's in the first array item
-        $radicalNumber = explode("'", $radicalNumber[0]);
-        $radicalNumber = $radicalNumber[0];
-
-
-
-        //radical fetch from Radicals class
-        $radical = Radicals::returnRadical($radicalNumber);
-        $simp_radical = Radicals::returnSimplifedRadical($radicalNumber) ?? $radical;
-        
-
-        // add the radicals
-        $ccdb += ['radical' => $radical];
-        $ccdb += ['simplified_radical' => $simp_radical];
-
-        // glosbe pinyin
-        $char_encoded = urlencode($char);
-        $glosbe = json_decode(file_get_contents("https://glosbe.com/transliteration/api?from=Han&dest=Latin&text=". "$char_encoded" ."&format=json"), true);
-        $pinyin = $glosbe['text'];
-
-        $transliterator = Transliterator::createFromRules(':: Any-Latin; :: Latin-ASCII; :: NFD; :: [:Nonspacing Mark:] Remove; :: Lower(); :: NFC;', Transliterator::FORWARD);
-        $pinyin_normalised = $transliterator->transliterate($pinyin);
-
-        // add glosbe pinyin
-        $ccdb += ['pinyin' => $pinyin];
-        $ccdb += ['pinyin_normalised' => $pinyin_normalised];
-
-        // add the heisig data
-        $ccdb += ['heisig_number' => $heisig_number];
-        $ccdb += ['heisig_keyword' => $heisig_keyword];
-
-        // if the kFrequency is null, set it to 6 instead
-        // (this is to make it less of a priority when searching)
-        if ($ccdb['kFrequency'] == null) {
-            $ccdb['kFrequency'] = 6;
-        }
-
-        // return the character obj
+       
         return $ccdb;
     }
 
@@ -212,7 +134,6 @@ class CharacterController extends Controller
      * @return Void
      */
     function addToDatabase($data) {
-
         \App\Character::create([
         'char'                      => $data['original'],
         'simp_char'                 => $data['simplified_actual'],

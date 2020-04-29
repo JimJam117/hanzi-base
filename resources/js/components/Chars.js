@@ -228,7 +228,6 @@ export default function Chars(props) {
           primary: '#cd223d',
     }});
 
-    console.log(props);
 
     return (
     

@@ -30,12 +30,17 @@ export default function CharacterLink(props) {
 
     const classNameString = props.currentSearchHanzi && props.currentSearchHanzi.indexOf(result.char) == -1 ? `character_link` : `character_link currentSearchHanzi`;
 
+    // if there are new characters, check if the current character is a new character. If it is, then add the 'newCharLink' css class to it
+    if(props.newchars) {
+        classNameString = props.newchars.includes(result.char) ? `${classNameString} newCharLink` : `${classNameString}`;
+    }
+
     return (
         
         <a  ref={props.resultsLength - 1 == (props.currentCharIndex) ? props.lastCharacterRef : null} 
             href={`/character/${result.char}`} 
-            // <p>{props.newchars}</p>
-            className={props.newchars.includes(result.char) ? `${classNameString} newCharLink` : `${classNameString}`}>
+
+            className={classNameString}>
         {/* {{-- Top details, radical and trad/simp --}} */}
         <div className={"details top-details " + (isRadical ? "active" : "")}> 
             

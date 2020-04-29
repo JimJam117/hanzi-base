@@ -56620,6 +56620,8 @@ function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
+function _readOnlyError(name) { throw new Error("\"" + name + "\" is read-only"); }
+
 
 function CharacterLink(props) {
   var result = props.hanzi;
@@ -56644,14 +56646,18 @@ function CharacterLink(props) {
   }
 
   var isRadical = result.radical == result["char"];
-  var classNameString = props.currentSearchHanzi && props.currentSearchHanzi.indexOf(result["char"]) == -1 ? "character_link" : "character_link currentSearchHanzi";
+  var classNameString = props.currentSearchHanzi && props.currentSearchHanzi.indexOf(result["char"]) == -1 ? "character_link" : "character_link currentSearchHanzi"; // if there are new characters, check if the current character is a new character. If it is, then add the 'newCharLink' css class to it
+
+  if (props.newchars) {
+    classNameString = (_readOnlyError("classNameString"), props.newchars.includes(result["char"]) ? "".concat(classNameString, " newCharLink") : "".concat(classNameString));
+  }
+
   return (
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
       ref: props.resultsLength - 1 == props.currentCharIndex ? props.lastCharacterRef : null,
-      href: "/character/".concat(result["char"]) // <p>{props.newchars}</p>
-      ,
-      className: props.newchars.includes(result["char"]) ? "".concat(classNameString, " newCharLink") : "".concat(classNameString)
+      href: "/character/".concat(result["char"]),
+      className: classNameString
     },
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -57091,7 +57097,6 @@ function Chars(props) {
     });
   };
 
-  console.log(props);
   return (
     /*#__PURE__*/
     react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, !loading &&

@@ -164,7 +164,10 @@ export default function Chars(props) {
         setLoading(true);    
     }
 
-    // filter / sorting functions
+    //----------------------------//
+    /* filter / sorting functions */
+    //----------------------------//
+
     const changeSortBy = (e) => {
         if(isFetching) {return}
         if(e.value == "heisig_number" && heisigFilter != "yes"){
@@ -173,7 +176,6 @@ export default function Chars(props) {
         reset();
         setSortBy(e.value);
     }
-
 
     const changeCharsetFilter = (e) => {
         if(isFetching) {return}
@@ -196,6 +198,8 @@ export default function Chars(props) {
         setRadicalFilter(e.target.checked);
     }
 
+
+    // arrays of options for the Selects
     let sortBySelectOptions = [
         {value: 'default', label: 'Default'},
         {value: 'updated_at', label: 'Recently Added'},

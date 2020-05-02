@@ -56998,7 +56998,10 @@ function Chars(props) {
     setCurrentPage(1);
     setResults([]);
     setLoading(true);
-  }; // filter / sorting functions
+  }; //----------------------------//
+
+  /* filter / sorting functions */
+  //----------------------------//
 
 
   var changeSortBy = function changeSortBy(e) {
@@ -57043,7 +57046,8 @@ function Chars(props) {
 
     reset();
     setRadicalFilter(e.target.checked);
-  };
+  }; // arrays of options for the Selects
+
 
   var sortBySelectOptions = [{
     value: 'default',

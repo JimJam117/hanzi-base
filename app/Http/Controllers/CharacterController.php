@@ -188,7 +188,8 @@ class CharacterController extends Controller
             $data = $this->grabCharacterData($char);
             if ($data == null) { return view('errors.notfound', compact('char')); }
             else if ($data == 429) {return view('errors.429', compact('char')); } 
-            // if the character exists, add it to the database
+	    // if the character exists, add it to the database
+	  // dd($data);
             $this->addToDatabase($data);
             $characterObj = \App\Character::where('char', $char)->orWhere('id', $char)->first();
             $newCharAdded = true;  

@@ -139,8 +139,10 @@ if($char->char == $char->simp_char) {
            </div>
             <br>
                 @if (!empty($char->heisig_keyword) && !empty($char->heisig_number))
-                <h3 class="heisig_title">HEISIG</h3>
-                <p class="heisig">{{$char->heisig_keyword}} : {{$char->heisig_number}}</p>
+                <div class="heisig">
+                    <h3 class="heisig_title">Remebering the Hanzi:</h3>
+                    <p>{{$char->heisig_keyword}} : {{$char->heisig_number}}</p>
+                </div>
                 @endif
             <hr>
         </div>
@@ -261,7 +263,7 @@ if($char->char == $char->simp_char) {
     .freq-5 {
         background: linear-gradient(#fa8c8c, #ca3838);
     }
-    .translations{
+    .translations, .heisig{
         margin: 1em;
     }
     .translation_title{
@@ -320,6 +322,7 @@ if($char->char == $char->simp_char) {
 
        .character_small{
            font-size: 6rem;
+           font-weight: 400;
        }
 
        
@@ -336,6 +339,9 @@ if($char->char == $char->simp_char) {
         flex-direction: column;
         text-align: right;
         align-items: end;
+       }
+       .translations, .heisig{
+           text-align: right;
        }
 
        /* Pushes the character and pinyin to the left a little to be aligned with the links */
@@ -360,6 +366,9 @@ if($char->char == $char->simp_char) {
             text-align: center;
             align-items: center;
         }
+        .translations, .heisig{
+           text-align: initial;
+       }
     }
 
 </style>
@@ -369,6 +378,16 @@ if($char->char == $char->simp_char) {
     @media screen and (max-width: 675px) {
         .main{
             padding: 1em 0;
+        }
+
+
+        /*Radical header*/
+        .radical-button {
+            margin-top: 2.5em;
+        }
+        .radical-header{
+            align-items: center;
+            flex-direction: column;
         }
     }
 

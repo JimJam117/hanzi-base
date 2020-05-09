@@ -32,7 +32,7 @@ export default function CharacterLink(props) {
 
     // if there are new characters, check if the current character is a new character. If it is, then add the 'newCharLink' css class to it
     if(props.newchars) {
-        classNameString = props.newchars.includes(result.char) ? `${classNameString} newCharLink` : `${classNameString}`;
+        classNameString == props.newchars.includes(result.char) ? `${classNameString} newCharLink` : `${classNameString}`;
     }
 
     return (

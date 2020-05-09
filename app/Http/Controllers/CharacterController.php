@@ -124,7 +124,8 @@ class CharacterController extends Controller
     
         $ccdb = json_decode(curl_exec($curlSession), true);
         $http_code = curl_getinfo($curlSession)['http_code'];
-        curl_close($curlSession);
+	//dd($curlSession);       
+	curl_close($curlSession);
         
         if (empty($ccdb)) {
             return $http_code;
@@ -143,6 +144,7 @@ class CharacterController extends Controller
      * @return Void
      */
     function addToDatabase($data) {
+	   // dd($data);
         \App\Character::create([
         'char'                      => $data['original'],
         'simp_char'                 => $data['simplified_actual'],
@@ -253,7 +255,7 @@ class CharacterController extends Controller
             // if its not already in the database
             if (! \App\Character::where('char', $item)->first()) {
                 $charData = $this->grabCharacterData($item);
-                
+             // dd($charData, $item);  
                 if($charData == 429) {
                      $tooManyRequests = true;
                      array_push($failedRequestsArray, $item);   

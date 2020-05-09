@@ -189,6 +189,8 @@ class CharacterController extends Controller
             // check if the character is within the database
             $data = $this->grabCharacterData($char);
             if ($data == null) { return view('errors.notfound', compact('char')); }
+            else if ($data == 404) {return view('errors.404', compact('char')); } 
+            else if ($data == 500) {return view('errors.500', compact('char')); } 
             else if ($data == 429) {return view('errors.429', compact('char')); } 
 	    // if the character exists, add it to the database
 	  // dd($data);
@@ -256,7 +258,7 @@ class CharacterController extends Controller
             if (! \App\Character::where('char', $item)->first()) {
                 $charData = $this->grabCharacterData($item);
              // dd($charData, $item);  
-                if($charData == 429) {
+                if($charData == 429 || $charData == 500 || $charData == 404) {
                      $tooManyRequests = true;
                      array_push($failedRequestsArray, $item);   
                 }
